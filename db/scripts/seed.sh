@@ -25,8 +25,8 @@ SQL
 UPDATE vendors v SET
   display_name = i.display_name,
   normalised_name = btrim(regexp_replace(regexp_replace(regexp_replace(lower(i.legal_name),
-    '(^|[[:space:]])(llc|l\.l\.c\.|inc|inc\.|incorporated|corp|corp\.|corporation|co|co\.|company|ltd|ltd\.|limited|lp|llp|pllc|pc|dba)([[:space:]]|$)', ' ', 'g'),
-    '[^a-z0-9 ]', ' ', 'g'), '\s+', ' ', 'g')),
+    '(^|[^a-z0-9])(l[.]l[.]c[.]?|llc|incorporated|inc[.]?|corporation|corp[.]?|company|co[.]?|limited|ltd[.]?|pllc|llp|lp|pc|dba)([^a-z0-9]|$)', '\1 ', 'g'),
+    '[^a-z0-9 ]', ' ', 'g'), '[[:space:]]+', ' ', 'g')),
   trade = COALESCE(i.trade, 'DEFAULT'),
   contact_email = i.contact_email,
   producer_name = i.producer_name,
@@ -40,8 +40,8 @@ INSERT INTO vendors (legal_name, display_name, normalised_name, trade,
                      contact_email, producer_name, producer_email, wc_exempt)
 SELECT i.legal_name, i.display_name,
   btrim(regexp_replace(regexp_replace(regexp_replace(lower(i.legal_name),
-    '(^|[[:space:]])(llc|l\.l\.c\.|inc|inc\.|incorporated|corp|corp\.|corporation|co|co\.|company|ltd|ltd\.|limited|lp|llp|pllc|pc|dba)([[:space:]]|$)', ' ', 'g'),
-    '[^a-z0-9 ]', ' ', 'g'), '\s+', ' ', 'g')),
+    '(^|[^a-z0-9])(l[.]l[.]c[.]?|llc|incorporated|inc[.]?|corporation|corp[.]?|company|co[.]?|limited|ltd[.]?|pllc|llp|lp|pc|dba)([^a-z0-9]|$)', '\1 ', 'g'),
+    '[^a-z0-9 ]', ' ', 'g'), '[[:space:]]+', ' ', 'g')),
   COALESCE(i.trade, 'DEFAULT'), i.contact_email, i.producer_name,
   i.producer_email, COALESCE(i.wc_exempt, false)
 FROM vendor_import i

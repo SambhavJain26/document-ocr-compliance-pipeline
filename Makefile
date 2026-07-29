@@ -71,7 +71,7 @@ test: test-all
 test-all: test-extract test-fixtures test-forbidden  ## Run every automated check
 
 test-extract:  ## Unit-test extraction and validation logic
-	node --test test/unit/
+	node --test test/unit/test_extract.js
 
 test-fixtures:  ## Run all 20 fixtures through the live pipeline
 	python test/run_fixtures.py

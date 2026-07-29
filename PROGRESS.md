@@ -17,7 +17,7 @@ Update this file as you go. It is what you look at when you come back after two 
 | 1 · Infrastructure | [02](docs/02-stage-1-infrastructure.md) | 🟨 | 2026-07-29 | | ✅ local stack healthy |
 | 2 · Data layer | [03](docs/03-stage-2-data-layer.md) | ✅ | 2026-07-30 | 2026-07-30 | ✅ `db/scripts/verify.sh` |
 | 3 · Fixtures | [04](docs/04-stage-3-fixture-generation.md) | ✅ | 2026-07-30 | 2026-07-30 | ✅ `fixtures/verify.py` |
-| 4 · Extraction engine | [05](docs/05-stage-4-extraction-engine.md) | 🟨 | 2026-07-30 | | ⬜ `make test-extract` |
+| 4 · Extraction engine | [05](docs/05-stage-4-extraction-engine.md) | ✅ | 2026-07-30 | 2026-07-30 | ✅ npm run test:extract |
 | 5 · Intake workflow | [06](docs/06-stage-5-intake-workflow.md) | ⬜ | | | ⬜ 12 intake cases |
 | 6 · Watch & chase | [07](docs/07-stage-6-watch-and-chase-workflow.md) | ⬜ | | | ⬜ phone approval sends |
 | 7 · Dashboard | [08](docs/08-stage-7-dashboard.md) | ⬜ | | | ⬜ `make test-forbidden` |
@@ -111,21 +111,21 @@ Update this file as you go. It is what you look at when you come back after two 
 
 ## Stage 4 — Extraction engine
 
-- [ ] Schema is strict-valid (all `required`, `additionalProperties: false` on both objects)
-- [ ] System prompt saved; CONFIDENCE block intact including "Bias toward LOW"
-- [ ] Text branch correct on `f01`
-- [ ] Vision branch correct on `f04` at **MEDIUM** with a specific reason
-- [ ] `03_parse_response.js` handles 429 / 5xx / incomplete / refusal / missing-message without throwing
-- [ ] `04_validate.js` implements all 13 rules
-- [ ] `make test-extract` passes
-- [ ] SQL/JS normalisation parity holds on all 30 strings
+- [x] Schema is strict-valid (all required, additionalProperties false on both objects)
+- [x] System prompt saved; CONFIDENCE block intact including "Bias toward LOW"
+- [x] Text branch correct on f01
+- [x] Vision branch correct on f04 at MEDIUM with a specific reason
+- [x] 03_parse_response.js handles 429 / 5xx / incomplete / refusal / missing-message without throwing
+- [x] 04_validate.js implements all 13 rules
+- [x] npm run test:extract passes (this Windows host has no GNU Make)
+- [x] SQL/JS normalisation parity holds on all 30 strings
 
 ### Measured performance
 
 | Branch | Input tok | Output tok | Latency | Cost/cert |
 |---|---|---|---|---|
-| Text | | | | |
-| Vision | | | | |
+| Text | 1126 | 480 | 4.324 s | not returned by API |
+| Vision | 1883 | 283 | 4.649 s | not returned by API |
 
 ## Stage 5 — Intake workflow
 

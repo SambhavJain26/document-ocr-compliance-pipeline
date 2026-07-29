@@ -1,1 +1,11 @@
-export function normaliseName(raw='') { return raw.toLowerCase().replace(/\b(llc|l\.l\.c\.|inc|inc\.|incorporated|corp|corp\.|corporation|co|co\.|company|ltd|ltd\.|limited|lp|llp|pllc|pc|dba)\b/g,'').replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim(); }
+export function normaliseName(raw = '') {
+  return raw
+    .toLowerCase()
+    .replace(
+      /(^|[^a-z0-9])(l\.l\.c\.?|llc|incorporated|inc\.?|corporation|corp\.?|company|co\.?|limited|ltd\.?|pllc|llp|lp|pc|dba)(?=$|[^a-z0-9])/g,
+      '$1',
+    )
+    .replace(/[^a-z0-9 ]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
