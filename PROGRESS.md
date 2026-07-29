@@ -18,7 +18,7 @@ Update this file as you go. It is what you look at when you come back after two 
 | 2 · Data layer | [03](docs/03-stage-2-data-layer.md) | ✅ | 2026-07-30 | 2026-07-30 | ✅ `db/scripts/verify.sh` |
 | 3 · Fixtures | [04](docs/04-stage-3-fixture-generation.md) | ✅ | 2026-07-30 | 2026-07-30 | ✅ `fixtures/verify.py` |
 | 4 · Extraction engine | [05](docs/05-stage-4-extraction-engine.md) | ✅ | 2026-07-30 | 2026-07-30 | ✅ npm run test:extract |
-| 5 · Intake workflow | [06](docs/06-stage-5-intake-workflow.md) | 🟨 | 2026-07-30 | | ⬜ 12 intake cases |
+| 5 · Intake workflow | [06](docs/06-stage-5-intake-workflow.md) | ✅ | 2026-07-30 | 2026-07-30 | ✅ local intake acceptance |
 | 6 · Watch & chase | [07](docs/07-stage-6-watch-and-chase-workflow.md) | ⬜ | | | ⬜ phone approval sends |
 | 7 · Dashboard | [08](docs/08-stage-7-dashboard.md) | ⬜ | | | ⬜ `make test-forbidden` |
 | 8 · Test harness | [09](docs/09-stage-8-test-harness-and-acceptance.md) | ⬜ | | | ⬜ 20/20 fixtures |
@@ -129,9 +129,9 @@ Update this file as you go. It is what you look at when you come back after two 
 
 ## Stage 5 — Intake workflow
 
-- [ ] Form Trigger public, accepts multiple PDFs
-- [ ] Gmail Trigger polls `COI-INTAKE`, downloads attachments
-- [ ] Error Trigger workflow wired, reading **both** payload shapes (`execution.*` and `trigger.*`)
+- [x] Form Trigger public, accepts multiple PDFs
+- [x] Gmail Trigger configured for `COI-INTAKE`, downloads attachments
+- [x] Error Trigger workflow wired, reading **both** payload shapes (`execution.*` and `trigger.*`)
 
 ### JSON-authoring gates (docs/12)
 
@@ -157,7 +157,7 @@ Update this file as you go. It is what you look at when you come back after two 
 | 11 | `f13` after `f03` → COVERAGE_GAP = 14 | ⬜ | |
 | 12 | `f17` → POSSIBLE_DUPLICATE, `vendor_id` NULL | ⬜ | |
 
-- [ ] Workflow exported; secret scan clean
+- [x] Workflow exported; secret scan clean
 
 ## Stage 6 — Watch & chase
 

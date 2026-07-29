@@ -1,0 +1,247 @@
+{
+  "id": "8a3c3c3f-46ea-479e-9ae5-fdc0145ca83b",
+  "name": "COI Intake",
+  "nodes": [
+    {
+      "id": "cda8c0da-b2b8-4053-a4c8-c12e2e1a4f62",
+      "webhookId": "824eae2f-d1aa-44ca-aa4f-58e4a887d43d",
+      "name": "Form Trigger Upload Certificate",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [0, 0],
+      "parameters": {
+        "authentication": "none",
+        "formTitle": "Send us a certificate of insurance",
+        "formDescription": "Drop a PDF below. We will read it and file it against the right vendor.",
+        "formFields": {
+          "values": [
+            {
+              "fieldType": "file",
+              "fieldName": "certificate",
+              "fieldLabel": "Certificate PDF",
+              "multipleFiles": true,
+              "acceptFileTypes": ".pdf",
+              "requiredField": true
+            },
+            {
+              "fieldType": "text",
+              "fieldName": "notes",
+              "fieldLabel": "Anything we should know optional",
+              "requiredField": false
+            }
+          ]
+        },
+        "responseMode": "onReceived",
+        "options": {
+          "path": "coi-upload",
+          "buttonLabel": "Upload",
+          "ignoreBots": true
+        }
+      }
+    },
+    {
+      "id": "c1a524bb-6224-4e55-a9aa-6ccf144bf841",
+      "name": "Gmail Trigger COI Inbox",
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.4,
+      "position": [0, 240],
+      "parameters": { "authentication": "oAuth2", "event": "messageReceived", "simple": false, "maxResults": 10, "filters": { "q": "label:COI-INTAKE" }, "options": { "downloadAttachments": true, "dataPropertyAttachmentsPrefixName": "attachment_" } },
+      "credentials": { "gmailOAuth2": { "id": "__GMAIL_CREDENTIAL_ID__", "name": "Gmail account" } }
+    },
+    {
+      "id": "74b8c725-47bc-4ac4-b94d-9874616637a7",
+      "name": "Split Email Attachments",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [280, 240],
+      "parameters": { "mode": "runOnceForAllItems", "jsCode": "const out=[];for(const item of $input.all()){const j=item.json||{},b=item.binary||{},headers=j.payload?.headers||[];const h=n=>headers.find(x=>x.name?.toLowerCase()===n)?.value||'';const meta={source:'email',source_ref:j.id||j.messageId||null,from_address:h('from')||j.from||null,subject:h('subject')||j.subject||'',body_text:j.snippet||j.text||''};const keys=Object.keys(b).filter(k=>b[k]?.mimeType==='application/pdf'||(b[k]?.fileName||'').toLowerCase().endsWith('.pdf'));if(!keys.length){const body=(meta.subject+' '+meta.body_text).toLowerCase(),portal=/https?:\\/\\/[^\\s]*(portal|secure|share|download|docs)/.test(body);out.push({json:{...meta,preflight_ok:false,reason_code:portal?'NO_ATTACHMENT_PORTAL_LINK':'NO_ATTACHMENT_TEXT_REPLY',reason_detail:portal?'Email contains a download link and no attachment. Not fetched; needs a person.':'Email has no attachment.'}})}for(const key of keys)out.push({json:{...meta,original_filename:b[key].fileName||'certificate.pdf',binary_key:key},binary:{data:b[key]}})}return out;" }
+    },
+    {
+      "id": "345c055e-1f3a-4c8a-9d62-f04df6a6d476",
+      "name": "Form Normalize Attachments",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [280, 0],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const out=[];for(const item of $input.all()){for(const [key,attachment] of Object.entries(item.binary||{})){out.push({json:{source:'form',source_ref:item.json.submittedAt||null,original_filename:attachment.fileName||'certificate.pdf',binary_key:key},binary:{data:attachment}})}}return out;"
+      }
+    },
+    {
+      "id": "651110b9-0dc0-43bc-ac40-6156c0e3c023",
+      "name": "Preflight PDF Safety",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [560, 0],
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const crypto=require('crypto');const b=$input.item.binary?.data;if(!b)return {json:{...$json,preflight_ok:false,reason_code:'EMPTY_ATTACHMENT',reason_detail:'No binary payload.'}};const buf=await this.helpers.getBinaryDataBuffer(0,'data');const bad=buf.length===0||buf.length>26214400||buf.subarray(0,5).toString('latin1')!=='%PDF-';if(bad)return {json:{...$json,preflight_ok:false,reason_code:buf.length===0?'EMPTY_ATTACHMENT':'NOT_A_PDF',reason_detail:'File is not an accepted PDF under the 25 MB limit.'}};const head=buf.subarray(0,4096).toString('latin1');const tail=buf.subarray(Math.max(0,buf.length-4096)).toString('latin1');if(/\\/Encrypt\\b/.test(head)||/\\/Encrypt\\b/.test(tail))return {json:{...$json,preflight_ok:false,reason_code:'PDF_ENCRYPTED',reason_detail:'PDF is password-protected. Ask the sender for an unlocked copy.'}};const sha=crypto.createHash('sha256').update(buf).digest('hex');return {json:{...$json,preflight_ok:true,content_sha256:sha,byte_size:buf.length},binary:{data:b}};"
+      }
+    },
+    {
+      "id": "d259b3e6-77de-4909-9000-51a1e349b260",
+      "name": "If Preflight OK",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [820, 0],
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict", "version": 2 },
+          "conditions": [{ "leftValue": "={{ $json.preflight_ok }}", "rightValue": true, "operator": { "type": "boolean", "operation": "true", "singleValue": true } }]
+        }
+      }
+    },
+    {
+      "id": "cf967a9d-adf0-43c6-9b3c-68eae03a1bb7",
+      "name": "Extract PDF Text",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [1080, -100],
+      "parameters": {
+        "operation": "pdf",
+        "binaryPropertyName": "data",
+        "options": { "joinPages": true, "keepSource": "both" }
+      },
+      "continueOnFail": true
+    },
+    {
+      "id": "a280562b-40ec-4af2-9ceb-260a0d32d153",
+      "name": "Build OpenAI Text Request",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1340, -100],
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const schema={type:'object',additionalProperties:false,required:['is_certificate_of_insurance','vendor_legal_name','vendor_address','producer_name','producer_contact_name','producer_email','producer_phone','certificate_date','certificate_holder','certificate_holder_address','coverages','description_of_operations','cancellation_notice_wording','extraction_confidence','confidence_reason'],properties:{is_certificate_of_insurance:{type:'boolean'},vendor_legal_name:{type:['string','null']},vendor_address:{type:['string','null']},producer_name:{type:['string','null']},producer_contact_name:{type:['string','null']},producer_email:{type:['string','null']},producer_phone:{type:['string','null']},certificate_date:{type:['string','null']},certificate_holder:{type:['string','null']},certificate_holder_address:{type:['string','null']},coverages:{type:'array',items:{type:'object',additionalProperties:false,required:['type','insurer_name','naic','policy_number','effective_date','expiration_date','each_occurrence','general_aggregate','addl_insd_asserted','subr_wvd_asserted'],properties:{type:{type:'string',enum:['GENERAL_LIABILITY','AUTO','UMBRELLA','WORKERS_COMP','OTHER']},insurer_name:{type:['string','null']},naic:{type:['string','null']},policy_number:{type:['string','null']},effective_date:{type:['string','null']},expiration_date:{type:['string','null']},each_occurrence:{type:['number','null']},general_aggregate:{type:['number','null']},addl_insd_asserted:{type:['boolean','null']},subr_wvd_asserted:{type:['boolean','null']}}}},description_of_operations:{type:['string','null']},cancellation_notice_wording:{type:['string','null']},extraction_confidence:{type:'string',enum:['HIGH','MEDIUM','LOW']},confidence_reason:{type:['string','null']}}};const instructions='You extract structured data from certificates of liability insurance. Transcribe only; never infer. Return dates as YYYY-MM-DD, limits as integers, null for absent values, and copy cancellation wording verbatim. The INSURED is the vendor and the CERTIFICATE HOLDER is separate. If this is not a certificate, set is_certificate_of_insurance false, all other fields null, and coverages empty. An image-only or scanned document cannot be HIGH. Bias toward LOW.';return {json:{...$json,openai_request:{model:'gpt-5.4-mini-2026-03-17',instructions,input:[{role:'user',content:[{type:'input_text',text:'Extract the certificate data from this document text.\\n\\n--- BEGIN DOCUMENT ---\\n'+($json.text||'')+'\\n--- END DOCUMENT ---'}]}],reasoning:{effort:'low'},text:{format:{type:'json_schema',name:'coi_extraction',strict:true,schema}},max_output_tokens:3000,store:false},extraction_method:'text'}};"
+      }
+    },
+    {
+      "id": "11111111-2222-4333-8444-555555555555",
+      "name": "If PDF Has Text Layer",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [1320, -100],
+      "parameters": { "conditions": { "options": { "version": 2 }, "conditions": [{ "leftValue": "={{ ($json.text || '').trim().length }}", "rightValue": 120, "operator": { "type": "number", "operation": "gt" } }] } }
+    },
+    {
+      "id": "66666666-7777-4888-8999-aaaaaaaaaaaa",
+      "name": "Build OpenAI Vision Request",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1600, 120],
+      "parameters": { "mode": "runOnceForEachItem", "jsCode": "const b=await this.helpers.getBinaryDataBuffer(0,'data');const prompt='Read this PDF certificate. Return only a JSON object with is_certificate_of_insurance, vendor_legal_name, certificate_date, certificate_holder, coverages (each with type, policy_number, effective_date, expiration_date, each_occurrence, general_aggregate), extraction_confidence, and confidence_reason. Transcribe only; use null when unreadable. A scanned document cannot be HIGH.';return {json:{...$json,openai_request:{model:'gpt-5.4-mini-2026-03-17',input:[{role:'user',content:[{type:'input_text',text:prompt},{type:'input_file',filename:$json.original_filename||'certificate.pdf',file_data:'data:application/pdf;base64,'+b.toString('base64') }]}],max_output_tokens:2500,store:false},extraction_method:'vision'}};" }
+    },
+    {
+      "id": "bbbbbbbb-cccc-4ddd-8eee-ffffffffffff",
+      "name": "Parse Vision Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2120, 120],
+      "parameters": { "mode": "runOnceForEachItem", "jsCode": "const parts=($json.output||[]).flatMap(x=>x.content||[]);let raw=$json.output_text||parts.find(x=>x.type==='output_text'||x.type==='text')?.text||'';raw=raw.replace(/^```json\\s*|```$/g,'').trim();const ex=JSON.parse(raw);const source=$('Build OpenAI Vision Request').item.json;return {json:{...source,extraction:{...ex,vendor_address:null,producer_name:null,producer_contact_name:null,producer_email:null,producer_phone:null,certificate_holder_address:null,description_of_operations:null,cancellation_notice_wording:null,coverages:(ex.coverages||[]).map(c=>({insurer_name:null,naic:null,addl_insd_asserted:null,subr_wvd_asserted:null,...c}))},input_tokens:$json.usage?.input_tokens||null,output_tokens:$json.usage?.output_tokens||null}};" }
+    },
+    {
+      "id": "99999999-aaaa-4bbb-8ccc-dddddddddddd",
+      "name": "OpenAI Responses Vision",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1860, 120],
+      "parameters": { "method": "POST", "url": "https://api.openai.com/v1/responses", "authentication": "predefinedCredentialType", "nodeCredentialType": "openAiApi", "sendBody": true, "contentType": "raw", "rawContentType": "application/json", "body": "={{ JSON.stringify($json.openai_request) }}", "options": { "timeout": 60000 } },
+      "credentials": { "openAiApi": { "id": "__OPENAI_CREDENTIAL_ID__", "name": "OpenAI Account" } }
+    },
+    {
+      "id": "57b3712a-0a7e-4ee3-80e7-cb39e2cb2f0d",
+      "name": "OpenAI Responses",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1600, -100],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/responses",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [{ "name": "Content-Type", "value": "application/json" }] },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify($json.openai_request) }}",
+        "options": { "timeout": 60000 }
+      },
+      "credentials": {
+        "openAiApi": {
+          "id": "__OPENAI_CREDENTIAL_ID__",
+          "name": "OpenAI Account"
+        }
+      }
+    },
+    {
+      "id": "da782a53-29cc-43d5-83c6-99f4be377f3a",
+      "name": "Parse OpenAI Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1860, -100],
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const response=$json;const content=(response.output||[]).flatMap((part)=>part.content||[]);const raw=response.output_text||content.find((part)=>part.type==='output_text'||part.type==='text')?.text;if(!raw)throw new Error('MODEL_EMPTY');let extraction;try{extraction=JSON.parse(raw)}catch{throw new Error('JSON_PARSE_FAILED')}const source=$('Build OpenAI Text Request').item.json;return {json:{...source,extraction,input_tokens:response.usage?.input_tokens||null,output_tokens:response.usage?.output_tokens||null}};"
+      }
+    },
+    {
+      "id": "c9f59022-8fcc-4072-a0fd-ab4b605c524d",
+      "name": "Postgres Dead Letter Rejection",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [1080, 120],
+      "parameters": {
+        "resource": "database",
+        "operation": "executeQuery",
+        "query": "INSERT INTO dead_letter (source, source_ref, original_filename, content_sha256, reason_code, reason_detail, raw_payload) VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb) RETURNING id, reason_code;",
+        "options": {
+          "queryReplacement": "={{ [$json.source || 'form', $json.source_ref || null, $json.original_filename || null, $json.content_sha256 || null, $json.reason_code || 'UNKNOWN', $json.reason_detail || 'Intake rejected before extraction.', $json] }}"
+        }
+      },
+      "credentials": {
+        "postgres": {
+          "id": "__POSTGRES_CREDENTIAL_ID__",
+          "name": "Postgres — COI"
+        }
+      }
+    },
+    {
+      "id": "f4d4216a-bfea-4b5f-9e4c-113351d1cee1",
+      "name": "Postgres Process Intake",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [2120, -100],
+      "parameters": {
+        "resource": "database",
+        "operation": "executeQuery",
+        "query": "SELECT * FROM process_intake($1::jsonb);",
+        "options": { "queryReplacement": "={{ [$json] }}" }
+      },
+      "credentials": {
+        "postgres": { "id": "__POSTGRES_CREDENTIAL_ID__", "name": "Postgres — COI" }
+      }
+    }
+  ],
+  "connections": {
+    "Form Trigger Upload Certificate": { "main": [[{ "node": "Form Normalize Attachments", "type": "main", "index": 0 }]] },
+    "Gmail Trigger COI Inbox": { "main": [[{ "node": "Split Email Attachments", "type": "main", "index": 0 }]] },
+    "Split Email Attachments": { "main": [[{ "node": "Preflight PDF Safety", "type": "main", "index": 0 }]] },
+    "Form Normalize Attachments": { "main": [[{ "node": "Preflight PDF Safety", "type": "main", "index": 0 }]] },
+    "Preflight PDF Safety": { "main": [[{ "node": "If Preflight OK", "type": "main", "index": 0 }]] },
+    "If Preflight OK": { "main": [[{ "node": "Extract PDF Text", "type": "main", "index": 0 }], [{ "node": "Postgres Dead Letter Rejection", "type": "main", "index": 0 }]] },
+    "Extract PDF Text": { "main": [[{ "node": "If PDF Has Text Layer", "type": "main", "index": 0 }]] },
+    "If PDF Has Text Layer": { "main": [[{ "node": "Build OpenAI Text Request", "type": "main", "index": 0 }], [{ "node": "Build OpenAI Vision Request", "type": "main", "index": 0 }]] },
+    "Build OpenAI Text Request": { "main": [[{ "node": "OpenAI Responses", "type": "main", "index": 0 }]] },
+    "OpenAI Responses": { "main": [[{ "node": "Parse OpenAI Response", "type": "main", "index": 0 }]] },
+    "Build OpenAI Vision Request": { "main": [[{ "node": "OpenAI Responses Vision", "type": "main", "index": 0 }]] },
+    "OpenAI Responses Vision": { "main": [[{ "node": "Parse Vision Response", "type": "main", "index": 0 }]] },
+    "Parse OpenAI Response": { "main": [[{ "node": "Postgres Process Intake", "type": "main", "index": 0 }]] },
+    "Parse Vision Response": { "main": [[{ "node": "Postgres Process Intake", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "errorWorkflow": "13b4e779-2a6e-4f3e-a4cf-6cdd170e5420" },
+  "active": false,
+  "versionId": "43327dfd-7e4d-4d62-a709-a3cfc99f7b0e",
+  "meta": { "templateCredsSetupCompleted": true },
+  "pinData": {}
+}

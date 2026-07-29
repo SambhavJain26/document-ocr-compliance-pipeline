@@ -34,8 +34,16 @@ def main():
     c.drawString(45,650,"GENERAL LIABILITY EXPIRATION:")
     c.drawString(225,650,str(today+timedelta(days=x["exp"])))
     c.acroForm.textfield(name="gl_expiration",value=str(today+timedelta(days=x["exp"])),x=220,y=640,width=160,height=16,borderWidth=1)
+   if "eff" in x:
+    effective=str(today+timedelta(days=x["eff"]));expiration=str(today+timedelta(days=x["exp"]))
+    c.drawString(45,610,"GENERAL LIABILITY EFFECTIVE: "+effective+"  EXPIRATION: "+expiration)
+   elif "exp" in x and x["id"] != "f01-clean-current":
+    effective=str(today-timedelta(days=20 if x["id"]=="f13-coverage-gap" else 120));expiration=str(today+timedelta(days=x["exp"]))
+    c.drawString(45,610,"COMMERCIAL GENERAL LIABILITY  POLICY: SYN-GL-001  EFFECTIVE: "+effective+"  EXPIRATION: "+expiration)
    if x["id"]=="f01-clean-current":
-    effective=str(today-timedelta(days=120));expiration=str(today+timedelta(days=x["exp"]))
+    # Fixture-specific effective offsets must be rendered, not merely recorded
+    # in the manifest. f05 relies on this visible pair for DATE_INVERTED.
+    effective=str(today+timedelta(days=x.get("eff", -120)));expiration=str(today+timedelta(days=x["exp"]))
     c.drawString(45,610,"COMMERCIAL GENERAL LIABILITY  POLICY: SYN-GL-001  EFFECTIVE: "+effective+"  EXPIRATION: "+expiration)
     c.drawString(45,590,"EACH OCCURRENCE: $1,000,000  GENERAL AGGREGATE: $2,000,000")
     c.drawString(45,570,"AUTOMOBILE LIABILITY  POLICY: SYN-AU-001  EFFECTIVE: "+effective+"  EXPIRATION: "+expiration)

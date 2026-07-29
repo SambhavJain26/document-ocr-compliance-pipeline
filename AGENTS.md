@@ -75,3 +75,9 @@ Stage 4 uses a strict Structured Outputs schema and deterministic validation as 
 Run fixtures/.venv/Scripts/python.exe test/live_smoke.py only with synthetic fixtures and a deliberately budgeted API key. It records token/latency results without printing credentials or raw model content, uploads the scanned test PDF only temporarily, and deletes that OpenAI file after the request.
 
 Stage 5 intake has canonical modules in n8n/code/00_normalise_form.js, 01_preflight.js, and 03_split_attachments.js. Test them with npm run test:extract, then paste the same logic into n8n Code nodes when the workflow JSON is authored. Preflight must run before extraction or model calls, and portal-link emails must be dead-lettered without any outbound fetch.
+
+n8n's isolated JavaScript runner blocks Node built-ins unless explicitly allowed. The intake preflight needs only SHA-256, so Compose sets `NODE_FUNCTION_ALLOW_BUILTIN=crypto`; do not broaden that allowlist for convenience. After changing a Code-node dependency setting, use this project's `compose up -d` to recreate n8n before retesting an actual form submission.
+
+With `N8N_DEFAULT_BINARY_DATA_MODE=filesystem`, a Code node's `binary.data.data` is a storage reference, not Base64. Read the real PDF with `await this.helpers.getBinaryDataBuffer(0, 'data')` before checking magic bytes or calculating a hash; treating the reference as data misclassifies every upload.
+
+The text/vision branch threshold is 120 extracted characters for the synthetic fixture layout. Keep image-only PDFs on vision, but do not send short, legible text PDFs to vision merely because their intentionally compact fixture text falls below a generic 200-character heuristic.

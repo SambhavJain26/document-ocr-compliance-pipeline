@@ -7,14 +7,17 @@ const MAX_BYTES = 25 * 1024 * 1024;
  * The n8n Code node uses the same logic inline because Code nodes cannot
  * import repository modules at runtime.
  */
-export function preflight(item, now = new Date()) {
+export function preflight(item, now = new Date(), binaryBuffer = null) {
   const j = item.json || {};
   if (j.preflight_ok === false) return { ...item, json: { ...j } };
 
   const binary = item.binary?.data;
   if (!binary?.data) return reject(item, 'EMPTY_ATTACHMENT', 'No binary payload on the item.');
 
-  const bytes = Buffer.from(binary.data, 'base64');
+  // Unit callers provide the inline Base64 representation used by n8n's
+  // memory mode. The filesystem-backed production runner supplies the actual
+  // bytes via `this.helpers.getBinaryDataBuffer()` instead.
+  const bytes = binaryBuffer || Buffer.from(binary.data, 'base64');
   if (bytes.length === 0) return reject(item, 'EMPTY_ATTACHMENT', 'Attachment is zero bytes.');
   if (bytes.length > MAX_BYTES) {
     return reject(item, 'NOT_A_PDF', 'Attachment exceeds the 25 MB intake limit.');

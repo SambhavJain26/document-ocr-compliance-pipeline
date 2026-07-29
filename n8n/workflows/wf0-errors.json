@@ -12,15 +12,15 @@
     },
     {
       "id": "093bd878-fc7f-4c08-b479-8cce00bd0fa7",
-      "name": "NoOp Error Captured",
-      "type": "n8n-nodes-base.noOp",
-      "typeVersion": 1,
+      "name": "Normalise Error Payload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
       "position": [240, 0],
-      "parameters": {}
+      "parameters": { "mode": "runOnceForEachItem", "jsCode": "const j=$json;const execution=j.execution||j.trigger?.execution||{};const workflow=j.workflow||j.trigger?.workflow||{};return {json:{source:'error',source_ref:String(execution.id||j.executionId||''),workflow_id:workflow.id||j.workflowId||null,workflow_name:workflow.name||null,last_node:execution.lastNodeExecuted||j.lastNodeExecuted||null,reason_code:'WORKFLOW_ERROR',reason_detail:execution.error?.message||j.error?.message||'Unhandled workflow error.',raw_payload:j}};" }
     }
   ],
   "connections": {
-    "Error Trigger": { "main": [[{ "node": "NoOp Error Captured", "type": "main", "index": 0 }]] }
+    "Error Trigger": { "main": [[{ "node": "Normalise Error Payload", "type": "main", "index": 0 }]] }
   },
   "settings": {},
   "active": false,
