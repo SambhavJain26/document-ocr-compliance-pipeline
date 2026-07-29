@@ -6,10 +6,11 @@ SHELL := /bin/bash
 -include .env
 export
 
-COMPOSE := docker compose --project-name vendor-coi-chasing -f infra/docker-compose.yml
+COMPOSE := docker compose --project-name vendor-coi-chasing --env-file .env -f infra/docker-compose.yml
 PSQL    := $(COMPOSE) exec -T postgres psql -U $(POSTGRES_USER) -d $(POSTGRES_DB)
 
 .PHONY: help doctor up down logs restart \
+        infra-verify \
         db-apply db-seed db-verify db-reset db-shell \
         fixtures fixtures-clean \
         test test-all test-extract test-fixtures test-forbidden \
@@ -22,7 +23,7 @@ help:  ## Show this help
 doctor:  ## Verify local prerequisites (Stage 0 gate)
 	@bash db/scripts/doctor.sh
 
-up:  ## Start all services
+up:  ## Start the local PostgreSQL and n8n services
 	$(COMPOSE) up -d
 
 down:  ## Stop this project's services
@@ -33,6 +34,9 @@ logs:  ## Tail this project's service logs
 
 restart:  ## Restart this project's n8n service only
 	$(COMPOSE) restart n8n
+
+infra-verify:  ## Verify the local Stage 1 infrastructure gate
+	@bash infra/verify.sh
 
 db-apply:  ## Apply all migrations in order
 	@bash db/scripts/apply.sh
@@ -68,8 +72,8 @@ test-fixtures:  ## Run all 20 fixtures through the live pipeline
 test-forbidden:  ## Scan rendered output for prohibited claims
 	python test/forbidden_words.py
 
-backup:  ## Dump PostgreSQL into ./backups
+backup:  ## Dump both PostgreSQL databases into ./backups
 	@mkdir -p backups
-	$(COMPOSE) exec -T postgres pg_dump -U $(POSTGRES_USER) $(POSTGRES_DB) \
+	$(COMPOSE) exec -T postgres pg_dumpall -U $(POSTGRES_USER) \
 	  | gzip > backups/coi-$$(date +%Y%m%d-%H%M%S).sql.gz
 	@echo "Backup written to backups/"

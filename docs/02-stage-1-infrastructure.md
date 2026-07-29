@@ -6,6 +6,13 @@ Three containers behind TLS, with n8n configured so that the send-and-wait appro
 
 **Gate:** a webhook URL created in n8n loads from your phone on **mobile data**, not wifi.
 
+> **Local demo override (D-29).** The current build deliberately stops at
+> `http://localhost:5678`: PostgreSQL and n8n must be healthy, both databases
+> must exist, n8n data must survive a restart, and PostgreSQL must publish no
+> host port. Caddy, ACME, public webhooks, phone testing, and backup cron remain
+> production gates. The checked-in `infra/docker-compose.yml` is authoritative
+> for local work; the public-TLS configuration below is the production target.
+
 ---
 
 ## 1.1 What you are building
@@ -44,13 +51,12 @@ Three containers behind TLS, with n8n configured so that the send-and-wait appro
 ## 1.2 `infra/docker-compose.yml`
 
 ```yaml
-name: coi
+name: vendor-coi-chasing
 
 services:
   # ───────────────────────────────────────────────────────────────
   postgres:
-    image: postgres:16-alpine
-    container_name: coi-postgres
+    image: postgres:16
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
@@ -75,8 +81,7 @@ services:
 
   # ───────────────────────────────────────────────────────────────
   n8n:
-    image: docker.n8n.io/n8nio/n8n:latest
-    container_name: coi-n8n
+    image: n8nio/n8n:latest
     restart: unless-stopped
     depends_on:
       postgres:
@@ -96,9 +101,6 @@ services:
 
       # ── Security ──
       N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY}
-      N8N_BASIC_AUTH_ACTIVE: ${N8N_BASIC_AUTH_ACTIVE}
-      N8N_BASIC_AUTH_USER: ${N8N_BASIC_AUTH_USER}
-      N8N_BASIC_AUTH_PASSWORD: ${N8N_BASIC_AUTH_PASSWORD}
       N8N_SECURE_COOKIE: "true"
       N8N_BLOCK_ENV_ACCESS_IN_NODE: "true"
 
@@ -122,7 +124,7 @@ services:
       N8N_DIAGNOSTICS_ENABLED: "false"
       N8N_VERSION_NOTIFICATIONS_ENABLED: "false"
       N8N_PERSONALIZATION_ENABLED: "false"
-      N8N_RUNNERS_ENABLED: "true"
+      N8N_PYTHON_ENABLED: "false"       # this project uses JavaScript Code nodes only
       NODE_OPTIONS: "--max-old-space-size=1536"
     volumes:
       - n8n_data:/home/node/.n8n
@@ -138,8 +140,7 @@ services:
 
   # ───────────────────────────────────────────────────────────────
   caddy:
-    image: caddy:2-alpine
-    container_name: coi-caddy
+    image: caddy:2
     restart: unless-stopped
     depends_on:
       - n8n
@@ -314,7 +315,7 @@ curl -sI https://n8n.yourdomain.com | head -n 1
 
 ## 1.6 First login and OAuth redirect
 
-1. Open `https://n8n.yourdomain.com`. Basic auth prompts first (`N8N_BASIC_AUTH_USER` / `PASSWORD`), then n8n's own owner-account setup.
+1. Open `http://localhost:5678` for the local demo, or the HTTPS hostname in production. n8n shows its built-in owner-account setup.
 2. Create the owner account. Use a real address — n8n emails password resets there.
 3. **Go back to Google Cloud Console** → Credentials → your `n8n-gmail` OAuth client → set the authorised redirect URI to exactly:
 

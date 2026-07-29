@@ -11,7 +11,8 @@ The planned layout is authoritative: infrastructure in `infra/`, SQL in `db/`, s
 The `Makefile` is introduced during Stage 0; until it exists, these commands describe the required interface rather than runnable tooling.
 
 - `make doctor`: validate the local toolchain and configuration.
-- `make up`: start PostgreSQL, n8n, and Caddy with Docker Compose.
+- `make up`: start local PostgreSQL and n8n with Docker Compose.
+- `make infra-verify`: verify service health, database separation, and network exposure.
 - `make db-apply && make db-seed && make db-verify`: migrate, seed, and verify the database.
 - `make fixtures`: regenerate all synthetic certificate fixtures.
 - `make test-extract`: run JavaScript validation tests and extraction smoke tests.
@@ -48,5 +49,9 @@ On Windows, run repository shell scripts with Git Bash when WSL has no Linux dis
 Keep Python dependencies isolated in `fixtures/.venv`; `doctor.sh` detects that environment without requiring manual activation. Commit only `fixtures/requirements.txt`, never the virtual environment.
 
 Preserve LF endings for shell scripts and `Makefile` through `.gitattributes`; CRLF can break scripts when they reach the Ubuntu deployment host. All Compose commands must retain the explicit `vendor-coi-chasing` project name so `down` and `restart` cannot target another project's resources.
+
+Every Compose command must also pass `--env-file .env`. Because the Compose file lives under `infra/`, relying on automatic discovery can load no root environment and initialize PostgreSQL with blank values. If first initialization fails, inspect labels/names, then remove only the newly created `vendor-coi-chasing` volumes before retrying; Postgres init scripts do not rerun on a non-empty volume.
+
+This project uses JavaScript Code nodes only. Set `N8N_PYTHON_ENABLED=false` and do not set the obsolete `N8N_RUNNERS_ENABLED` variable; n8n 2.29 starts its JavaScript runner automatically. The image still performs one Python availability probe and logs one missing-Python warning at startup—accept only that exact warning while the log also confirms `Registered runner "JS Task Runner"`. Apply environment changes with `compose up -d`, which recreates the target service, rather than `restart`, which retains the old environment.
 
 The demo defaults to `DEPLOYMENT_MODE=local` at `http://localhost:5678`; Caddy, public DNS, and `ACME_EMAIL` are production-only. Keep `N8N_SECURE_COOKIE=false` confined to local HTTP and restore it to `true` for HTTPS. Current n8n uses its built-in owner account—do not reintroduce the removed `N8N_BASIC_AUTH_*` variables. See Decision D-29.

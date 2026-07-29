@@ -14,7 +14,7 @@ Update this file as you go. It is what you look at when you come back after two 
 | Stage | Document | Status | Started | Finished | Gate passed |
 |---|---|---|---|---|---|
 | 0 · Prerequisites | [01](docs/01-stage-0-prerequisites.md) | 🟨 | 2026-07-29 | | ✅ `doctor.sh` |
-| 1 · Infrastructure | [02](docs/02-stage-1-infrastructure.md) | ⬜ | | | ⬜ phone/mobile-data webhook |
+| 1 · Infrastructure | [02](docs/02-stage-1-infrastructure.md) | 🟨 | 2026-07-29 | | ✅ local stack healthy |
 | 2 · Data layer | [03](docs/03-stage-2-data-layer.md) | ⬜ | | | ⬜ `make db-verify` |
 | 3 · Fixtures | [04](docs/04-stage-3-fixture-generation.md) | ⬜ | | | ⬜ `make fixtures` |
 | 4 · Extraction engine | [05](docs/05-stage-4-extraction-engine.md) | ⬜ | | | ⬜ `make test-extract` |
@@ -42,13 +42,25 @@ Update this file as you go. It is what you look at when you come back after two 
 - [ ] DNS A record resolves to the VPS
 - [ ] Telegram bot + chat ID *(optional)*
 - [x] Repo scaffold, `.gitignore`, `.env.example`, `Makefile`, and `doctor.sh` created
-- [ ] `.env` filled with deployment and account values
+- [x] `.env` filled for local demo mode
 - [ ] **`N8N_ENCRYPTION_KEY` saved to a password manager** (not regenerable)
 - [x] `doctor.sh` exits 0 in local demo mode
 
 ## Stage 1 — Infrastructure
 
-- [ ] **`N8N_ENCRYPTION_KEY` pinned BEFORE the first `up`** (auto-generated otherwise, and a later env var is silently ignored)
+### Local demo verification — 2026-07-29
+
+- [x] Existing `postgres:16` and `n8nio/n8n:latest` images reused without pulling
+- [x] PostgreSQL and n8n healthy in the isolated `vendor-coi-chasing` Compose project
+- [x] n8n responds at `http://localhost:5678`; binding is loopback-only
+- [x] Databases `coi` and `n8n` both exist
+- [x] PostgreSQL publishes no host port; host connections require SCRAM
+- [x] JavaScript task runner registered; Python Code nodes disabled
+- [x] Owner record, databases, and three named volumes survive container recreation
+
+### Production and credential gates
+
+- [x] **`N8N_ENCRYPTION_KEY` pinned BEFORE the first `up`** (auto-generated otherwise, and a later env var is silently ignored)
 - [ ] All three services running; postgres and n8n healthy
 - [ ] Valid TLS certificate, no browser warning
 - [ ] Databases `coi` and `n8n` both exist
