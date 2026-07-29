@@ -39,10 +39,10 @@ restart:  ## Restart this project's n8n service only
 infra-verify:  ## Verify the local Stage 1 infrastructure gate
 	@bash infra/verify.sh
 
-credentials-import:  ## Import the OpenAI and PostgreSQL n8n credentials
+credentials-import:  ## Import the PostgreSQL n8n credential from .env
 	@bash n8n/scripts/import-credentials.sh
 
-credentials-verify:  ## Verify imported n8n credentials without revealing secrets
+credentials-verify:  ## Verify PostgreSQL plus n8n-native OpenAI and Gmail credentials
 	@bash n8n/scripts/verify-credentials.sh
 
 db-apply:  ## Apply all migrations in order

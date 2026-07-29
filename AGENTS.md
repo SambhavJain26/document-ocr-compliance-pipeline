@@ -13,8 +13,8 @@ The `Makefile` is introduced during Stage 0; until it exists, these commands des
 - `make doctor`: validate the local toolchain and configuration.
 - `make up`: start local PostgreSQL and n8n with Docker Compose.
 - `make infra-verify`: verify service health, database separation, and network exposure.
-- `make credentials-import`: import the OpenAI and PostgreSQL n8n credentials from `.env`.
-- `make credentials-verify`: confirm those credentials are encrypted, owner-visible, and leave no plaintext container file.
+- `make credentials-import`: import the PostgreSQL n8n credential from `.env`.
+- `make credentials-verify`: confirm PostgreSQL plus the n8n-native OpenAI and Gmail credentials are owner-visible.
 - `make db-apply && make db-seed && make db-verify`: migrate, seed, and verify the database.
 - `make fixtures`: regenerate all synthetic certificate fixtures.
 - `make test-extract`: run JavaScript validation tests and extraction smoke tests.
@@ -62,4 +62,4 @@ The demo defaults to `DEPLOYMENT_MODE=local` at `http://localhost:5678`; Caddy, 
 
 Credential imports must use `--projectId` for the owner's personal project or n8n will not expose them in the UI. On Git Bash, prefix Docker commands that carry container paths such as `/tmp/...` with `MSYS_NO_PATHCONV=1`; otherwise Windows rewrites the path before n8n sees it. `docker compose cp` creates a root-owned file in the container, so remove it as root in an exit trap. Keep the plaintext JSON only in an OS temp directory, never in the repository.
 
-The managed OpenAI HTTP credential is named `OpenAI — Header Auth (Managed)` to avoid colliding with user-created n8n credentials. Importers must accept a correct partial state and add only the missing managed credential; never overwrite a user credential that merely has a similar name.
+Use the n8n-native `openAiApi` and `gmailOAuth2` credentials that the owner created in the UI; do not duplicate the OpenAI key as a generic Header Auth credential. HTTP Request nodes calling the Responses API must use **Predefined Credential Type → OpenAI API**. Credential verification checks type and owner visibility without recording user-created IDs or values in the repository.

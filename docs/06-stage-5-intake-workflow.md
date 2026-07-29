@@ -95,7 +95,7 @@ This URL is what you hand a prospect at the end of the demo — *"drop any PDF i
 
 | Parameter | Value |
 |---|---|
-| Credential | `Gmail — COI` |
+| Credential | `Gmail account` |
 | Poll Times | Every Minute |
 | Simplify | **off** |
 | Filters → Label Names | `COI-INTAKE` |

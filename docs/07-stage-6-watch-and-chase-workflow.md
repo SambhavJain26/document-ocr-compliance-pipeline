@@ -358,7 +358,7 @@ Two reasons this ordering matters:
 
 | Parameter | Value |
 |---|---|
-| Credential | `Gmail — COI` |
+| Credential | `Gmail account` |
 | Resource | `Message` |
 | Operation | **Send and Wait for Response** |
 | To | `={{ $json.config.approver_email }}` |

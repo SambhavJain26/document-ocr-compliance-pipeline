@@ -181,7 +181,7 @@ n8n node names appear in error alerts. Make them describe the operation, not the
 ### Secrets
 
 - Everything sensitive lives in `.env`, loaded by Docker Compose. `.env` is gitignored. `.env.example` lists every key with a dummy value and is committed.
-- The OpenAI key exists in exactly two places: `.env` on the VPS, and an n8n **Header Auth** credential. It is never in a workflow JSON export, never in a Code node, never in a Postgres row.
+- The OpenAI key exists in exactly two places: `.env` on the VPS, and an n8n **OpenAI API** credential. It is never in a workflow JSON export, never in a Code node, never in a Postgres row.
 - Before exporting any workflow to `n8n/workflows/`, confirm the export contains no credential *values* — n8n exports credential *references* by ID, which is correct and safe. Stage 8 has a check for this.
 
 ### Error handling philosophy
@@ -209,7 +209,7 @@ This is a directive from the project owner and it is also the better engineering
 | Endpoint | `https://api.openai.com/v1/responses` | `client_config.openai_endpoint` |
 | Extraction model | `gpt-5.4-mini-2026-03-17` | `client_config.model_id` |
 | Escalation model | `gpt-5.6-terra` | `client_config.model_id_escalation` |
-| Auth | `Authorization: Bearer $OPENAI_API_KEY` via n8n Header Auth credential | n8n credential store |
+| Auth | n8n OpenAI API credential via HTTP Request predefined authentication | n8n credential store |
 | Schema enforcement | `text.format` → `json_schema`, `strict: true` | `extraction/schema/` |
 | Key spend limit | **$10 hard cap** in the OpenAI console | OpenAI dashboard |
 

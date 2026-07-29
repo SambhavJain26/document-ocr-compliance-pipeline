@@ -89,7 +89,7 @@ fi
 
 echo
 echo "── Gmail OAuth ───────────────────────────────────"
-echo "  ! Manual: open n8n → Credentials → 'Gmail — COI' → Reconnect if it warns."
+echo "  ! Manual: open n8n → Credentials → 'Gmail account' → Reconnect if it warns."
 echo "    An expired refresh token is silent. Check it with your eyes."
 
 echo

@@ -147,26 +147,15 @@ Affects every multi-line message in this build: the Telegram notifications ([Sta
 
 ## 12.3 Credentials
 
-### CLI-importable: the OpenAI Header Auth credential
+### n8n-native OpenAI API credential
 
-`httpHeaderAuth` has a plaintext `data` shape, so it can be scripted. n8n encrypts on import using `N8N_ENCRYPTION_KEY`.
+Use the owner-created `openAiApi` credential for every Responses API call. In an HTTP Request node, select **Predefined Credential Type → OpenAI API** rather than generic Header Auth. This preserves the exact request body while keeping one OpenAI key in n8n.
 
-```json
-{
-  "id": "c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f",
-  "name": "OpenAI — Header Auth (Managed)",
-  "type": "httpHeaderAuth",
-  "data": { "name": "Authorization", "value": "Bearer sk-proj-REPLACED_AT_RUNTIME" }
-}
-```
+The credential id is created by n8n and belongs only in a workflow export's credential reference. Never hard-code it in repository source.
 
-> ### Never write this file inside the repo
->
-> Plaintext credential JSON goes to a temp path **outside git**, gets copied in, imported, and both copies deleted. There is no `.gitignore` entry that makes an accidentally-committed API key un-leaked.
+### CLI-importable: the PostgreSQL credential
 
-Use the version-controlled importer; it reads `.env`, writes plaintext JSON only
-to an OS temp directory, imports the two fixed credential IDs into the owner's
-personal project, and removes both temporary copies even when import fails:
+The importer reads `.env`, writes only the PostgreSQL credential to an OS temp directory, assigns it to the owner's personal project, and removes both temporary copies even when import fails:
 
 ```bash
 make credentials-import
@@ -174,18 +163,15 @@ make restart
 make credentials-verify
 ```
 
-The verifier confirms only credential IDs, names, types, encrypted storage, the
-owner-project shares, and removal of the container temp file. It never prints a
-credential value. On Windows Git Bash, the scripts disable MSYS path conversion
-only for commands that carry an in-container `/tmp/...` path.
+The verifier confirms the encrypted PostgreSQL credential, an owner-visible native OpenAI credential, an owner-visible Gmail OAuth credential, and removal of the container temp file. It never prints a credential value. On Windows Git Bash, the scripts disable MSYS path conversion only for commands that carry an in-container `/tmp/...` path.
 
 **Workflow JSON references credentials by name and id, never by value:**
 
 ```json
 "credentials": {
-  "httpHeaderAuth": {
-    "id": "c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f",
-    "name": "OpenAI — Header Auth (Managed)"
+  "openAiApi": {
+    "id": "<n8n-generated-id>",
+    "name": "OpenAI Account"
   }
 }
 ```

@@ -331,17 +331,16 @@ No trailing slash. Exact scheme and host. Save.
 
 In n8n → **Credentials → Add credential**. Create all four now so no stage stalls on a missing credential.
 
-### 1.7.1 `OpenAI — Header Auth (Managed)`
+### 1.7.1 `OpenAI Account`
 
-Type: **Header Auth**
+Type: **OpenAI API**
 
 | Field | Value |
 |---|---|
-| Name | `OpenAI — Header Auth (Managed)` |
-| Header Name | `Authorization` |
-| Header Value | `Bearer sk-proj-...` (your key, with the literal word `Bearer` and a space) |
+| Name | `OpenAI Account` |
+| API Key | your OpenAI project key |
 
-> Header Auth, not the OpenAI credential type. Every model call in this build goes through an HTTP Request node so you control the exact payload shape — `input_file` parts, `detail` control, and `text.format` are not all exposed by the vendor node.
+Every model call uses an HTTP Request node for exact Responses API payload control. Configure its authentication as **Predefined Credential Type → OpenAI API → OpenAI Account**. Do not create a duplicate generic Header Auth credential.
 
 ### 1.7.2 `Postgres — COI`
 
@@ -358,7 +357,7 @@ Type: **Postgres**
 
 `postgres` is the Docker service name and resolves on `coi-net`. Never `localhost` — inside the n8n container that is n8n itself.
 
-### 1.7.3 `Gmail — COI`
+### 1.7.3 `Gmail account`
 
 Type: **Gmail OAuth2 API**
 

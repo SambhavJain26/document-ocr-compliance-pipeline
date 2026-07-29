@@ -592,7 +592,7 @@ Work the phases in sequence — each depends on the one before it. Within a phas
 
 **Why this is the highest-leverage step in the build:** a prospect seeing *their own* eighteen vendor names on screen, four of them grey, is a categorically different experience from seeing a sample. It stops being a demo of your software and becomes a picture of their business. It also removes the "whose vendors are those?" question that makes a staged demo visible.
 
-**1.5** Create the model-provider credential in n8n as a **Header Auth** credential (not the vendor node's credential — you're using HTTP Request). Generate an API key with a **spend limit of $10** set in the provider console. Store the model ID in `client_config` as `model_id`, not hardcoded in the node.
+**1.5** Create the model-provider credential in n8n as an **OpenAI API** credential. Configure the HTTP Request node with its predefined OpenAI API credential type. Generate an API key with a **spend limit of $10** set in the provider console. Store the model ID in `client_config` as `model_id`, not hardcoded in the node.
 → **Done when:** a trivial HTTP Request returns 200, and changing `model_id` in Postgres changes which model the workflow calls.
 
 **1.6** Build the **text-branch extraction call** — HTTP Request node, `max_tokens` (or `max_output_tokens`) 1500, system prompt from 5.3, user content = extracted PDF text.

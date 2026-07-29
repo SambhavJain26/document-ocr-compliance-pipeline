@@ -340,15 +340,15 @@ If they drift, a seeded vendor stops matching the certificate that names them, a
 
 ---
 
-## D-27 · Credentials provisioned by script, except Gmail
+## D-27 · Script only the PostgreSQL credential
 
-**Decision.** `httpHeaderAuth` (OpenAI) and `postgres` credentials are generated from `.env` into a **temp path outside the repo**, copied into the container, imported, and deleted from both sides. Gmail OAuth2 is completed by hand in the UI, once, and its real id is then fetched from `GET /rest/credentials`.
+**Decision.** Only the `postgres` credential is generated from `.env` into a **temp path outside the repo**, copied into the container, imported, and deleted from both sides. OpenAI uses the owner's existing n8n-native `openAiApi` credential; Gmail OAuth2 is completed by hand in the UI.
 
 **Why.** n8n encrypts on import using `N8N_ENCRYPTION_KEY`, so plaintext credential JSON is a legitimate input format — but there is no `.gitignore` entry that makes an accidentally-committed API key un-leaked. The file never exists inside the repo.
 
-**Gmail cannot be scripted at all.** There is no plaintext token to pre-author, only a live browser consent flow a human must complete. Rather than pretend otherwise, it is called out as **the one manual step** in the provisioning sequence ([§12.11](12-n8n-operations-cookbook.md)) and belongs in bold in the client runbook.
+**OpenAI and Gmail credentials are user-managed.** The native OpenAI credential works with HTTP Request's predefined authentication, so a duplicate generic header credential adds a second place to maintain the same key. Gmail has no plaintext token to pre-author: its browser consent flow remains a human step.
 
-The importer assigns the two generated credentials to the owner's personal project with `--projectId`, so they are visible to workflow authors. The managed HTTP credential is named `OpenAI — Header Auth (Managed)` so it cannot overwrite an existing user-created OpenAI credential with the former display name. On Git Bash, container-path commands opt out of MSYS path conversion; the cleanup trap removes the root-owned copied file as root. `make credentials-verify` checks encrypted storage, owner sharing, and temporary-file removal without reading credential values.
+The importer assigns the generated PostgreSQL credential to the owner's personal project with `--projectId`. On Git Bash, container-path commands opt out of MSYS path conversion; the cleanup trap removes the root-owned copied file as root. `make credentials-verify` checks encrypted PostgreSQL storage, owner-visible native credentials, and temporary-file removal without reading credential values.
 
 ---
 
