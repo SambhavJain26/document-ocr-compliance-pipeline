@@ -320,20 +320,21 @@ Thumbs.db
 ### `.env.example` — committed, with dummy values
 
 ```bash
-# ─── Infrastructure ────────────────────────────────────────────
-N8N_HOST=n8n.example.com
-N8N_PROTOCOL=https
-WEBHOOK_URL=https://n8n.example.com/
-N8N_EDITOR_BASE_URL=https://n8n.example.com/
+# ─── Runtime mode and n8n ──────────────────────────────────────
+DEPLOYMENT_MODE=local
+N8N_HOST=localhost
+N8N_PORT=5678
+N8N_PROTOCOL=http
+WEBHOOK_URL=http://localhost:5678/
+N8N_EDITOR_BASE_URL=http://localhost:5678/
+N8N_SECURE_COOKIE=false
 GENERIC_TIMEZONE=America/New_York
 TZ=UTC
 
-# ─── n8n auth & encryption ─────────────────────────────────────
+# ─── n8n encryption ────────────────────────────────────────────
 # Generate: openssl rand -hex 32
 N8N_ENCRYPTION_KEY=CHANGE_ME_32_BYTE_HEX
-N8N_BASIC_AUTH_ACTIVE=true
-N8N_BASIC_AUTH_USER=admin
-N8N_BASIC_AUTH_PASSWORD=CHANGE_ME_STRONG
+# Authentication uses n8n's built-in owner account, created on first launch.
 
 # ─── Postgres ──────────────────────────────────────────────────
 POSTGRES_USER=coi
@@ -357,8 +358,8 @@ TELEGRAM_CHAT_ID=CHANGE_ME
 # Generate: openssl rand -hex 16
 DASHBOARD_TOKEN=CHANGE_ME_HEX
 
-# ─── Caddy ─────────────────────────────────────────────────────
-ACME_EMAIL=you@example.com
+# ─── Production Caddy TLS only; unused locally ─────────────────
+ACME_EMAIL=
 ```
 
 Copy to `.env` and fill in real values. Generate the two secrets now:

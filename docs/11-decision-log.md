@@ -350,6 +350,16 @@ If they drift, a seeded vendor stops matching the certificate that names them, a
 
 ---
 
+## D-29 · The demo runs locally before production TLS
+
+**Decision.** The first demo build runs n8n at `http://localhost:5678` with `DEPLOYMENT_MODE=local`. Public DNS, Caddy, and ACME are deferred until production deployment. `N8N_SECURE_COOKIE=false` is permitted only in local HTTP mode and must return to `true` behind production HTTPS.
+
+**Why.** Localhost removes VPS and certificate work from the implementation loop while workflows, database behavior, and fixtures are still changing. It does limit phone testing and public approval/webhook links; those remain production gates rather than being falsely marked complete.
+
+n8n 1.0 and later use the built-in owner account and no longer support the old `N8N_BASIC_AUTH_*` variables. The owner account is created in the UI on first launch. `DASHBOARD_TOKEN` is separate application-level protection for the dashboard and source-PDF webhook URLs; it is not an n8n login credential.
+
+---
+
 ## Corrections this document set has already absorbed
 
 Three defects found and fixed before any code was written. Recorded because the reasoning generalises.

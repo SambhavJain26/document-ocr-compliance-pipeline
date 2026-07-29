@@ -48,3 +48,5 @@ On Windows, run repository shell scripts with Git Bash when WSL has no Linux dis
 Keep Python dependencies isolated in `fixtures/.venv`; `doctor.sh` detects that environment without requiring manual activation. Commit only `fixtures/requirements.txt`, never the virtual environment.
 
 Preserve LF endings for shell scripts and `Makefile` through `.gitattributes`; CRLF can break scripts when they reach the Ubuntu deployment host. All Compose commands must retain the explicit `vendor-coi-chasing` project name so `down` and `restart` cannot target another project's resources.
+
+The demo defaults to `DEPLOYMENT_MODE=local` at `http://localhost:5678`; Caddy, public DNS, and `ACME_EMAIL` are production-only. Keep `N8N_SECURE_COOKIE=false` confined to local HTTP and restore it to `true` for HTTPS. Current n8n uses its built-in owner account—do not reintroduce the removed `N8N_BASIC_AUTH_*` variables. See Decision D-29.

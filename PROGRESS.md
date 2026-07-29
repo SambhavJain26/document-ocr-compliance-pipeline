@@ -13,7 +13,7 @@ Update this file as you go. It is what you look at when you come back after two 
 
 | Stage | Document | Status | Started | Finished | Gate passed |
 |---|---|---|---|---|---|
-| 0 · Prerequisites | [01](docs/01-stage-0-prerequisites.md) | 🟨 | 2026-07-29 | | ⬜ `make doctor` |
+| 0 · Prerequisites | [01](docs/01-stage-0-prerequisites.md) | 🟨 | 2026-07-29 | | ✅ `doctor.sh` |
 | 1 · Infrastructure | [02](docs/02-stage-1-infrastructure.md) | ⬜ | | | ⬜ phone/mobile-data webhook |
 | 2 · Data layer | [03](docs/03-stage-2-data-layer.md) | ⬜ | | | ⬜ `make db-verify` |
 | 3 · Fixtures | [04](docs/04-stage-3-fixture-generation.md) | ⬜ | | | ⬜ `make fixtures` |
@@ -32,11 +32,11 @@ Update this file as you go. It is what you look at when you come back after two 
 
 - [ ] OpenAI project `coi-demo` created, restricted key issued
 - [ ] **$10 hard budget limit set** (this is the actual budget enforcement)
-- [ ] `curl` against the pinned model returns 200
+- [x] `curl` against the pinned model returns 200
 - [ ] Gmail label `COI-INTAKE` + filter created
 - [ ] Google Cloud project created, Gmail API enabled
 - [ ] **OAuth consent screen PUBLISHED** (not Testing — 7-day token expiry, see D-17)
-- [ ] OAuth client created (redirect URI pending Stage 1.6)
+- [x] OAuth client details added to local `.env` (redirect URI pending production deployment)
 - [ ] VPS provisioned, Docker + Compose v2 installed
 - [ ] `ufw` allows only 22 / 80 / 443
 - [ ] DNS A record resolves to the VPS
@@ -44,7 +44,7 @@ Update this file as you go. It is what you look at when you come back after two 
 - [x] Repo scaffold, `.gitignore`, `.env.example`, `Makefile`, and `doctor.sh` created
 - [ ] `.env` filled with deployment and account values
 - [ ] **`N8N_ENCRYPTION_KEY` saved to a password manager** (not regenerable)
-- [ ] `make doctor` exits 0
+- [x] `doctor.sh` exits 0 in local demo mode
 
 ## Stage 1 — Infrastructure
 

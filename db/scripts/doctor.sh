@@ -72,9 +72,9 @@ else
 fi
 
 required_vars=(
-  N8N_HOST WEBHOOK_URL N8N_ENCRYPTION_KEY N8N_BASIC_AUTH_PASSWORD
+  N8N_HOST WEBHOOK_URL N8N_ENCRYPTION_KEY
   POSTGRES_PASSWORD OPENAI_API_KEY GOOGLE_OAUTH_CLIENT_ID
-  GOOGLE_OAUTH_CLIENT_SECRET DASHBOARD_TOKEN GENERIC_TIMEZONE ACME_EMAIL
+  GOOGLE_OAUTH_CLIENT_SECRET DASHBOARD_TOKEN GENERIC_TIMEZONE
 )
 
 for name in "${required_vars[@]}"; do
@@ -90,6 +90,18 @@ for name in "${required_vars[@]}"; do
   fi
 done
 
+deployment_mode="${DEPLOYMENT_MODE:-local}"
+if [ "$deployment_mode" = "production" ]; then
+  if [ -z "${ACME_EMAIL:-}" ] || [[ "${ACME_EMAIL:-}" == *example.com* ]]; then
+    bad "ACME_EMAIL must be set for production TLS"
+    ENV_READY=0
+  else
+    ok "ACME_EMAIL set for production TLS"
+  fi
+else
+  ok "local mode: ACME email is not required"
+fi
+
 encryption_key="${N8N_ENCRYPTION_KEY:-}"
 if [ "${#encryption_key}" -lt 32 ]; then
   bad "N8N_ENCRYPTION_KEY is shorter than 32 characters"
@@ -100,7 +112,9 @@ fi
 
 echo
 echo "── DNS ───────────────────────────────────────────"
-if [ "$ENV_READY" -eq 1 ]; then
+if [ "$deployment_mode" = "local" ] || [ "${N8N_HOST:-}" = "localhost" ]; then
+  ok "local mode: public DNS is not required"
+elif [ "$ENV_READY" -eq 1 ]; then
   resolved_ip="$("$PYTHON_BIN" - "$N8N_HOST" <<'PY'
 import socket
 import sys
