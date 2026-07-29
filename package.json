@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test:extract": "node --test test/unit/test_extract.js",
+    "test:extract": "node --test test/unit/test_extract.js test/unit/test_intake.js",
     "test:normalisation": "node test/normalisation_parity.mjs",
     "test:extract-live": "fixtures/.venv/Scripts/python.exe test/live_smoke.py"
   }

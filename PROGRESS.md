@@ -18,7 +18,7 @@ Update this file as you go. It is what you look at when you come back after two 
 | 2 · Data layer | [03](docs/03-stage-2-data-layer.md) | ✅ | 2026-07-30 | 2026-07-30 | ✅ `db/scripts/verify.sh` |
 | 3 · Fixtures | [04](docs/04-stage-3-fixture-generation.md) | ✅ | 2026-07-30 | 2026-07-30 | ✅ `fixtures/verify.py` |
 | 4 · Extraction engine | [05](docs/05-stage-4-extraction-engine.md) | ✅ | 2026-07-30 | 2026-07-30 | ✅ npm run test:extract |
-| 5 · Intake workflow | [06](docs/06-stage-5-intake-workflow.md) | ⬜ | | | ⬜ 12 intake cases |
+| 5 · Intake workflow | [06](docs/06-stage-5-intake-workflow.md) | 🟨 | 2026-07-30 | | ⬜ 12 intake cases |
 | 6 · Watch & chase | [07](docs/07-stage-6-watch-and-chase-workflow.md) | ⬜ | | | ⬜ phone approval sends |
 | 7 · Dashboard | [08](docs/08-stage-7-dashboard.md) | ⬜ | | | ⬜ `make test-forbidden` |
 | 8 · Test harness | [09](docs/09-stage-8-test-harness-and-acceptance.md) | ⬜ | | | ⬜ 20/20 fixtures |
