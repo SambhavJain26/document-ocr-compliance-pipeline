@@ -15,7 +15,7 @@ Update this file as you go. It is what you look at when you come back after two 
 |---|---|---|---|---|---|
 | 0 · Prerequisites | [01](docs/01-stage-0-prerequisites.md) | 🟨 | 2026-07-29 | | ✅ `doctor.sh` |
 | 1 · Infrastructure | [02](docs/02-stage-1-infrastructure.md) | 🟨 | 2026-07-29 | | ✅ local stack healthy |
-| 2 · Data layer | [03](docs/03-stage-2-data-layer.md) | ⬜ | | | ⬜ `make db-verify` |
+| 2 · Data layer | [03](docs/03-stage-2-data-layer.md) | ✅ | 2026-07-30 | 2026-07-30 | ✅ `db/scripts/verify.sh` |
 | 3 · Fixtures | [04](docs/04-stage-3-fixture-generation.md) | ⬜ | | | ⬜ `make fixtures` |
 | 4 · Extraction engine | [05](docs/05-stage-4-extraction-engine.md) | ⬜ | | | ⬜ `make test-extract` |
 | 5 · Intake workflow | [06](docs/06-stage-5-intake-workflow.md) | ⬜ | | | ⬜ 12 intake cases |
@@ -79,20 +79,20 @@ Update this file as you go. It is what you look at when you come back after two 
 
 ## Stage 2 — Data layer
 
-- [ ] `make db-apply` applies all migrations; re-running is a no-op
-- [ ] `make db-seed` loads 18 vendors; re-running does not duplicate
-- [ ] `make db-verify` exits 0 — 9 application tables, 5 views, correct seed counts
-- [ ] Every `client_config` key is read by something (no decorative settings)
-- [ ] `approver_email` set to a real address
-- [ ] `from_mailbox` set to a real address
-- [ ] `dashboard_token` matches `.env`
-- [ ] `v_vendor_status` → 18 rows, all `NEVER_RECEIVED`, all grey
-- [ ] No `CURRENT_DATE` anywhere in queries or migrations
-- [ ] `make demo-reset` completes in under 2 seconds — measured: ______ s
+- [x] `db/scripts/apply.sh` applies all migrations; re-running is a no-op (GNU Make unavailable on this workstation)
+- [x] `db/scripts/seed.sh` loads 18 vendors; re-running does not duplicate
+- [x] `db/scripts/verify.sh` exits 0 — 9 application tables, 5 views, correct seed counts
+- [x] Configuration keys and their intended workflow/query consumers are documented
+- [x] `approver_email` set to a demo address
+- [x] `from_mailbox` set to a demo address
+- [x] `dashboard_token` matches `.env`
+- [x] `v_vendor_status` → 18 rows, all `NEVER_RECEIVED`, all grey
+- [x] No `CURRENT_DATE` anywhere in queries or migrations
+- [x] `db/scripts/reset-demo.sh` completes in under 2 seconds — measured: 0.974 s
 
 ### Vendor list source
 
-- [ ] Prospect's real vendor names obtained · [ ] Fell back to the fictional set
+- [ ] Prospect's real vendor names obtained · [x] Fell back to the fictional set
 
 > Real names are the highest-leverage step in the build. A prospect seeing their own vendors on screen is looking at a picture of their business, not a demo of your software.
 

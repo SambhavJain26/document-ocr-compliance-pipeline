@@ -315,6 +315,7 @@ CREATE TABLE outreach_log (
   escalated_at    TIMESTAMPTZ,
 
   created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+  created_on      DATE NOT NULL DEFAULT ((now() AT TIME ZONE 'America/New_York')::date),
 
   CONSTRAINT ck_outreach_bucket CHECK (bucket IN (
     'NEVER_RECEIVED','EXPIRED','D14','D30','D60','RE_ATTEST'
@@ -331,7 +332,7 @@ CREATE INDEX ix_outreach_awaiting  ON outreach_log (vendor_id, bucket)
 -- One outreach per vendor per bucket per day. Prevents a double-run of the
 -- scheduled workflow producing two chase emails to the same agent.
 CREATE UNIQUE INDEX ux_outreach_daily
-  ON outreach_log (vendor_id, bucket, (created_at::date));
+  ON outreach_log (vendor_id, bucket, created_on);
 
 -- ─── Dead letter ───────────────────────────────────────────────────
 -- Anything that entered the system and could not be processed. The rule is
@@ -780,7 +781,7 @@ WHERE  s.bucket IN ('NEVER_RECEIVED','EXPIRED','D14','D30','D60','RE_ATTEST')
          SELECT 1 FROM outreach_log o
          WHERE  o.vendor_id = s.vendor_id
            AND  o.bucket    = s.bucket
-           AND  o.created_at::date = s.today
+         AND  o.created_on = s.today
        )
   -- not currently waiting on a reply to an earlier request
   AND  NOT EXISTS (
