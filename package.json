@@ -1,0 +1,1 @@
+{"name":"vendor-coi-chasing","private":true,"type":"module","scripts":{"test:extract":"node --test test/unit/test_extract.js"}}

@@ -1,0 +1,1 @@
+export function normaliseName(raw='') { return raw.toLowerCase().replace(/\b(llc|l\.l\.c\.|inc|inc\.|incorporated|corp|corp\.|corporation|co|co\.|company|ltd|ltd\.|limited|lp|llp|pllc|pc|dba)\b/g,'').replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim(); }
