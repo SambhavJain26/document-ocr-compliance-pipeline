@@ -1,0 +1,30 @@
+{
+  "id": "13b4e779-2a6e-4f3e-a4cf-6cdd170e5420",
+  "name": "COI Errors",
+  "nodes": [
+    {
+      "id": "3a06e321-1e88-4556-8ed4-2ad6c8089879",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [0, 0],
+      "parameters": {}
+    },
+    {
+      "id": "093bd878-fc7f-4c08-b479-8cce00bd0fa7",
+      "name": "NoOp Error Captured",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [240, 0],
+      "parameters": {}
+    }
+  ],
+  "connections": {
+    "Error Trigger": { "main": [[{ "node": "NoOp Error Captured", "type": "main", "index": 0 }]] }
+  },
+  "settings": {},
+  "active": false,
+  "versionId": "d4e8a496-89c2-44b8-9e0d-a56b2bf44e2e",
+  "meta": { "templateCredsSetupCompleted": true },
+  "pinData": {}
+}

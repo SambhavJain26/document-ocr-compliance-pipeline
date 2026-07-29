@@ -15,7 +15,7 @@ PSQL    := $(COMPOSE) exec -T postgres psql -U $(POSTGRES_USER) -d $(POSTGRES_DB
         db-apply db-seed db-verify db-reset db-shell \
         fixtures fixtures-clean \
         test test-all test-extract test-fixtures test-forbidden \
-        demo-reset backup
+        demo-reset backup wf-validate wf-import
 
 help:  ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
@@ -71,7 +71,13 @@ test: test-all
 test-all: test-extract test-fixtures test-forbidden  ## Run every automated check
 
 test-extract:  ## Unit-test extraction and validation logic
-	node --test test/unit/test_extract.js
+	node --test test/unit/test_extract.js test/unit/test_intake.js
+
+wf-validate:  ## Validate workflow JSON and safety invariants
+	node n8n/scripts/validate-workflows.mjs
+
+wf-import: wf-validate  ## Import and publish workflow JSON
+	@bash n8n/scripts/import-workflows.sh
 
 test-fixtures:  ## Run all 20 fixtures through the live pipeline
 	python test/run_fixtures.py
