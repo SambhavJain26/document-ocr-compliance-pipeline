@@ -24,8 +24,12 @@ def main():
    draw.text((100,240),"EXPIRATION: "+str(today+timedelta(days=x["exp"])),fill="black",font=font);draw.text((340,1400),s["defaults"]["watermark"],fill="#aa4444",font=font)
    c.drawImage(ImageReader(image),0,0,width=letter[0],height=letter[1]);c.save()
   else:
-   c.setFont("Helvetica-Bold",16);c.drawString(45,750,title);c.setFont("Helvetica",10);c.drawString(45,710,"INSURED: "+x.get("vendor","Synthetic Test Vendor"));c.drawString(45,690,"HOLDER: "+s["defaults"]["holder"])
-   if "exp" in x:c.drawString(45,650,"GENERAL LIABILITY   EXPIRATION: "+str(today+timedelta(days=x["exp"])))
+   c.setFont("Helvetica-Bold",16);c.drawString(45,750,title);c.setFont("Helvetica",10);c.drawString(45,710,"INSURED:");c.drawString(45,690,"HOLDER:")
+   c.acroForm.textfield(name="insured_name",value=x.get("vendor","Synthetic Test Vendor"),x=115,y=700,width=390,height=16,borderWidth=1)
+   c.acroForm.textfield(name="certificate_holder",value=s["defaults"]["holder"],x=115,y=680,width=390,height=16,borderWidth=1)
+   if "exp" in x:
+    c.drawString(45,650,"GENERAL LIABILITY EXPIRATION:")
+    c.acroForm.textfield(name="gl_expiration",value=str(today+timedelta(days=x["exp"])),x=220,y=640,width=160,height=16,borderWidth=1)
    c.setFont("Helvetica-Bold",18);c.setFillColorRGB(.8,.1,.1);c.drawString(120,380,s["defaults"]["watermark"]);c.save()
   if x.get("encrypted"):
    r=PdfReader(str(path));w=PdfWriter();[w.add_page(p) for p in r.pages];w.encrypt("fixture-password");w.write(path.open("wb"))
