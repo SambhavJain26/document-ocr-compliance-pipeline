@@ -8,6 +8,13 @@
 
 # Generated and transient files
 fixtures/out/
+*.pdf
+!docs/**/*.pdf
+data/
+n8n-data/
+postgres-data/
+backups/
+.venv/
 __pycache__/
 *.py[cod]
 node_modules/

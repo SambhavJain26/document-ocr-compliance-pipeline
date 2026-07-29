@@ -13,7 +13,7 @@ Update this file as you go. It is what you look at when you come back after two 
 
 | Stage | Document | Status | Started | Finished | Gate passed |
 |---|---|---|---|---|---|
-| 0 · Prerequisites | [01](docs/01-stage-0-prerequisites.md) | ⬜ | | | ⬜ `make doctor` |
+| 0 · Prerequisites | [01](docs/01-stage-0-prerequisites.md) | 🟨 | 2026-07-29 | | ⬜ `make doctor` |
 | 1 · Infrastructure | [02](docs/02-stage-1-infrastructure.md) | ⬜ | | | ⬜ phone/mobile-data webhook |
 | 2 · Data layer | [03](docs/03-stage-2-data-layer.md) | ⬜ | | | ⬜ `make db-verify` |
 | 3 · Fixtures | [04](docs/04-stage-3-fixture-generation.md) | ⬜ | | | ⬜ `make fixtures` |
@@ -41,7 +41,8 @@ Update this file as you go. It is what you look at when you come back after two 
 - [ ] `ufw` allows only 22 / 80 / 443
 - [ ] DNS A record resolves to the VPS
 - [ ] Telegram bot + chat ID *(optional)*
-- [ ] Repo scaffold, `.gitignore`, `.env` filled
+- [x] Repo scaffold, `.gitignore`, `.env.example`, `Makefile`, and `doctor.sh` created
+- [ ] `.env` filled with deployment and account values
 - [ ] **`N8N_ENCRYPTION_KEY` saved to a password manager** (not regenerable)
 - [ ] `make doctor` exits 0
 

@@ -42,3 +42,9 @@ At the end of every task:
 ## Docker Safety
 
 Inspect local images before starting services, for example with `docker image ls`. If the exact required image and tag already exist, reuse that image and do not pull it again. This repository's Compose project must use its own uniquely named containers, networks, and volumes. Never stop, remove, recreate, rename, or reconfigure containers belonging to another project. A shared image may be reused; another project's container or persistent volume may not.
+
+On Windows, run repository shell scripts with Git Bash when WSL has no Linux distribution. Host `psql`, `jq`, and `dig` may be absent: prefer the project's PostgreSQL container for SQL, Python's `json.tool` for JSON, and Python socket resolution for the Stage 0 DNS check. Do not install duplicate system tools when an existing, scoped equivalent satisfies the task.
+
+Keep Python dependencies isolated in `fixtures/.venv`; `doctor.sh` detects that environment without requiring manual activation. Commit only `fixtures/requirements.txt`, never the virtual environment.
+
+Preserve LF endings for shell scripts and `Makefile` through `.gitattributes`; CRLF can break scripts when they reach the Ubuntu deployment host. All Compose commands must retain the explicit `vendor-coi-chasing` project name so `down` and `restart` cannot target another project's resources.
