@@ -13,6 +13,8 @@ The `Makefile` is introduced during Stage 0; until it exists, these commands des
 - `make doctor`: validate the local toolchain and configuration.
 - `make up`: start local PostgreSQL and n8n with Docker Compose.
 - `make infra-verify`: verify service health, database separation, and network exposure.
+- `make credentials-import`: import the OpenAI and PostgreSQL n8n credentials from `.env`.
+- `make credentials-verify`: confirm those credentials are encrypted, owner-visible, and leave no plaintext container file.
 - `make db-apply && make db-seed && make db-verify`: migrate, seed, and verify the database.
 - `make fixtures`: regenerate all synthetic certificate fixtures.
 - `make test-extract`: run JavaScript validation tests and extraction smoke tests.
@@ -54,4 +56,10 @@ Every Compose command must also pass `--env-file .env`. Because the Compose file
 
 This project uses JavaScript Code nodes only. Set `N8N_PYTHON_ENABLED=false` and do not set the obsolete `N8N_RUNNERS_ENABLED` variable; n8n 2.29 starts its JavaScript runner automatically. The image still performs one Python availability probe and logs one missing-Python warning at startup—accept only that exact warning while the log also confirms `Registered runner "JS Task Runner"`. Apply environment changes with `compose up -d`, which recreates the target service, rather than `restart`, which retains the old environment.
 
+Docker retains a container's earlier restart logs. When validating one expected n8n startup warning, inspect logs only since the current container `StartedAt` timestamp; never count the complete retained log.
+
 The demo defaults to `DEPLOYMENT_MODE=local` at `http://localhost:5678`; Caddy, public DNS, and `ACME_EMAIL` are production-only. Keep `N8N_SECURE_COOKIE=false` confined to local HTTP and restore it to `true` for HTTPS. Current n8n uses its built-in owner account—do not reintroduce the removed `N8N_BASIC_AUTH_*` variables. See Decision D-29.
+
+Credential imports must use `--projectId` for the owner's personal project or n8n will not expose them in the UI. On Git Bash, prefix Docker commands that carry container paths such as `/tmp/...` with `MSYS_NO_PATHCONV=1`; otherwise Windows rewrites the path before n8n sees it. `docker compose cp` creates a root-owned file in the container, so remove it as root in an exit trap. Keep the plaintext JSON only in an OS temp directory, never in the repository.
+
+The managed OpenAI HTTP credential is named `OpenAI — Header Auth (Managed)` to avoid colliding with user-created n8n credentials. Importers must accept a correct partial state and add only the missing managed credential; never overwrite a user credential that merely has a similar name.

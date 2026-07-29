@@ -331,13 +331,13 @@ No trailing slash. Exact scheme and host. Save.
 
 In n8n → **Credentials → Add credential**. Create all four now so no stage stalls on a missing credential.
 
-### 1.7.1 `OpenAI — Header Auth`
+### 1.7.1 `OpenAI — Header Auth (Managed)`
 
 Type: **Header Auth**
 
 | Field | Value |
 |---|---|
-| Name | `OpenAI — Header Auth` |
+| Name | `OpenAI — Header Auth (Managed)` |
 | Header Name | `Authorization` |
 | Header Value | `Bearer sk-proj-...` (your key, with the literal word `Bearer` and a space) |
 

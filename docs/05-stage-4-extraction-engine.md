@@ -399,7 +399,7 @@ return {
 |---|---|
 | Method | `POST` |
 | URL | `={{ $json.config.openai_endpoint }}` |
-| Authentication | Generic Credential Type → Header Auth → `OpenAI — Header Auth` |
+| Authentication | Generic Credential Type → Header Auth → `OpenAI — Header Auth (Managed)` |
 | Send Headers | on · `Content-Type: application/json` |
 | Send Body | on · Body Content Type: `JSON` · Specify Body: `Using JSON` |
 | JSON | `={{ JSON.stringify($json.payload) }}` |

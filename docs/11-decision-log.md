@@ -348,6 +348,8 @@ If they drift, a seeded vendor stops matching the certificate that names them, a
 
 **Gmail cannot be scripted at all.** There is no plaintext token to pre-author, only a live browser consent flow a human must complete. Rather than pretend otherwise, it is called out as **the one manual step** in the provisioning sequence ([§12.11](12-n8n-operations-cookbook.md)) and belongs in bold in the client runbook.
 
+The importer assigns the two generated credentials to the owner's personal project with `--projectId`, so they are visible to workflow authors. The managed HTTP credential is named `OpenAI — Header Auth (Managed)` so it cannot overwrite an existing user-created OpenAI credential with the former display name. On Git Bash, container-path commands opt out of MSYS path conversion; the cleanup trap removes the root-owned copied file as root. `make credentials-verify` checks encrypted storage, owner sharing, and temporary-file removal without reading credential values.
+
 ---
 
 ## D-29 · The demo runs locally before production TLS

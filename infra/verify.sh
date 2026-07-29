@@ -38,7 +38,8 @@ health_response="$(curl --silent --show-error --fail http://localhost:5678/healt
 [ "$health_response" = '{"status":"ok"}' ] || fail "unexpected n8n health response"
 pass "n8n health endpoint returned OK"
 
-logs="$("${COMPOSE[@]}" logs --no-color n8n)"
+n8n_started_at="$(docker inspect --format '{{.State.StartedAt}}' vendor-coi-chasing-n8n-1)"
+logs="$(docker logs --since "$n8n_started_at" vendor-coi-chasing-n8n-1 2>&1)"
 grep -q 'Registered runner "JS Task Runner"' <<<"$logs" \
   || fail "JavaScript task runner did not register"
 pass "JavaScript task runner registered"

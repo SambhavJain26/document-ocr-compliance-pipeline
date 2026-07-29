@@ -11,6 +11,7 @@ PSQL    := $(COMPOSE) exec -T postgres psql -U $(POSTGRES_USER) -d $(POSTGRES_DB
 
 .PHONY: help doctor up down logs restart \
         infra-verify \
+        credentials-import credentials-verify \
         db-apply db-seed db-verify db-reset db-shell \
         fixtures fixtures-clean \
         test test-all test-extract test-fixtures test-forbidden \
@@ -37,6 +38,12 @@ restart:  ## Restart this project's n8n service only
 
 infra-verify:  ## Verify the local Stage 1 infrastructure gate
 	@bash infra/verify.sh
+
+credentials-import:  ## Import the OpenAI and PostgreSQL n8n credentials
+	@bash n8n/scripts/import-credentials.sh
+
+credentials-verify:  ## Verify imported n8n credentials without revealing secrets
+	@bash n8n/scripts/verify-credentials.sh
 
 db-apply:  ## Apply all migrations in order
 	@bash db/scripts/apply.sh

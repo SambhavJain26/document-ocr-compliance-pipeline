@@ -65,8 +65,8 @@ Update this file as you go. It is what you look at when you come back after two 
 - [ ] Valid TLS certificate, no browser warning
 - [ ] Databases `coi` and `n8n` both exist
 - [ ] Postgres has **no** published port
-- [ ] Credentials `OpenAI — Header Auth` + `Postgres — COI` imported via `n8n/scripts/import-credentials.sh`
-- [ ] Plaintext credential file deleted from **both** the temp path and the container
+- [x] Credentials `OpenAI — Header Auth (Managed)` + `Postgres — COI` imported via `n8n/scripts/import-credentials.sh`
+- [x] Plaintext credential file deleted from **both** the temp path and the container
 - [ ] Credential: `Gmail — COI` — **manual OAuth in the UI** (cannot be scripted), then real id captured
 - [ ] Credential: `Telegram — COI` *(optional)*
 - [ ] Gmail credential **verified with an actual API call**

@@ -154,7 +154,7 @@ Affects every multi-line message in this build: the Telegram notifications ([Sta
 ```json
 {
   "id": "c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f",
-  "name": "OpenAI — Header Auth",
+  "name": "OpenAI — Header Auth (Managed)",
   "type": "httpHeaderAuth",
   "data": { "name": "Authorization", "value": "Bearer sk-proj-REPLACED_AT_RUNTIME" }
 }
@@ -164,48 +164,20 @@ Affects every multi-line message in this build: the Telegram notifications ([Sta
 >
 > Plaintext credential JSON goes to a temp path **outside git**, gets copied in, imported, and both copies deleted. There is no `.gitignore` entry that makes an accidentally-committed API key un-leaked.
 
-`n8n/scripts/import-credentials.sh`:
+Use the version-controlled importer; it reads `.env`, writes plaintext JSON only
+to an OS temp directory, imports the two fixed credential IDs into the owner's
+personal project, and removes both temporary copies even when import fails:
 
 ```bash
-#!/usr/bin/env bash
-# Provisions the two scriptable credentials from .env.
-# The plaintext file never touches the repo — it is built in a temp dir,
-# copied into the container, imported, and shredded from both sides.
-set -euo pipefail
-cd "$(dirname "$0")/../.."
-set -a; source .env; set +a
-
-COMPOSE="docker compose -f infra/docker-compose.yml"
-TMP="$(mktemp -d)"
-trap 'rm -rf "$TMP"' EXIT
-
-cat > "$TMP/creds.json" <<JSON
-[
-  {
-    "id": "c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f",
-    "name": "OpenAI — Header Auth",
-    "type": "httpHeaderAuth",
-    "data": { "name": "Authorization", "value": "Bearer ${OPENAI_API_KEY}" }
-  },
-  {
-    "id": "d2e3f4a5-b6c7-4d8e-9f0a-1b2c3d4e5f60",
-    "name": "Postgres — COI",
-    "type": "postgres",
-    "data": {
-      "host": "postgres", "port": 5432, "database": "${POSTGRES_DB}",
-      "user": "${POSTGRES_USER}", "password": "${POSTGRES_PASSWORD}", "ssl": "disable"
-    }
-  }
-]
-JSON
-
-$COMPOSE cp "$TMP/creds.json" n8n:/tmp/creds.json
-$COMPOSE exec -T n8n n8n import:credentials --input=/tmp/creds.json
-$COMPOSE exec -T n8n rm -f /tmp/creds.json     # remove the in-container copy
-rm -f "$TMP/creds.json"                         # trap also handles this
-
-echo "Credentials imported. Restart n8n for them to take effect."
+make credentials-import
+make restart
+make credentials-verify
 ```
+
+The verifier confirms only credential IDs, names, types, encrypted storage, the
+owner-project shares, and removal of the container temp file. It never prints a
+credential value. On Windows Git Bash, the scripts disable MSYS path conversion
+only for commands that carry an in-container `/tmp/...` path.
 
 **Workflow JSON references credentials by name and id, never by value:**
 
@@ -213,7 +185,7 @@ echo "Credentials imported. Restart n8n for them to take effect."
 "credentials": {
   "httpHeaderAuth": {
     "id": "c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f",
-    "name": "OpenAI — Header Auth"
+    "name": "OpenAI — Header Auth (Managed)"
   }
 }
 ```
