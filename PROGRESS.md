@@ -18,7 +18,7 @@ Update this file as you go. It is what you look at when you come back after two 
 | 2 · Data layer | [03](docs/03-stage-2-data-layer.md) | ✅ | 2026-07-30 | 2026-07-30 | ✅ `db/scripts/verify.sh` |
 | 3 · Fixtures | [04](docs/04-stage-3-fixture-generation.md) | ✅ | 2026-07-30 | 2026-07-30 | ✅ `fixtures/verify.py` |
 | 4 · Extraction engine | [05](docs/05-stage-4-extraction-engine.md) | ✅ | 2026-07-30 | 2026-07-30 | ✅ npm run test:extract |
-| 5 · Intake workflow | [06](docs/06-stage-5-intake-workflow.md) | ✅ | 2026-07-30 | 2026-07-30 | ✅ local intake acceptance |
+| 5 · Intake workflow | [06](docs/06-stage-5-intake-workflow.md) | 🟨 | 2026-07-30 | | 🟨 form path verified; live Gmail case remains |
 | 6 · Watch & chase | [07](docs/07-stage-6-watch-and-chase-workflow.md) | ⬜ | | | ⬜ phone approval sends |
 | 7 · Dashboard | [08](docs/08-stage-7-dashboard.md) | ⬜ | | | ⬜ `make test-forbidden` |
 | 8 · Test harness | [09](docs/09-stage-8-test-harness-and-acceptance.md) | ⬜ | | | ⬜ 20/20 fixtures |
@@ -130,7 +130,7 @@ Update this file as you go. It is what you look at when you come back after two 
 ## Stage 5 — Intake workflow
 
 - [x] Form Trigger public, accepts multiple PDFs
-- [x] Gmail Trigger configured for `COI-INTAKE`, downloads attachments
+- [ ] Gmail Trigger polls `COI-INTAKE`, downloads attachments — **remaining:** send a synthetic labeled email and verify the execution, source metadata, and attachment fan-out.
 - [x] Error Trigger workflow wired, reading **both** payload shapes (`execution.*` and `trigger.*`)
 
 ### JSON-authoring gates (docs/12)
@@ -158,6 +158,12 @@ Update this file as you go. It is what you look at when you come back after two 
 | 12 | `f17` → POSSIBLE_DUPLICATE, `vendor_id` NULL | ⬜ | |
 
 - [x] Workflow exported; secret scan clean
+
+### Remaining before Stage 5 completion
+
+- Send a synthetic email to `COI-INTAKE` with `f02` and verify `source = email` plus the Gmail message ID.
+- Send one synthetic email with `f10a` and `f10b` and verify two independent certificate rows.
+- Send the attachment-free `f19` portal-link body and verify `NO_ATTACHMENT_PORTAL_LINK` with no outbound fetch.
 
 ## Stage 6 — Watch & chase
 

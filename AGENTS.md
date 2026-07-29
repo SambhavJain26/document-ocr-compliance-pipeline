@@ -81,3 +81,5 @@ n8n's isolated JavaScript runner blocks Node built-ins unless explicitly allowed
 With `N8N_DEFAULT_BINARY_DATA_MODE=filesystem`, a Code node's `binary.data.data` is a storage reference, not Base64. Read the real PDF with `await this.helpers.getBinaryDataBuffer(0, 'data')` before checking magic bytes or calculating a hash; treating the reference as data misclassifies every upload.
 
 The text/vision branch threshold is 120 extracted characters for the synthetic fixture layout. Keep image-only PDFs on vision, but do not send short, legible text PDFs to vision merely because their intentionally compact fixture text falls below a generic 200-character heuristic.
+
+Do not mark a trigger integration complete merely because its workflow JSON imports and unit tests pass. A Gmail intake gate requires a real labeled message, a completed polling execution, and database verification of source metadata and multi-attachment fan-out.
