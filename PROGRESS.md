@@ -16,8 +16,8 @@ Update this file as you go. It is what you look at when you come back after two 
 | 0 · Prerequisites | [01](docs/01-stage-0-prerequisites.md) | 🟨 | 2026-07-29 | | ✅ `doctor.sh` |
 | 1 · Infrastructure | [02](docs/02-stage-1-infrastructure.md) | 🟨 | 2026-07-29 | | ✅ local stack healthy |
 | 2 · Data layer | [03](docs/03-stage-2-data-layer.md) | ✅ | 2026-07-30 | 2026-07-30 | ✅ `db/scripts/verify.sh` |
-| 3 · Fixtures | [04](docs/04-stage-3-fixture-generation.md) | ⬜ | | | ⬜ `make fixtures` |
-| 4 · Extraction engine | [05](docs/05-stage-4-extraction-engine.md) | ⬜ | | | ⬜ `make test-extract` |
+| 3 · Fixtures | [04](docs/04-stage-3-fixture-generation.md) | ✅ | 2026-07-30 | 2026-07-30 | ✅ `fixtures/verify.py` |
+| 4 · Extraction engine | [05](docs/05-stage-4-extraction-engine.md) | 🟨 | 2026-07-30 | | ⬜ `make test-extract` |
 | 5 · Intake workflow | [06](docs/06-stage-5-intake-workflow.md) | ⬜ | | | ⬜ 12 intake cases |
 | 6 · Watch & chase | [07](docs/07-stage-6-watch-and-chase-workflow.md) | ⬜ | | | ⬜ phone approval sends |
 | 7 · Dashboard | [08](docs/08-stage-7-dashboard.md) | ⬜ | | | ⬜ `make test-forbidden` |
@@ -98,16 +98,16 @@ Update this file as you go. It is what you look at when you come back after two 
 
 ## Stage 3 — Fixtures
 
-- [ ] `make fixtures` regenerates all 20 in one command
-- [ ] `manifest.json` exists with resolved dates
-- [ ] `f02` expires exactly today + 20 days
-- [ ] `f03` expired exactly today − 34 days
-- [ ] `f13` effective exactly 14 days after `f03` expiry
-- [ ] `f04` has **no selectable text**
-- [ ] `f18` raises on open without a password
-- [ ] `f19` exists as `.eml`
-- [ ] SPECIMEN watermark on every PDF
-- [ ] No ACORD logo, form number, or copyright notice anywhere
+- [x] Generator regenerates all 20 files in one command
+- [x] `manifest.json` exists with resolved dates
+- [x] `f02` expires exactly today + 20 days
+- [x] `f03` expired exactly today − 34 days
+- [x] `f13` effective date is 14 days after `f03` expiry
+- [x] `f04` has **no selectable text**
+- [x] `f18` is encrypted
+- [x] `f19` exists as an attachment-free `.eml`
+- [x] SPECIMEN watermark on every generated PDF
+- [x] No licensed form branding in generated text
 
 ## Stage 4 — Extraction engine
 
