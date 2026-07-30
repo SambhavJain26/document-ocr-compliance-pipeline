@@ -39,7 +39,15 @@ There is no runnable app yet. Until scripts exist, use:
 - `docker compose logs n8n`: inspect n8n startup/import/runtime failures once services exist.
 - `n8n export:workflow --all --output=n8n-workflows/`: export workflows from a running n8n instance.
 
-When Stage 1 creates the local environment, document exact commands here. Expected commands should cover environment generation, Docker startup, database initialization, workflow import, workflow export, demo reset, and validation. Expected services are local n8n, Postgres, and Gmail/OpenAI credentials. Do not assume Docker images, accounts, OAuth apps, API keys, or n8n credentials already exist.
+Stage 1 local environment commands:
+
+- `.\scripts\init-env.ps1`: generate local `.env` from `.env.example`.
+- `docker compose config`: validate Docker Compose configuration.
+- `.\scripts\start-local.ps1`: start local n8n and Postgres.
+- `.\scripts\verify-local.ps1`: verify Compose config, Postgres readiness/query, and n8n HTTP availability.
+- `.\scripts\stop-local.ps1`: stop the local stack without removing volumes.
+
+Expected local services are n8n at `http://localhost:5678` and Postgres on `127.0.0.1:5432`. Gmail/OpenAI credentials are created manually inside n8n and must not be stored in repo files. Do not assume Docker images, accounts, OAuth apps, API keys, or n8n credentials already exist. On first n8n 2.x startup, internal migrations can take long enough for early HTTP probes to fail; rerun `.\scripts\verify-local.ps1` or rely on its retry loop. The `n8nio/n8n:latest` image may log a Python task-runner warning because Python is absent; this is not a Stage 1 blocker when JS workflows and service health pass.
 
 ## Architecture Rules
 

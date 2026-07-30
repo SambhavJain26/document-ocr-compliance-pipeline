@@ -4,7 +4,7 @@ Created: 2026-07-30
 
 ## Current Status
 
-Planning phase complete. No implementation code has been written. Rechecked `coi-demo-build-plan.md` once after the initial plan and made small planning corrections. Rechecked current n8n/OpenAI documentation on 2026-07-30 and changed the recommended model-call implementation from HTTP Request-first to built-in OpenAI node V2-first.
+Stage 1 local environment scaffolding has been implemented and verified on this machine. Rechecked `coi-demo-build-plan.md` once after the initial plan and made small planning corrections. Rechecked current n8n/OpenAI documentation on 2026-07-30 and changed the recommended model-call implementation from HTTP Request-first to built-in OpenAI node V2-first.
 
 ## Source Documents Reviewed
 
@@ -31,7 +31,7 @@ The staged plan in `build-plan.md` follows the later `coi-demo-build-plan.md` wh
 
 | Stage | Name | Status | Notes |
 |---|---|---|---|
-| 1 | Environment, Accounts, and Public n8n | Not started | Requires public HTTPS method decision and live model ID verification. |
+| 1 | Environment, Accounts, and Local n8n | In progress | Local Docker Compose environment verified. Public HTTPS intentionally deferred because all Stage 1 testing is same-machine only. Manual OpenAI and Gmail credential smoke tests remain. |
 | 2 | Database Schema, Client Config, and Seed Vendors | Not started | Depends on Stage 1 Postgres access. |
 | 3 | Synthetic Test Fixtures | Not started | Must avoid ACORD form/logo/copyright reproduction. |
 | 4 | Extraction and Validation Core | Not started | Depends on fixture set and OpenAI node V2 availability. |
@@ -50,8 +50,9 @@ The staged plan in `build-plan.md` follows the later `coi-demo-build-plan.md` wh
    - Alternative only if OpenAI is unavailable: Anthropic via HTTP Request with prompt-only JSON and defensive parsing.
 
 2. Public HTTPS method for n8n:
-   - Options: Cloudflare Tunnel, Caddy on VPS, or another public reverse proxy.
-   - Must produce a webhook URL reachable from mobile data.
+   - Deferred for Stage 1 because the demo build is being built and tested locally on this machine only.
+   - Current local default: `WEBHOOK_URL=http://localhost:5678`.
+   - Revisit Cloudflare Tunnel, Caddy on VPS, or another public reverse proxy before testing approval links from a phone or running a live prospect demo.
 
 3. Approval channel:
    - Recommended default: Gmail `Send and Wait for Response`.
@@ -86,6 +87,11 @@ The staged plan in `build-plan.md` follows the later `coi-demo-build-plan.md` wh
 
 2026-07-30:
 
+- Added Stage 1 local-only Docker Compose scaffolding for n8n and Postgres.
+- Added local environment scripts for `.env` generation, startup, verification, and shutdown.
+- Added `docs/stage-1-local-runbook.md` with exact same-machine setup and credential smoke-test instructions.
+- Verified `docker compose config`, local Postgres readiness/query, and n8n HTTP `200` at `http://localhost:5678`.
+- Noted n8n 2.29 first-start migrations and non-blocking Python task-runner warning in `AGENTS.md`.
 - Updated `coi-demo-build-plan.md` to make OpenAI node V2 the default model-call path.
 - Updated `coi-demo-build-plan.md` to make HTTP Request a fallback only.
 - Updated `coi-demo-build-plan.md` to make Gmail approval the default and Telegram optional.
@@ -103,4 +109,4 @@ The staged plan in `build-plan.md` follows the later `coi-demo-build-plan.md` wh
 
 ## Next Action
 
-Wait for user approval or requested adjustments to `build-plan.md`. After approval, start Stage 1 only.
+Complete the remaining Stage 1 manual checks in n8n: create the local owner account, add/test the Postgres credential, add/test the OpenAI credential with a `$10` spend limit, and add/test the Gmail OAuth credential from this machine. Do not begin Stage 2 schema work until those checks are recorded.

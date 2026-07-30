@@ -1,0 +1,22 @@
+.env
+.env.*
+!.env.example
+
+# Local runtime data and generated artifacts
+data/
+logs/
+tmp/
+*.log
+
+# Credentials and real documents
+credentials/
+secrets/
+fixtures/real/
+data/**/*.pdf
+tmp/**/*.pdf
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
