@@ -62,7 +62,7 @@ Expected local services are n8n at `http://localhost:5678` and Postgres on `127.
 
 For n8n 2.29 CLI smoke tests, `n8n execute --file` is deprecated and may still require `--id`; import temporary smoke workflows into the local project, execute them by ID, then delete the temporary workflows from n8n. Running `n8n execute` inside the active n8n service container can collide with the task broker port; prefer `docker compose run --rm --no-deps n8n execute --id <workflow-id> --rawOutput` for repeatable smoke scripts. n8n 2.29 does not expose `delete:workflow`; temporary workflow cleanup can delete the known smoke workflow ID from Postgres.
 
-Main stage workflows are not temporary artifacts. Keep each main workflow export imported into n8n and publish it after implementation so it is visible in the UI with its execution history. Cleanup scripts may remove throwaway smoke workflows only; they must not delete main workflow IDs such as Stage 4 extraction, Stage 5 intake, or source-document routes.
+Demo-deliverable top-level workflows are not temporary artifacts. Keep each demo-facing workflow export imported into n8n and published after implementation so it is visible in the UI with its execution history. Do not keep extra proof harnesses, experiments, or throwaway smoke workflows in n8n after verification; keep those as repo exports/scripts only. Cleanup scripts may remove throwaway smoke workflows, but must not delete demo-facing workflow IDs such as Stage 5 intake or source-document routes.
 
 Stage 2 SQL scripts are applied by piping them into the running Postgres service with `psql -v ON_ERROR_STOP=1 -f -`. Keep Stage 2 seed SQL idempotent; rerunning it must not duplicate vendors, holder entities, trade requirements, or config rows.
 
