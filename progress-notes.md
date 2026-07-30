@@ -166,6 +166,10 @@ The staged plan in `build-plan.md` follows the later `coi-demo-build-plan.md` wh
 - Verified Stage 4 validator tests after the cleanup, including the new cancellation-label assertion.
 - Verified `.\scripts\reset-demo.ps1`: 18 vendors, zero certificate/coverage/notice/outreach rows, 18 dashboard rows, and 18 no-certificate dashboard rows.
 - Verified `.\scripts\verify-stage-8-fixtures.ps1` live locally: all Stage 8 fixture scenarios passed, workflows imported/published, dashboard source PDF links returned PDF bytes, dashboard forbidden-word scan passed, Stage 6 no-file watch behavior passed, and final demo state was reset.
+- Added opt-in Stage 8 live Gmail rehearsal switches: `.\scripts\verify-stage-8-fixtures.ps1 -IncludeLiveEmail` runs the approval/send rehearsal after the full fixture suite, and `.\scripts\verify-stage-8-fixtures.ps1 -OnlyLiveEmail` runs only the Stage 6 approval/send path.
+- Investigated a missing-email report on 2026-07-31: `stage-6-daily-watch-chase` was marked inactive in `workflow_entity`, so it was republished with `docker compose run --rm --no-deps n8n update:workflow --id=stage-6-daily-watch-chase --active=true` and n8n was restarted; all five demo-facing workflows then reported active.
+- Confirmed the approved Stage 6 run did complete: `outreach_log` recorded `approved = true`, `sent_at = 2026-07-30 18:26:38.925994+00`, `actual_recipient = worksambhav26@gmail.com`, and Gmail send response ID `19fb44746f7bb40e`.
+- Confirmed Gmail could read final message `19fb44746f7bb40e` by ID with subject `Certificate request for Vista Glass and Door LLC`, labels `UNREAD`, `SENT`, and `INBOX`, and both sender/recipient as `worksambhav26@gmail.com`; added verifier readback so future live-email rehearsals record the final Gmail message labels.
 
 ## Outstanding Risks To Track
 

@@ -22,13 +22,28 @@ Stage 8 is a local demo-readiness pass. It does not add public HTTPS, mobile-dat
    .\scripts\verify-stage-8-fixtures.ps1
    ```
 
-4. Reset the demo immediately before rehearsing or presenting:
+4. For a rehearsal that sends a real approval email, run the opt-in live email path and approve the message when it arrives:
+
+   ```powershell
+   .\scripts\verify-stage-8-fixtures.ps1 -IncludeLiveEmail
+   ```
+
+   Without `-IncludeLiveEmail`, Stage 8 uses deterministic manual-trigger fixture runs and does not send Gmail messages.
+   To send only the Stage 6 approval email rehearsal without rerunning all fixture scenarios first, use:
+
+   ```powershell
+   .\scripts\verify-stage-8-fixtures.ps1 -OnlyLiveEmail
+   ```
+
+   The live-email verifier reads the final Gmail message back by ID and records the Gmail labels in `docs/stage-8-fixture-results.md`. When `stage_6_approver_email` and `stage_6_test_recipient_email` are the same Gmail account, search Gmail All Mail for `subject:"Certificate request for Vista Glass and Door LLC"` if the message is not obvious in the primary Inbox.
+
+5. Reset the demo immediately before rehearsing or presenting:
 
    ```powershell
    .\scripts\reset-demo.ps1
    ```
 
-5. Confirm the opening dashboard shows 18 vendors and no certificate rows.
+6. Confirm the opening dashboard shows 18 vendors and no certificate rows.
 
 ## Local URLs
 
@@ -51,7 +66,9 @@ Stage 8 is a local demo-readiness pass. It does not add public HTTPS, mobile-dat
 4. Open the Stage 6 daily watch workflow.
    Show that the watch list comes from Postgres state and is ready for approval-based chasing once local Gmail credentials are configured.
 
-5. End by resetting again:
+5. For a real email rehearsal, run `.\scripts\verify-stage-8-fixtures.ps1 -OnlyLiveEmail`, open the approval email, click Approve, and confirm the final sent row and Gmail message ID are logged.
+
+6. End by resetting again:
 
    ```powershell
    .\scripts\reset-demo.ps1

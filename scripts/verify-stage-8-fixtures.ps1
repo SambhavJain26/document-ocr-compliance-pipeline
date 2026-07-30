@@ -1,3 +1,8 @@
+param(
+  [switch]$IncludeLiveEmail,
+  [switch]$OnlyLiveEmail
+)
+
 $ErrorActionPreference = "Stop"
 $PSNativeCommandUseErrorActionPreference = $false
 
@@ -142,10 +147,12 @@ function Set-Stage8SmokeFixtures {
 }
 
 function Invoke-Stage8N8nExecute {
+  param([string]$WorkflowId)
+
   $previousErrorAction = $ErrorActionPreference
   $ErrorActionPreference = "Continue"
   try {
-    $output = docker compose run --rm --no-deps n8n execute --id stage-5-intake-workflow --rawOutput 2>&1
+    $output = docker compose run --rm --no-deps n8n execute --id $WorkflowId --rawOutput 2>&1
     $exitCode = $LASTEXITCODE
   }
   finally {
@@ -155,6 +162,92 @@ function Invoke-Stage8N8nExecute {
   return [pscustomobject]@{
     Output = $output
     ExitCode = $exitCode
+  }
+}
+
+function Get-Stage8GmailMessageById {
+  param([string]$MessageId)
+
+  $workflowId = "tmp-stage8-gmail-final-message-check"
+  $workflowName = "TMP Stage 8 Gmail Final Message Check"
+  $outputPath = Join-Path $tmpRoot "stage8-gmail-final-message-check-output.txt"
+  $workflowPath = Join-Path $tmpRoot "$workflowId.json"
+
+  $workflow = [ordered]@{
+    id = $workflowId
+    name = $workflowName
+    nodes = @(
+      [ordered]@{
+        parameters = [ordered]@{}
+        id = "tmp-stage8-gmail-final-manual"
+        name = "Manual Trigger"
+        type = "n8n-nodes-base.manualTrigger"
+        typeVersion = 1
+        position = @(0, 0)
+      },
+      [ordered]@{
+        parameters = [ordered]@{
+          resource = "message"
+          operation = "get"
+          messageId = $MessageId
+          simple = $false
+        }
+        id = "tmp-stage8-gmail-final-get"
+        name = "Get Gmail Final Chase Message"
+        type = "n8n-nodes-base.gmail"
+        typeVersion = 2.1
+        position = @(280, 0)
+        credentials = [ordered]@{
+          gmailOAuth2 = [ordered]@{
+            id = "Gmail account"
+            name = "Gmail account"
+          }
+        }
+      }
+    )
+    connections = [ordered]@{
+      "Manual Trigger" = [ordered]@{
+        main = @(
+          @(
+            [ordered]@{
+              node = "Get Gmail Final Chase Message"
+              type = "main"
+              index = 0
+            }
+          )
+        )
+      }
+    }
+    settings = [ordered]@{
+      executionOrder = "v1"
+    }
+  }
+
+  New-Item -ItemType Directory -Force $tmpRoot | Out-Null
+  $workflow | ConvertTo-Json -Depth 30 | Set-Content -Path $workflowPath -Encoding UTF8
+
+  try {
+    Import-Stage8Workflow -Path $workflowPath -WorkflowId $workflowId -WorkflowName $workflowName
+    $executionResult = Invoke-Stage8N8nExecute -WorkflowId $workflowId
+    $executeText = $executionResult.Output -join "`n"
+    Set-Content -Path $outputPath -Value $executeText -Encoding UTF8
+
+    if ($executionResult.ExitCode -ne 0) {
+      throw "Stage 8 Gmail final message check failed. Raw output saved at $outputPath."
+    }
+
+    $execution = ConvertFrom-N8nRawOutput -Text $executeText
+    Assert-Stage8Condition ($execution.finished -eq $true) "Stage 8 Gmail final message check did not finish. Raw output saved at $outputPath."
+
+    $run = $execution.data.resultData.runData.'Get Gmail Final Chase Message'[0]
+    $message = $run.data.main[0][0].json
+    Assert-Stage8Condition ($message.id -eq $MessageId) "Stage 8 Gmail final message check returned the wrong message ID."
+    return $message
+  }
+  finally {
+    $safeWorkflowId = $workflowId.Replace("'", "''")
+    Invoke-Stage8Sql "DELETE FROM workflow_entity WHERE id = '$safeWorkflowId';" | Out-Null
+    Remove-Item -LiteralPath $workflowPath -ErrorAction SilentlyContinue
   }
 }
 
@@ -169,7 +262,7 @@ function Invoke-Stage8IntakeFixtureSet {
   $outputPath = Join-Path $tmpRoot "stage8-intake-$safeFixtureName-output.txt"
   New-Item -ItemType Directory -Force (Split-Path -Parent $outputPath) | Out-Null
 
-  $executionResult = Invoke-Stage8N8nExecute
+  $executionResult = Invoke-Stage8N8nExecute -WorkflowId "stage-5-intake-workflow"
   $executeText = $executionResult.Output -join "`n"
   Set-Content -Path $outputPath -Value $executeText -Encoding UTF8
 
@@ -189,7 +282,7 @@ function Invoke-Stage8IntakeWithoutReset {
   $outputPath = Join-Path $tmpRoot "stage8-intake-$safeFixtureName-output.txt"
   New-Item -ItemType Directory -Force (Split-Path -Parent $outputPath) | Out-Null
 
-  $executionResult = Invoke-Stage8N8nExecute
+  $executionResult = Invoke-Stage8N8nExecute -WorkflowId "stage-5-intake-workflow"
   $executeText = $executionResult.Output -join "`n"
   Set-Content -Path $outputPath -Value $executeText -Encoding UTF8
 
@@ -339,6 +432,80 @@ function Assert-SourcePdfLinks {
   }
 }
 
+function Invoke-Stage8LiveEmailRehearsal {
+  param(
+    [bool]$HasOpenAi,
+    [bool]$HasGmail
+  )
+
+  if (-not ($IncludeLiveEmail -or $OnlyLiveEmail)) {
+    Add-Stage8Result "stage-8-live-email-rehearsal" "Optional approval email and final send" "Skipped" "SKIPPED" "Run with -IncludeLiveEmail to send a real Stage 6 approval email."
+    return
+  }
+
+  Assert-Stage8Condition $HasOpenAi "Live email rehearsal requires local n8n credential 'OpenAI account'."
+  Assert-Stage8Condition $HasGmail "Live email rehearsal requires local n8n credential 'Gmail account'."
+
+  $configuredForApproval = Invoke-Stage8Scalar "SELECT stage_6_config_value('stage_6_approver_email', '') <> '' AND stage_6_config_value('stage_6_test_recipient_email', '') <> '';"
+  Assert-Stage8Condition ($configuredForApproval -eq "t") "Live email rehearsal requires non-empty stage_6_approver_email and stage_6_test_recipient_email."
+
+  $approverEmail = Invoke-Stage8Scalar "SELECT stage_6_config_value('stage_6_approver_email', '');"
+  $testRecipientEmail = Invoke-Stage8Scalar "SELECT stage_6_config_value('stage_6_test_recipient_email', '');"
+
+  Invoke-Stage8Sql @'
+TRUNCATE TABLE outreach_log, coverages, certificates, intake_notices RESTART IDENTITY;
+UPDATE vendors
+SET chase_paused = true,
+    last_attested_at = NULL;
+UPDATE vendors
+SET chase_paused = false
+WHERE normalised_name = normalize_vendor_name('Vista Glass and Door LLC');
+UPDATE client_config
+SET value = CURRENT_DATE::TEXT
+WHERE key = 'stage_6_watch_as_of_date';
+'@ | Out-Null
+
+  Write-Host "Stage 8 live email rehearsal: approval email should arrive at $approverEmail. Click Approve to complete the send to $testRecipientEmail."
+
+  $outputPath = Join-Path $tmpRoot "stage8-live-email-daily-watch-output.txt"
+  New-Item -ItemType Directory -Force (Split-Path -Parent $outputPath) | Out-Null
+  $executionResult = Invoke-Stage8N8nExecute -WorkflowId "stage-6-daily-watch-chase"
+  $executeText = $executionResult.Output -join "`n"
+  Set-Content -Path $outputPath -Value $executeText -Encoding UTF8
+
+  if ($executionResult.ExitCode -ne 0) {
+    throw "Stage 8 live email rehearsal execution failed. Raw output saved at $outputPath."
+  }
+
+  $execution = ConvertFrom-N8nRawOutput -Text $executeText
+  Assert-Stage8Condition ((Invoke-Stage8Scalar "SELECT count(*) = 1 FROM outreach_log WHERE bucket = 'NEVER_RECEIVED' AND drafted_body IS NOT NULL AND drafted_body !~* '\m(compliant|verified|covered|approved)\M';") -eq "t") "Stage 8 live email rehearsal did not create one safe pending outreach row."
+
+  if ($execution.status -eq "waiting") {
+    for ($attempt = 1; $attempt -le 36; $attempt++) {
+      $sent = Invoke-Stage8Scalar "SELECT count(*) = 1 FROM outreach_log WHERE bucket = 'NEVER_RECEIVED' AND approved = true AND sent_at IS NOT NULL AND actual_recipient = stage_6_config_value('stage_6_test_recipient_email', '');"
+      if ($sent -eq "t") {
+        break
+      }
+      Start-Sleep -Seconds 10
+    }
+  }
+  else {
+    Assert-Stage8Condition ($execution.finished -eq $true) "Stage 8 live email rehearsal did not finish or enter approval wait. Raw output saved at $outputPath."
+  }
+
+  Assert-Stage8Condition ((Invoke-Stage8Scalar "SELECT count(*) = 1 FROM outreach_log WHERE bucket = 'NEVER_RECEIVED' AND approved = true AND sent_at IS NOT NULL AND follow_up_due IS NOT NULL AND actual_recipient = stage_6_config_value('stage_6_test_recipient_email', '');") -eq "t") "Stage 8 live email rehearsal did not produce an approved sent outreach row. Approve the email sent to $approverEmail, then rerun with -IncludeLiveEmail."
+  Assert-Stage8Condition ((Invoke-Stage8Scalar "SELECT count(*) = 0 FROM intake_notices WHERE notice_code = 'STAGE_6_CONFIG_NOTICE';") -eq "t") "Stage 8 live email rehearsal stored a config notice even though approval/send addresses were configured."
+
+  $gmailMessageId = Invoke-Stage8Scalar "SELECT send_response->>'id' FROM outreach_log WHERE bucket = 'NEVER_RECEIVED' AND approved = true AND sent_at IS NOT NULL ORDER BY id DESC LIMIT 1;"
+  Assert-Stage8Condition ($gmailMessageId -ne "") "Stage 8 live email rehearsal did not store a Gmail final message ID."
+  $gmailMessage = Get-Stage8GmailMessageById -MessageId $gmailMessageId
+  $labelIds = @($gmailMessage.labelIds)
+  Assert-Stage8Condition ($labelIds -contains "SENT") "Final Gmail message $gmailMessageId was not found with SENT label."
+  Assert-Stage8Condition ($labelIds -contains "INBOX") "Final Gmail message $gmailMessageId was not found with INBOX label."
+
+  Add-Stage8Result "stage-8-live-email-rehearsal" "Approval email sent, approved, final Gmail send logged, and final message readable by Gmail ID" "Approval email to $approverEmail; final send to $testRecipientEmail; Gmail message $gmailMessageId labels $($labelIds -join ',')" "PASS" "When approver and test recipient are the same Gmail account, the message may appear in Sent, Inbox, or All Mail views depending on Gmail threading."
+}
+
 Push-Location $repoRoot
 try {
   & .\scripts\generate-stage-5-workflows.ps1 | Out-Host
@@ -402,6 +569,14 @@ try {
   if (-not $hasOpenAi) {
     Write-Warning "OpenAI credential is not present; live fixture ingestion skipped after import/publish checks."
     Write-Stage8ResultsDoc "SKIPPED - OpenAI credential unavailable after import/publish"
+    return
+  }
+
+  if ($OnlyLiveEmail) {
+    Invoke-Stage8LiveEmailRehearsal -HasOpenAi $hasOpenAi -HasGmail $hasGmail
+    & .\scripts\reset-demo.ps1 | Out-Host
+    Write-Stage8ResultsDoc "PASS"
+    Write-Host "Stage 8 opt-in live email rehearsal complete."
     return
   }
 
@@ -493,6 +668,8 @@ WHERE bucket = 'NEVER_RECEIVED'
   }
   Assert-SourcePdfLinks
   Add-Stage8Result "dashboard-full-fixture-view" "18 vendors, source links, gap count, neutral cancellation wording, forbidden words absent" "Dashboard checks passed" "PASS" "Representative fixture ingestion state verified through live webhook."
+
+  Invoke-Stage8LiveEmailRehearsal -HasOpenAi $hasOpenAi -HasGmail $hasGmail
 
   & .\scripts\reset-demo.ps1 | Out-Host
   $finalRunStatus = if ($deviations.Count -gt 0) { "PASS WITH ACCEPTED DEVIATIONS" } else { "PASS" }
