@@ -4,7 +4,7 @@ Created: 2026-07-30
 
 ## Current Status
 
-Stage 1 local environment scaffolding and credential smoke verification are complete on this machine. Stage 2 database schema and synthetic seed register are complete and verified. Stage 3 synthetic fixtures are generated and verified. Stage 4 extraction and validation core is complete with offline validator tests and live n8n/OpenAI fixture smoke passing locally. Stage 5 intake workflow and persistent storage are complete with deterministic SQL checks and live n8n/OpenAI fixture smoke passing locally. Stage 6 daily watch, drafting, approval-gate workflow, non-PDF reply notices, manual overrides, and escalation are implemented with deterministic SQL checks plus live same-email Gmail approval/send smoke passing locally. Rechecked `coi-demo-build-plan.md` once after the initial plan and made small planning corrections. Rechecked current n8n/OpenAI documentation on 2026-07-30 and changed the recommended model-call implementation from HTTP Request-first to built-in OpenAI node V2-first.
+Stage 1 local environment scaffolding and credential smoke verification are complete on this machine. Stage 2 database schema and synthetic seed register are complete and verified. Stage 3 synthetic fixtures are generated and verified. Stage 4 extraction and validation core is complete with offline validator tests and live n8n/OpenAI fixture smoke passing locally. Stage 5 intake workflow and persistent storage are complete with deterministic SQL checks and live n8n/OpenAI fixture smoke passing locally. Stage 6 daily watch, drafting, approval-gate workflow, non-PDF reply notices, manual overrides, and escalation are implemented with deterministic SQL checks plus live same-email Gmail approval/send smoke passing locally. Stage 7 dashboard and demo view are implemented with the Postgres read model, generated n8n dashboard webhook, rendered HTML checks, and source-PDF link verification passing locally. Rechecked `coi-demo-build-plan.md` once after the initial plan and made small planning corrections. Rechecked current n8n/OpenAI documentation on 2026-07-30 and changed the recommended model-call implementation from HTTP Request-first to built-in OpenAI node V2-first.
 
 ## Source Documents Reviewed
 
@@ -37,7 +37,7 @@ The staged plan in `build-plan.md` follows the later `coi-demo-build-plan.md` wh
 | 4 | Extraction and Validation Core | Complete | Added schema, shared validator, generated n8n workflow export, fixture mount, runbook, and verification scripts. Offline validator tests pass. Live n8n/OpenAI extraction smoke passes for fixed fixtures `f01`, `f04`, `f11`, and `f18`. |
 | 5 | Intake Workflow End to End | Complete | Added Stage 5 SQL storage function, intake notices, generated intake/source workflows, local PDF storage mount, form/Gmail/manual intake normalization, source-PDF route, and storage/intake verification scripts. Live fixture smoke passed locally. |
 | 6 | Daily Watch, Drafting, Approval, and Escalation | Complete | SQL bucket/suppression/escalation/manual override logic verified. Stage 6 workflows import and publish in n8n. OpenAI draft, Gmail Send-and-Wait approval, and approved Gmail send passed locally using `worksambhav26@gmail.com` as both approver and test recipient. |
-| 7 | Dashboard and Demo View | Not started | Depends on populated database and status logic. |
+| 7 | Dashboard and Demo View | Complete | Dashboard read model, generated n8n webhook, responsive HTML register, dynamic counts, source PDF links, and forbidden-language guard verified locally. |
 | 8 | Full Fixture Run, Demo Reset, and Rehearsal | Not started | Depends on full demo workflow. |
 | 9 | Production Readiness Plan | Not started | Should not begin until demo-depth build is proven. |
 
@@ -151,6 +151,12 @@ The staged plan in `build-plan.md` follows the later `coi-demo-build-plan.md` wh
 - Fixed Stage 6 config defaults so reapplying `.\scripts\apply-stage-6.ps1` preserves existing local approval/test email settings instead of blanking them.
 - Updated `.\scripts\verify-stage-6-workflows.ps1` so configured approval/test emails trigger a live Gmail approval/send smoke; blank emails still exercise the safe config-notice path.
 - Verified `.\scripts\verify-stage-6-workflows.ps1` live same-email path after the fix.
+- Added Stage 7 dashboard SQL read model with one row per seeded vendor, latest manual/review/current certificate selection, earliest-expiry display facts, GL limit, source-PDF path, flag codes, coverage-gap marker, and manual status note fields.
+- Added generated Stage 7 dashboard workflow export served through `/webhook/coi` and `/webhook/stage-7-dashboard-webhook/coi`.
+- Added `scripts/generate-stage-7-dashboard-workflow.ps1`, `scripts/apply-stage-7.ps1`, and `scripts/verify-stage-7-dashboard.ps1`.
+- Added `docs/stage-7-dashboard-runbook.md`.
+- Verified Stage 7 locally: workflow JSON and Docker Compose parse, SQL applies, dashboard workflow imports and publishes, all 18 vendors render, current/expiring/expired/review/coverage-gap/manual-status/no-certificate states display correctly, rendered HTML contains none of the forbidden terms, and a dashboard source link returns PDF bytes through the Stage 5 source-document route.
+- Recorded the Stage 7 n8n webhook timing gotcha in `AGENTS.md`: wait for active workflow registration after restart before probing the dashboard route.
 
 ## Outstanding Risks To Track
 
@@ -162,4 +168,4 @@ The staged plan in `build-plan.md` follows the later `coi-demo-build-plan.md` wh
 
 ## Next Action
 
-Begin Stage 7 dashboard and demo view.
+Begin Stage 8 full fixture run, demo reset, and rehearsal.

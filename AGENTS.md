@@ -61,6 +61,9 @@ Stage 1 local environment commands:
 - `.\scripts\apply-stage-6.ps1`: apply Stage 2, Stage 5, and Stage 6 watch/chase SQL.
 - `.\scripts\verify-stage-6-watch.ps1`: run deterministic Stage 6 bucket, suppression, escalation, reply notice, and manual override checks.
 - `.\scripts\verify-stage-6-workflows.ps1`: validate, import, publish, and smoke-test Stage 6 workflow exports.
+- `.\scripts\generate-stage-7-dashboard-workflow.ps1`: regenerate the Stage 7 dashboard workflow export.
+- `.\scripts\apply-stage-7.ps1`: apply Stage 2, Stage 5, Stage 6, and Stage 7 dashboard SQL.
+- `.\scripts\verify-stage-7-dashboard.ps1`: validate, import, publish, seed, render, and source-link test the Stage 7 dashboard workflow.
 
 Expected local services are n8n at `http://localhost:5678` and Postgres on `127.0.0.1:5432`. Gmail/OpenAI credentials are created manually inside n8n and must not be stored in repo files. One Gmail or Google Workspace mailbox is enough for local testing; use plus-address aliases for logical vendor, producer, approval, and intake roles when needed. Do not assume Docker images, accounts, OAuth apps, API keys, or n8n credentials already exist. On first n8n 2.x startup, internal migrations can take long enough for early HTTP probes to fail; rerun `.\scripts\verify-local.ps1` or rely on its retry loop. The `n8nio/n8n:latest` image may log a Python task-runner warning because Python is absent; this is not a Stage 1 blocker when JS workflows and service health pass.
 
@@ -77,6 +80,8 @@ Stage 4 keeps validation logic in `scripts/lib/coi-stage-4-validator.js` and emb
 Stage 5 stores source PDFs under `/home/node/.n8n-files/certificates/YYYY/MM/DD/`, mounted from ignored `./data/certificates`. n8n's file node requires parent directories to exist under its allowed-files area, so rerun `.\scripts\apply-stage-5.ps1` or create the current UTC date path before live upload tests. The source-document webhook export needs a stable `webhookId` and `triggerCount: 1`; after CLI activation, restart n8n for the route to register. In this n8n 2.29 setup the local source route is reached as `/webhook/stage-5-source-document-webhook/coi-source/<certificate_id>`.
 
 Stage 6 keeps watch/chase state in Postgres functions and generated workflow exports. Empty Postgres result nodes that must allow downstream work, such as the escalation pre-pass before loading actionable vendors, need `alwaysOutputData`; otherwise n8n stops the execution when no rows are returned. Stage 6 live approval/send smoke requires both `stage_6_approver_email` and `stage_6_test_recipient_email`; they can be the same Gmail address for local testing. Stage 6 SQL defaults must preserve existing local config values on reapply so `apply-stage-6.ps1` does not wipe test email settings.
+
+Stage 7 serves the dashboard through n8n webhooks at `/webhook/coi` and `/webhook/stage-7-dashboard-webhook/coi`. After CLI import/publish and n8n restart, wait for active workflow registration before probing the dashboard URL; editor HTTP readiness can come up before webhook routes are registered.
 
 ## Architecture Rules
 

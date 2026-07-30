@@ -1,0 +1,155 @@
+{
+  "id": "stage-7-dashboard-demo-view",
+  "name": "Stage 7 - Dashboard Demo View",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "GET",
+        "path": "coi",
+        "authentication": "none",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "91000000-0000-4700-8700-000000000001",
+      "name": "Webhook - COI Dashboard",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "stage-7-dashboard-webhook"
+    },
+    {
+      "parameters": {
+        "httpMethod": "GET",
+        "path": "stage-7-dashboard-webhook/coi",
+        "authentication": "none",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "91000000-0000-4700-8700-000000000002",
+      "name": "Webhook - COI Dashboard Stable URL",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        160
+      ],
+      "webhookId": "stage-7-dashboard-stable-url-webhook"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM stage_7_dashboard_rows(stage_6_parse_date(stage_6_config_value('stage_7_dashboard_as_of_date', ''), CURRENT_DATE));",
+        "options": {}
+      },
+      "id": "92000000-0000-4700-8700-000000000001",
+      "name": "Load Stage 7 Dashboard Rows",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        300,
+        80
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "Postgres account",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const rows = $input.all().map((item) => item.json);\nconst blockedTerms = [\"com\" + \"pliant\", \"veri\" + \"fied\", \"cov\" + \"ered\", \"appro\" + \"ved\"];\n\nfunction escapeHtml(value) {\n  return String(value ?? \"\")\n    .replace(/&/g, \"&amp;\")\n    .replace(/</g, \"&lt;\")\n    .replace(/>/g, \"&gt;\")\n    .replace(/\"/g, \"&quot;\")\n    .replace(/'/g, \"&#39;\");\n}\n\nfunction money(value) {\n  if (value === null || value === undefined || value === \"\") return \"-\";\n  const amount = Number(value);\n  if (!Number.isFinite(amount)) return \"-\";\n  if (amount >= 1000000 && amount % 1000000 === 0) return \"$\" + (amount / 1000000) + \"M\";\n  if (amount >= 1000 && amount % 1000 === 0) return \"$\" + (amount / 1000) + \"k\";\n  return \"$\" + amount.toLocaleString(\"en-US\");\n}\n\nfunction formatDate(value) {\n  if (!value) return \"-\";\n  const date = new Date(String(value) + \"T00:00:00Z\");\n  if (Number.isNaN(date.getTime())) return escapeHtml(value);\n  return date.toLocaleDateString(\"en-US\", { month: \"short\", day: \"numeric\", year: \"numeric\", timeZone: \"UTC\" });\n}\n\nfunction normalizeFlags(value) {\n  if (Array.isArray(value)) return value;\n  if (typeof value === \"string\") {\n    try {\n      const parsed = JSON.parse(value);\n      return Array.isArray(parsed) ? parsed : [];\n    } catch (error) {\n      return [];\n    }\n  }\n  return [];\n}\n\nfunction flagLabel(flag) {\n  const code = flag && typeof flag === \"object\" ? flag.code : String(flag || \"\");\n  const details = flag && typeof flag === \"object\" && flag.details ? flag.details : {};\n  if (code === \"COVERAGE_GAP\") {\n    const days = Number(details.gap_days);\n    if (Number.isFinite(days) && days > 0) return days + \"-day paperwork gap\";\n    return \"Paperwork gap\";\n  }\n  if (code === \"HOLDER_MISMATCH\") return \"Holder name needs review\";\n  if (code === \"LIMIT_BELOW_MINIMUM\") return \"Limit below configured minimum\";\n  if (code === \"POSSIBLE_DUPLICATE_VENDOR\") return \"Possible duplicate vendor\";\n  if (code === \"NO_GL_LINE\") return \"No general liability line found\";\n  if (code === \"PDF_PASSWORD_PROTECTED\") return \"Password-protected PDF\";\n  if (code === \"LOW_CONFIDENCE\") return \"Low extraction confidence\";\n  return code ? code.toLowerCase().replace(/_/g, \" \") : \"\";\n}\n\nfunction rowNotes(row) {\n  const flags = normalizeFlags(row.validation_flags)\n    .map(flagLabel)\n    .filter(Boolean);\n  const notes = flags.map((label) => '<span class=\"note note-warning\">' + escapeHtml(label) + '</span>');\n  if (row.cancellation_notice_wording) {\n    notes.push('<span class=\"note note-neutral\">Certificate states cancellation notice wording.</span>');\n  }\n  if (row.status_note) {\n    notes.push('<span class=\"note note-critical\">' + escapeHtml(row.status_note) + '</span>');\n  }\n  return notes.length ? '<div class=\"notes\">' + notes.join(\"\") + '</div>' : \"\";\n}\n\nfunction toneLabel(tone) {\n  if (tone === \"good\") return \"Current\";\n  if (tone === \"warning\") return \"Watch\";\n  if (tone === \"critical\") return \"Review\";\n  return \"No file\";\n}\n\nfunction sourceCell(row) {\n  if (!row.source_url_path) return '<span class=\"source-muted\">-</span>';\n  return '<a class=\"source-link\" href=\"' + escapeHtml(row.source_url_path) + '\" target=\"_blank\" rel=\"noreferrer\">Open PDF</a>';\n}\n\nfunction countRows(predicate) {\n  return rows.filter(predicate).length;\n}\n\nconst counts = {\n  total: rows.length,\n  noFile: countRows((row) => !row.certificate_id),\n  red: countRows((row) => row.display_tone === \"critical\"),\n  expiring: countRows((row) => row.display_tone === \"warning\" && Number(row.days_to_expiry) >= 0 && Number(row.days_to_expiry) <= 30),\n  review: countRows((row) => row.certificate_status === \"NEEDS_REVIEW\"),\n  gaps: countRows((row) => Number(row.coverage_gap_count_marker || 0) > 0),\n};\n\nconst tableRows = rows.map((row) => {\n  const tone = escapeHtml(row.display_tone || \"none\");\n  return '<tr class=\"row-' + tone + '\">'\n    + '<td><div class=\"vendor-cell\"><span class=\"status-dot\"></span><div><strong>' + escapeHtml(row.vendor_legal_name) + '</strong>' + rowNotes(row) + '</div></div></td>'\n    + '<td>' + escapeHtml(row.trade || \"-\") + '</td>'\n    + '<td>' + escapeHtml(row.insurer_name || \"-\") + '</td>'\n    + '<td>' + escapeHtml(row.policy_number || \"-\") + '</td>'\n    + '<td>' + escapeHtml(money(row.gl_each_occurrence)) + '</td>'\n    + '<td>' + escapeHtml(formatDate(row.expiration_date)) + '</td>'\n    + '<td><span class=\"status-pill\">' + escapeHtml(row.display_status || \"Needs review\") + '</span></td>'\n    + '<td>' + sourceCell(row) + '</td>'\n    + '</tr>';\n}).join(\"\\n\");\n\nconst css = String.raw`\n:root {\n  color-scheme: light;\n  --bg: #f7f4ef;\n  --surface: #fffdf8;\n  --surface-2: #f0ece4;\n  --text: #1f2933;\n  --muted: #667085;\n  --line: rgba(31, 41, 51, 0.12);\n  --good: #16784f;\n  --good-bg: #e6f4ec;\n  --warn: #a15c00;\n  --warn-bg: #fff1d6;\n  --critical: #b42318;\n  --critical-bg: #ffe4df;\n  --none: #6b7280;\n  --none-bg: #edf0f2;\n  --link: #1d4ed8;\n}\n* { box-sizing: border-box; }\nhtml { background: var(--bg); }\nbody {\n  margin: 0;\n  color: var(--text);\n  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif;\n  font-size: 16px;\n  line-height: 1.5;\n}\n.skip-link {\n  position: absolute;\n  left: 16px;\n  top: -48px;\n  background: var(--text);\n  color: #fff;\n  padding: 8px 12px;\n  border-radius: 6px;\n  z-index: 10;\n}\n.skip-link:focus { top: 16px; }\n.shell {\n  width: min(100% - 32px, 1240px);\n  margin: 0 auto;\n  padding: 32px 0 40px;\n}\nheader {\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-end;\n  gap: 24px;\n  padding: 4px 0 24px;\n}\n.eyebrow {\n  margin: 0 0 4px;\n  color: var(--muted);\n  font-size: 13px;\n  font-weight: 650;\n}\nh1 {\n  margin: 0;\n  font-size: 32px;\n  line-height: 1.15;\n  letter-spacing: 0;\n}\n.refresh {\n  color: var(--muted);\n  font-size: 14px;\n  white-space: nowrap;\n}\n.summary {\n  display: grid;\n  grid-template-columns: repeat(6, minmax(0, 1fr));\n  gap: 12px;\n  margin-bottom: 18px;\n}\n.metric {\n  min-height: 80px;\n  padding: 14px 16px;\n  background: var(--surface);\n  border: 1px solid var(--line);\n  border-radius: 8px;\n}\n.metric span {\n  display: block;\n  color: var(--muted);\n  font-size: 12px;\n  font-weight: 650;\n}\n.metric strong {\n  display: block;\n  margin-top: 6px;\n  font-size: 28px;\n  line-height: 1.1;\n}\n.metric-critical strong { color: var(--critical); }\n.metric-warning strong { color: var(--warn); }\n.metric-none strong { color: var(--none); }\n.table-wrap {\n  overflow-x: auto;\n  background: var(--surface);\n  border: 1px solid var(--line);\n  border-radius: 8px;\n}\ntable {\n  width: 100%;\n  min-width: 980px;\n  border-collapse: collapse;\n}\ncaption {\n  text-align: left;\n  padding: 16px 18px;\n  color: var(--muted);\n  font-size: 14px;\n  border-bottom: 1px solid var(--line);\n}\nth, td {\n  padding: 14px 16px;\n  border-bottom: 1px solid var(--line);\n  text-align: left;\n  vertical-align: top;\n}\nth {\n  background: var(--surface-2);\n  color: #3a4651;\n  font-size: 12px;\n  font-weight: 750;\n  text-transform: uppercase;\n}\ntbody tr:last-child td { border-bottom: 0; }\n.vendor-cell {\n  display: flex;\n  gap: 10px;\n  align-items: flex-start;\n  min-width: 230px;\n}\n.status-dot {\n  flex: 0 0 auto;\n  width: 10px;\n  height: 10px;\n  margin-top: 7px;\n  border-radius: 999px;\n  background: var(--none);\n}\n.row-good .status-dot { background: var(--good); }\n.row-warning .status-dot { background: var(--warn); }\n.row-critical .status-dot { background: var(--critical); }\n.row-none .status-dot { background: var(--none); }\n.status-pill {\n  display: inline-flex;\n  max-width: 100%;\n  padding: 5px 9px;\n  border-radius: 999px;\n  font-size: 13px;\n  font-weight: 650;\n  background: var(--none-bg);\n  color: var(--none);\n  white-space: nowrap;\n}\n.row-good .status-pill { background: var(--good-bg); color: var(--good); }\n.row-warning .status-pill { background: var(--warn-bg); color: var(--warn); }\n.row-critical .status-pill { background: var(--critical-bg); color: var(--critical); }\n.notes {\n  display: flex;\n  flex-wrap: wrap;\n  gap: 6px;\n  margin-top: 7px;\n}\n.note {\n  display: inline-flex;\n  max-width: 100%;\n  padding: 3px 7px;\n  border-radius: 6px;\n  font-size: 12px;\n  line-height: 1.3;\n}\n.note-warning { color: var(--warn); background: var(--warn-bg); }\n.note-neutral { color: var(--muted); background: var(--none-bg); }\n.note-critical { color: var(--critical); background: var(--critical-bg); }\n.source-link {\n  color: var(--link);\n  font-weight: 650;\n  text-decoration: none;\n}\n.source-link:hover { text-decoration: underline; }\n.source-link:focus-visible, .skip-link:focus-visible {\n  outline: 3px solid rgba(29, 78, 216, 0.35);\n  outline-offset: 2px;\n}\n.source-muted { color: var(--muted); }\n.mobile-list { display: none; }\n@media (max-width: 780px) {\n  .shell { width: min(100% - 24px, 1240px); padding-top: 24px; }\n  header { display: block; }\n  h1 { font-size: 26px; }\n  .refresh { margin-top: 8px; white-space: normal; }\n  .summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }\n  .table-wrap { display: none; }\n  .mobile-list {\n    display: grid;\n    gap: 10px;\n  }\n  .mobile-card {\n    background: var(--surface);\n    border: 1px solid var(--line);\n    border-left: 5px solid var(--none);\n    border-radius: 8px;\n    padding: 14px;\n  }\n  .mobile-card.row-good { border-left-color: var(--good); }\n  .mobile-card.row-warning { border-left-color: var(--warn); }\n  .mobile-card.row-critical { border-left-color: var(--critical); }\n  .mobile-grid {\n    display: grid;\n    grid-template-columns: 1fr 1fr;\n    gap: 10px;\n    margin-top: 12px;\n  }\n  .mobile-label {\n    display: block;\n    color: var(--muted);\n    font-size: 12px;\n    font-weight: 650;\n  }\n}\n`;\n\nconst mobileRows = rows.map((row) => {\n  const tone = escapeHtml(row.display_tone || \"none\");\n  return '<article class=\"mobile-card row-' + tone + '\">'\n    + '<div class=\"vendor-cell\"><span class=\"status-dot\"></span><div><strong>' + escapeHtml(row.vendor_legal_name) + '</strong><br><span class=\"status-pill\">' + escapeHtml(row.display_status || \"Needs review\") + '</span>' + rowNotes(row) + '</div></div>'\n    + '<div class=\"mobile-grid\">'\n    + '<div><span class=\"mobile-label\">Trade</span>' + escapeHtml(row.trade || \"-\") + '</div>'\n    + '<div><span class=\"mobile-label\">Carrier</span>' + escapeHtml(row.insurer_name || \"-\") + '</div>'\n    + '<div><span class=\"mobile-label\">Policy #</span>' + escapeHtml(row.policy_number || \"-\") + '</div>'\n    + '<div><span class=\"mobile-label\">GL Limit</span>' + escapeHtml(money(row.gl_each_occurrence)) + '</div>'\n    + '<div><span class=\"mobile-label\">Expires</span>' + escapeHtml(formatDate(row.expiration_date)) + '</div>'\n    + '<div><span class=\"mobile-label\">Source</span>' + sourceCell(row) + '</div>'\n    + '</div></article>';\n}).join(\"\\n\");\n\nlet html = '<!doctype html><html lang=\"en\"><head>'\n  + '<meta charset=\"utf-8\">'\n  + '<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">'\n  + '<meta http-equiv=\"refresh\" content=\"5\">'\n  + '<title>Vendor Insurance Register</title>'\n  + '<style>' + css + '</style>'\n  + '</head><body>'\n  + '<a class=\"skip-link\" href=\"#register\">Skip to register</a>'\n  + '<main class=\"shell\">'\n  + '<header><div><p class=\"eyebrow\">Harbourline Property Management LLC</p><h1>Vendor Insurance Register</h1></div><div class=\"refresh\">Auto-refreshes every 5 seconds</div></header>'\n  + '<section class=\"summary\" aria-label=\"Register counts\">'\n  + '<div class=\"metric\"><span>Total vendors</span><strong>' + counts.total + '</strong></div>'\n  + '<div class=\"metric metric-none\"><span>No certificate</span><strong>' + counts.noFile + '</strong></div>'\n  + '<div class=\"metric metric-critical\"><span>Expired or review</span><strong>' + counts.red + '</strong></div>'\n  + '<div class=\"metric metric-warning\"><span>Expiring in 30 days</span><strong>' + counts.expiring + '</strong></div>'\n  + '<div class=\"metric metric-critical\"><span>Needs review</span><strong>' + counts.review + '</strong></div>'\n  + '<div class=\"metric metric-warning\"><span>Paperwork gaps</span><strong>' + counts.gaps + '</strong></div>'\n  + '</section>'\n  + '<section id=\"register\" class=\"table-wrap\" aria-label=\"Vendor register\"><table>'\n  + '<caption>Rows show certificate dates and document notes from the local demo database.</caption>'\n  + '<thead><tr><th scope=\"col\">Vendor</th><th scope=\"col\">Trade</th><th scope=\"col\">Carrier</th><th scope=\"col\">Policy #</th><th scope=\"col\">GL Limit</th><th scope=\"col\">Expires</th><th scope=\"col\">Status</th><th scope=\"col\">Source</th></tr></thead>'\n  + '<tbody>' + tableRows + '</tbody></table></section>'\n  + '<section class=\"mobile-list\" aria-label=\"Vendor register mobile\">' + mobileRows + '</section>'\n  + '</main></body></html>';\n\nconst lower = html.toLowerCase();\nfor (const term of blockedTerms) {\n  if (lower.includes(term)) {\n    throw new Error(\"Dashboard HTML contained a blocked term.\");\n  }\n}\n\nreturn [{ json: { html } }];"
+      },
+      "id": "93000000-0000-4700-8700-000000000001",
+      "name": "Build Stage 7 Dashboard HTML",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        600,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.html }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "text/html; charset=utf-8"
+              }
+            ]
+          }
+        }
+      },
+      "id": "94000000-0000-4700-8700-000000000001",
+      "name": "Respond With Stage 7 Dashboard",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        900,
+        80
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook - COI Dashboard": {
+      "main": [
+        [
+          {
+            "node": "Load Stage 7 Dashboard Rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook - COI Dashboard Stable URL": {
+      "main": [
+        [
+          {
+            "node": "Load Stage 7 Dashboard Rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Load Stage 7 Dashboard Rows": {
+      "main": [
+        [
+          {
+            "node": "Build Stage 7 Dashboard HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Stage 7 Dashboard HTML": {
+      "main": [
+        [
+          {
+            "node": "Respond With Stage 7 Dashboard",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {},
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2026-07-30T00:00:00.000Z",
+  "versionId": "stage-7-generated"
+}
