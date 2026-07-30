@@ -4,7 +4,7 @@ Created: 2026-07-30
 
 ## Current Status
 
-Stage 1 local environment scaffolding and credential smoke verification are complete on this machine. Rechecked `coi-demo-build-plan.md` once after the initial plan and made small planning corrections. Rechecked current n8n/OpenAI documentation on 2026-07-30 and changed the recommended model-call implementation from HTTP Request-first to built-in OpenAI node V2-first.
+Stage 1 local environment scaffolding and credential smoke verification are complete on this machine. Stage 2 database schema and synthetic seed register are complete and verified. Rechecked `coi-demo-build-plan.md` once after the initial plan and made small planning corrections. Rechecked current n8n/OpenAI documentation on 2026-07-30 and changed the recommended model-call implementation from HTTP Request-first to built-in OpenAI node V2-first.
 
 ## Source Documents Reviewed
 
@@ -32,7 +32,7 @@ The staged plan in `build-plan.md` follows the later `coi-demo-build-plan.md` wh
 | Stage | Name | Status | Notes |
 |---|---|---|---|
 | 1 | Environment, Accounts, and Local n8n | Complete | Local Docker Compose environment verified. Public HTTPS intentionally deferred because all Stage 1 testing is same-machine only. Postgres, OpenAI, and Gmail credentials smoke-tested through n8n. |
-| 2 | Database Schema, Client Config, and Seed Vendors | Not started | Depends on Stage 1 Postgres access. |
+| 2 | Database Schema, Client Config, and Seed Vendors | Complete | Seven project tables created. Synthetic Harbourline config, holder entities, trade requirements, and 18 vendors seeded. Certificate, coverage, and outreach tables remain empty. |
 | 3 | Synthetic Test Fixtures | Not started | Must avoid ACORD form/logo/copyright reproduction. |
 | 4 | Extraction and Validation Core | Not started | Depends on fixture set and OpenAI node V2 availability. |
 | 5 | Intake Workflow End to End | Not started | Depends on extraction core. |
@@ -103,6 +103,10 @@ The staged plan in `build-plan.md` follows the later `coi-demo-build-plan.md` wh
 - OpenAI smoke workflow executed through n8n OpenAI node V2 using `gpt-5.4-nano` and returned `ok`; token usage was 11 input and 5 output tokens.
 - Gmail smoke workflow sent a same-machine test email successfully; Gmail returned message/thread ID `19fb2b6f6dec3dec`.
 - Removed temporary smoke workflows from n8n after verification.
+- Added Stage 2 Postgres schema and idempotent synthetic seed SQL.
+- Added `scripts/apply-stage-2.ps1` and `scripts/verify-stage-2.ps1`.
+- Added `docs/stage-2-database-runbook.md`.
+- Verified Stage 2 after an idempotent rerun: seven project tables exist, 10 config keys exist, model defaults are `gpt-5.4-nano` and `gpt-5.6-luna`, one primary holder exists, default/Roofing/Landscaping requirements exist, 18 vendors exist, one vendor is WC-exempt, vendor normalization is deterministic and unique, and `certificates`, `coverages`, and `outreach_log` are empty.
 - Updated `coi-demo-build-plan.md` to make OpenAI node V2 the default model-call path.
 - Updated `coi-demo-build-plan.md` to make HTTP Request a fallback only.
 - Updated `coi-demo-build-plan.md` to make Gmail approval the default and Telegram optional.
@@ -120,4 +124,4 @@ The staged plan in `build-plan.md` follows the later `coi-demo-build-plan.md` wh
 
 ## Next Action
 
-Stage 1 is complete. Next approved implementation step is Stage 2 only: database schema, client config, and seed vendors.
+Stage 2 is complete. Next approved implementation step is Stage 3 only: synthetic test fixtures.
