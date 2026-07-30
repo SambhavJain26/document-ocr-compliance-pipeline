@@ -59,6 +59,7 @@ Stage 8 is a local demo-readiness pass. It does not add public HTTPS, mobile-dat
    Show the 18-vendor register, the no-certificate rows near the top, and the five-second refresh.
 
    Optionally keep pgweb open to `vendors`, `certificates`, `coverages`, `intake_notices`, and `outreach_log` so the local Postgres state is visible during the walkthrough.
+   If pgweb shows n8n internal tables, run `.\scripts\apply-pgweb-viewer.ps1` and refresh pgweb.
 
 2. Run the deterministic fixture verifier or a single Stage 5 manual fixture from n8n.
    Use `f02-expiring-20-days` for an amber state, `f05-inverted-dates` for review, and `f13-renewal-coverage-gap` after `f03-expired-34-days` to show renewal and gap tracking.

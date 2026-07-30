@@ -31,6 +31,7 @@ function New-HexSecret([int]$ByteCount) {
 
 $content = Get-Content -Raw $examplePath
 $content = $content.Replace("replace-with-generated-local-password", (New-HexSecret 24))
+$content = $content.Replace("replace-with-generated-pgweb-password", (New-HexSecret 24))
 $content = $content.Replace("replace-with-generated-local-encryption-key", (New-HexSecret 32))
 
 Set-Content -Path $envPath -Value $content -Encoding ascii -NoNewline

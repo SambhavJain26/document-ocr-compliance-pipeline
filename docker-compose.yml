@@ -54,7 +54,7 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      PGWEB_DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?sslmode=disable
+      PGWEB_DATABASE_URL: postgres://${PGWEB_USER}:${PGWEB_PASSWORD}@postgres:5432/${POSTGRES_DB}?sslmode=disable
     command:
       - --bind=0.0.0.0
       - --listen=8081

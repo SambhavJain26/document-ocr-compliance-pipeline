@@ -18,6 +18,8 @@ Get-Content $envPath | ForEach-Object {
 
 $postgresUser = $envValues["POSTGRES_USER"]
 $postgresDb = $envValues["POSTGRES_DB"]
+$pgwebUser = $envValues["PGWEB_USER"]
+$pgwebPassword = $envValues["PGWEB_PASSWORD"]
 $n8nPort = $envValues["N8N_PORT"]
 if (-not $n8nPort) {
   $n8nPort = "5678"
@@ -76,6 +78,36 @@ try {
     }
   }
   Write-Host "pgweb returned HTTP $($pgwebResponse.StatusCode)."
+
+  if ($pgwebUser -and $pgwebPassword) {
+    Write-Host "Checking pgweb readonly table scope..."
+    $expectedCoiTables = @(
+      "certificates",
+      "client_config",
+      "coverages",
+      "holder_entities",
+      "intake_notices",
+      "outreach_log",
+      "trade_requirements",
+      "vendors"
+    )
+    $tableSql = "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE' ORDER BY table_name;"
+    $visibleTables = docker compose exec -T -e PGPASSWORD=$pgwebPassword postgres psql -h localhost -U $pgwebUser -d $postgresDb -t -A -c $tableSql
+    if ($LASTEXITCODE -ne 0) {
+      throw "Could not verify pgweb readonly table scope. Run .\scripts\apply-pgweb-viewer.ps1."
+    }
+    $visibleTableList = @($visibleTables | Where-Object { $_ -ne "" })
+    $unexpectedTables = @($visibleTableList | Where-Object { $expectedCoiTables -notcontains $_ })
+    foreach ($table in $expectedCoiTables) {
+      if ($visibleTableList -notcontains $table) {
+        throw "pgweb readonly user cannot see expected table '$table'. Run .\scripts\apply-pgweb-viewer.ps1."
+      }
+    }
+    if ($unexpectedTables.Count -gt 0) {
+      throw "pgweb readonly user can see unexpected tables: $($unexpectedTables -join ', '). Run .\scripts\apply-pgweb-viewer.ps1."
+    }
+    Write-Host "pgweb readonly user sees only COI demo tables."
+  }
 
   Write-Host "Local verification complete."
 }

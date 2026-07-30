@@ -37,6 +37,12 @@ Open read-only pgweb at:
 http://localhost:8081
 ```
 
+If pgweb shows n8n internal tables, apply the restricted viewer role:
+
+```powershell
+.\scripts\apply-pgweb-viewer.ps1
+```
+
 On first launch, create the local n8n owner account in the browser. This account is local to the Docker volume.
 
 ## Environment Defaults
@@ -50,12 +56,14 @@ N8N_PROTOCOL=http
 WEBHOOK_URL=http://localhost:5678
 N8N_EDITOR_BASE_URL=http://localhost:5678
 PGWEB_PORT=8081
+PGWEB_USER=coi_readonly
+PGWEB_PASSWORD=<generated local secret>
 GENERIC_TIMEZONE=America/New_York
 ```
 
 Use these settings only for same-machine testing. Approval links opened on another device will not reach this n8n instance because `localhost` points to that device, not this computer.
 
-pgweb is bound to localhost only and starts in read-only mode against the local Postgres database. Use it to inspect tables during the demo, not to edit runtime state.
+pgweb is bound to localhost only and starts in read-only mode against the local Postgres database. It connects as `coi_readonly`, which is granted SELECT only on the COI demo tables. Use it to inspect tables during the demo, not to edit runtime state.
 
 ## Postgres Credential In n8n
 
