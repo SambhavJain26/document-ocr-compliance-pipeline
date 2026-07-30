@@ -1,0 +1,203 @@
+{
+  "id": "stage-5-source-document-route",
+  "name": "Stage 5 - Source Document Route",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "GET",
+        "path": "coi-source/:certificate_id",
+        "authentication": "none",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "66000000-0000-4500-8500-000000000001",
+      "name": "Webhook - Source PDF",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "stage-5-source-document-webhook"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n  c.id,\n  c.original_filename,\n  c.stored_path,\n  (c.stored_path LIKE '/home/node/.n8n-files/certificates/%') AS safe_path\nFROM (SELECT $1::int AS certificate_id) req\nLEFT JOIN certificates c ON c.id = req.certificate_id;",
+        "options": {
+          "queryReplacement": "={{ $json.params.certificate_id }}"
+        }
+      },
+      "id": "66000000-0000-4500-8500-000000000002",
+      "name": "Load Certificate Source Path",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        280,
+        0
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "Postgres account",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "safe-path-condition",
+              "leftValue": "={{ Boolean($json.id && $json.stored_path && $json.safe_path) }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "66000000-0000-4500-8500-000000000003",
+      "name": "Route Safe Stored PDF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        560,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "fileSelector": "={{ $json.stored_path }}",
+        "options": {
+          "dataPropertyName": "data",
+          "fileName": "={{ $json.original_filename || 'certificate.pdf' }}",
+          "mimeType": "application/pdf"
+        }
+      },
+      "id": "66000000-0000-4500-8500-000000000004",
+      "name": "Read Stored Source PDF",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        840,
+        -100
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "binary",
+        "responseDataSource": "set",
+        "inputFieldName": "data",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/pdf"
+              }
+            ]
+          }
+        }
+      },
+      "id": "66000000-0000-4500-8500-000000000005",
+      "name": "Respond With Stored PDF",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1120,
+        -100
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "Source document not found.",
+        "options": {
+          "responseCode": 404
+        }
+      },
+      "id": "66000000-0000-4500-8500-000000000006",
+      "name": "Respond Source PDF Not Found",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        840,
+        140
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook - Source PDF": {
+      "main": [
+        [
+          {
+            "node": "Load Certificate Source Path",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Load Certificate Source Path": {
+      "main": [
+        [
+          {
+            "node": "Route Safe Stored PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route Safe Stored PDF": {
+      "main": [
+        [
+          {
+            "node": "Read Stored Source PDF",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Source PDF Not Found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Stored Source PDF": {
+      "main": [
+        [
+          {
+            "node": "Respond With Stored PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {},
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2026-07-30T00:00:00.000Z",
+  "versionId": "stage-5-generated"
+}

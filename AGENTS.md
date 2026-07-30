@@ -53,6 +53,10 @@ Stage 1 local environment commands:
 - `.\scripts\generate-stage-4-workflow.ps1`: regenerate the Stage 4 n8n workflow export from the shared validator and extraction schema.
 - `.\scripts\verify-stage-4-validation.ps1`: run offline Stage 4 validator tests for deterministic flags and storage dispositions.
 - `.\scripts\verify-stage-4-extraction.ps1`: validate the Stage 4 workflow JSON and, when n8n/Postgres are running, import and execute the fixed fixture smoke workflow.
+- `.\scripts\generate-stage-5-workflows.ps1`: regenerate Stage 5 intake and source-document workflow exports.
+- `.\scripts\apply-stage-5.ps1`: apply Stage 2 plus Stage 5 intake SQL and create today's local certificate storage directory.
+- `.\scripts\verify-stage-5-storage.ps1`: run deterministic Stage 5 SQL/storage checks.
+- `.\scripts\verify-stage-5-intake.ps1`: run live n8n/OpenAI Stage 5 fixture smoke checks and source-PDF route check.
 
 Expected local services are n8n at `http://localhost:5678` and Postgres on `127.0.0.1:5432`. Gmail/OpenAI credentials are created manually inside n8n and must not be stored in repo files. One Gmail or Google Workspace mailbox is enough for local testing; use plus-address aliases for logical vendor, producer, approval, and intake roles when needed. Do not assume Docker images, accounts, OAuth apps, API keys, or n8n credentials already exist. On first n8n 2.x startup, internal migrations can take long enough for early HTTP probes to fail; rerun `.\scripts\verify-local.ps1` or rely on its retry loop. The `n8nio/n8n:latest` image may log a Python task-runner warning because Python is absent; this is not a Stage 1 blocker when JS workflows and service health pass.
 
@@ -63,6 +67,8 @@ Stage 2 SQL scripts are applied by piping them into the running Postgres service
 Stage 3 fixture scripts use the bundled Codex Python runtime when available because system Python may not have PDF dependencies. Rendered fixture previews are generated under ignored `tmp/stage-3-previews/`; do not commit preview images unless a later task explicitly asks for visual artifacts.
 
 Stage 4 keeps validation logic in `scripts/lib/coi-stage-4-validator.js` and embeds that shared source into the generated n8n workflow export. Edit the shared validator first, then rerun `.\scripts\generate-stage-4-workflow.ps1`; do not hand-edit the embedded validator code in `n8n-workflows/stage-4-extraction-validation-core.json`. The generated workflow uses n8n OpenAI node V2 with `resource: text`, `operation: response`, `responses.values`, and JSON Schema under `options.textFormat.textOptions`; older `operation: message` examples do not import correctly on n8n 2.29. File read and extract nodes can strip JSON context or binary data, so reattach fixture context and binary explicitly before model and validation nodes. `Extract From File` aborts password-protected PDFs before downstream validation can run; route known encrypted fixtures around extraction to a structured review result.
+
+Stage 5 stores source PDFs under `/home/node/.n8n-files/certificates/YYYY/MM/DD/`, mounted from ignored `./data/certificates`. n8n's file node requires parent directories to exist under its allowed-files area, so rerun `.\scripts\apply-stage-5.ps1` or create the current UTC date path before live upload tests. The source-document webhook export needs a stable `webhookId` and `triggerCount: 1`; after CLI activation, restart n8n for the route to register. In this n8n 2.29 setup the local source route is reached as `/webhook/stage-5-source-document-webhook/coi-source/<certificate_id>`.
 
 ## Architecture Rules
 

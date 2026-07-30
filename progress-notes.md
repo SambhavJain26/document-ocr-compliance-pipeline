@@ -4,7 +4,7 @@ Created: 2026-07-30
 
 ## Current Status
 
-Stage 1 local environment scaffolding and credential smoke verification are complete on this machine. Stage 2 database schema and synthetic seed register are complete and verified. Stage 3 synthetic fixtures are generated and verified. Stage 4 extraction and validation core is complete with offline validator tests and live n8n/OpenAI fixture smoke passing locally. Rechecked `coi-demo-build-plan.md` once after the initial plan and made small planning corrections. Rechecked current n8n/OpenAI documentation on 2026-07-30 and changed the recommended model-call implementation from HTTP Request-first to built-in OpenAI node V2-first.
+Stage 1 local environment scaffolding and credential smoke verification are complete on this machine. Stage 2 database schema and synthetic seed register are complete and verified. Stage 3 synthetic fixtures are generated and verified. Stage 4 extraction and validation core is complete with offline validator tests and live n8n/OpenAI fixture smoke passing locally. Stage 5 intake workflow and persistent storage are complete with deterministic SQL checks and live n8n/OpenAI fixture smoke passing locally. Rechecked `coi-demo-build-plan.md` once after the initial plan and made small planning corrections. Rechecked current n8n/OpenAI documentation on 2026-07-30 and changed the recommended model-call implementation from HTTP Request-first to built-in OpenAI node V2-first.
 
 ## Source Documents Reviewed
 
@@ -35,7 +35,7 @@ The staged plan in `build-plan.md` follows the later `coi-demo-build-plan.md` wh
 | 2 | Database Schema, Client Config, and Seed Vendors | Complete | Seven project tables created. Synthetic Harbourline config, holder entities, trade requirements, and 18 vendors seeded. Certificate, coverage, and outreach tables remain empty. |
 | 3 | Synthetic Test Fixtures | Complete | 20 fixture records generated: 17 PDFs, 2 email payloads, and 1 metadata-only no-file case. Verified watermark, text-layer behavior, scanned no-text behavior, password protection, rendered previews, and forbidden-term scan. |
 | 4 | Extraction and Validation Core | Complete | Added schema, shared validator, generated n8n workflow export, fixture mount, runbook, and verification scripts. Offline validator tests pass. Live n8n/OpenAI extraction smoke passes for fixed fixtures `f01`, `f04`, `f11`, and `f18`. |
-| 5 | Intake Workflow End to End | Not started | Depends on extraction core. |
+| 5 | Intake Workflow End to End | Complete | Added Stage 5 SQL storage function, intake notices, generated intake/source workflows, local PDF storage mount, form/Gmail/manual intake normalization, source-PDF route, and storage/intake verification scripts. Live fixture smoke passed locally. |
 | 6 | Daily Watch, Drafting, Approval, and Escalation | Not started | Depends on stored certificate records. |
 | 7 | Dashboard and Demo View | Not started | Depends on populated database and status logic. |
 | 8 | Full Fixture Run, Demo Reset, and Rehearsal | Not started | Depends on full demo workflow. |
@@ -129,6 +129,16 @@ The staged plan in `build-plan.md` follows the later `coi-demo-build-plan.md` wh
 - Updated `coi-demo-build-plan.md` to add IMAP as a disabled non-Google fallback and SMTP as a generic outbound fallback only.
 - Updated `01-vendor-coi-chase.md` to replace the old IMAP/OCR/Sheets architecture with Gmail/OpenAI node V2/Postgres.
 - Updated `build-plan.md` to clarify that SMTP is not required for the Gmail demo path.
+- Added Stage 5 intake SQL migration with `intake_notices`, source-ref uniqueness, config defaults, and `store_stage_5_intake_result(payload jsonb)`.
+- Added writable local certificate storage at `./data/certificates` mounted into n8n under `/home/node/.n8n-files/certificates`.
+- Added generated Stage 5 intake workflow with manual fixture, form upload, Gmail attachment, and disabled IMAP fallback paths.
+- Added generated Stage 5 source-document route with safe-path checks and binary PDF response.
+- Added `scripts/generate-stage-5-workflows.ps1`, `scripts/apply-stage-5.ps1`, `scripts/verify-stage-5-storage.ps1`, and `scripts/verify-stage-5-intake.ps1`.
+- Added `docs/stage-5-intake-runbook.md`.
+- Updated shared validation source so storage source references prefer `context.source_ref` before fixture IDs, preserving multi-attachment idempotency.
+- Updated fixture `f13-renewal-coverage-gap` so it starts 14 days after `f03-expired-34-days` ends, matching the coverage-gap expectation.
+- Verified Stage 5 storage checks: clean insert, coverage insert, duplicate source skip, review preservation, non-certificate notice, older-than-current notice, unknown-vendor review downgrade, and no vendor creation.
+- Verified Stage 5 live n8n/OpenAI intake smoke: clean fixture storage, source PDF route, two-attachment fixture, renewal supersede, older-upload prevention, coverage-gap renewal, non-certificate notice, password-protected review row, and portal-link notice.
 
 ## Outstanding Risks To Track
 
@@ -140,4 +150,4 @@ The staged plan in `build-plan.md` follows the later `coi-demo-build-plan.md` wh
 
 ## Next Action
 
-Begin Stage 5 intake storage: persist accepted Stage 4 storage-ready results into `certificates` and `coverages`, retain original PDFs, and prepare manager review/notice handoffs.
+Begin Stage 6 daily watch, drafting, approval, and escalation on top of the Stage 5 certificate store.

@@ -45,6 +45,7 @@ services:
     volumes:
       - n8n_data:/home/node/.n8n
       - ./fixtures:/home/node/.n8n-files/fixtures:ro
+      - ./data/certificates:/home/node/.n8n-files/certificates
 
 volumes:
   n8n_data:

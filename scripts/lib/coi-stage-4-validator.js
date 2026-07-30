@@ -564,7 +564,7 @@ function buildResult(extraction, context, flags, vendorMatch, holderMatch, extra
 
   const certificate = extraction ? {
     source: context.source || null,
-    source_ref: context.fixture_id || context.source_ref || null,
+    source_ref: context.source_ref || context.fixture_id || null,
     original_filename: context.original_filename || null,
     stored_path: context.stored_path || null,
     certificate_date: extraction.certificate_date,
@@ -578,7 +578,7 @@ function buildResult(extraction, context, flags, vendorMatch, holderMatch, extra
     cancellation_notice_wording: extraction.cancellation_notice_wording,
   } : {
     source: context.source || null,
-    source_ref: context.fixture_id || context.source_ref || null,
+    source_ref: context.source_ref || context.fixture_id || null,
     original_filename: context.original_filename || null,
     stored_path: context.stored_path || null,
     certificate_date: null,

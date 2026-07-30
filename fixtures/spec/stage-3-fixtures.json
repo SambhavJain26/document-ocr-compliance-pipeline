@@ -263,7 +263,7 @@
       "holder": "Harbourline Property Management LLC",
       "producer": "Ironvale Insurance Services",
       "producer_email": "certs+ironvale@example.test",
-      "certificate_date": "2026-03-16",
+      "certificate_date": "2026-07-11",
       "description": "Replacement certificate that starts after the prior policy ended.",
       "expected": {
         "outcome": "ON_FILE",
@@ -271,10 +271,10 @@
         "confidence": "HIGH",
         "flags": ["COVERAGE_GAP"],
         "gap_days": 14,
-        "notes": "Old policy ended 2026-03-01; new policy effective 2026-03-15."
+        "notes": "Old policy ended 2026-06-26; new policy effective 2026-07-10."
       },
       "coverages": [
-        {"type": "GENERAL_LIABILITY", "carrier": "Ironvale Indemnity", "policy": "IRN-3013-GL", "effective": "2026-03-15", "expiration": "2027-03-15", "each_occurrence": 1000000, "general_aggregate": 2000000, "addl_insd_asserted": true, "subr_wvd_asserted": true}
+        {"type": "GENERAL_LIABILITY", "carrier": "Ironvale Indemnity", "policy": "IRN-3013-GL", "effective": "2026-07-10", "expiration": "2027-07-10", "each_occurrence": 1000000, "general_aggregate": 2000000, "addl_insd_asserted": true, "subr_wvd_asserted": true}
       ]
     },
     {
