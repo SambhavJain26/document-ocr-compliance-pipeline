@@ -284,24 +284,25 @@ In scope:
 - Fix only issues that affect the promised demo behavior or honesty boundary.
 - Create a reset routine that clears certificates, coverages, and outreach logs while leaving vendors and config intact.
 - Prepare the demo opening state: 18 vendors, several no-certificate rows, no stale execution state.
-- Record a fallback screen capture of a successful run, including the approval moment.
-- Rehearse the live script, including the alternate path when Gmail polling is slow.
-- Test public webhook and approval links from mobile data immediately before rehearsal.
+- Document the local rehearsal script, including the alternate path when Gmail polling is slow.
+- Track fallback screen capture and public mobile-data validation as manual pre-live-demo blockers.
 
 Out of scope:
 
 - Production reliability features not required for demo.
 - New product features.
 - Client onboarding documents.
+- Public HTTPS/mobile-data implementation.
+- Script-enforced fallback-video storage.
 - SMS.
 
 Verification:
 
 - All fixtures either match expected behavior or have documented accepted deviations.
 - Reset returns the demo to its opening state in under two seconds or with one reliable command.
-- A complete demo run finishes in roughly four minutes.
-- Fallback video exists and is accessible from the demo machine and phone.
-- Failure recovery paths are rehearsed:
+- The local rehearsal runbook documents a roughly four-minute demo path.
+- The fallback video is recorded and uploaded manually before any real prospect call.
+- Failure recovery paths are documented and rehearsed:
   - Gmail trigger delay -> form upload
   - approval link failure -> n8n execution approval fallback
   - model/API failure -> preprocessed row or fallback video

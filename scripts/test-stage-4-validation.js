@@ -363,4 +363,14 @@ run("cancellation wording is retained as neutral fact", () => {
   assert.equal(result.certificate.cancellation_notice_wording, wording);
 });
 
+run("cancellation wording strips fixture label prefix", () => {
+  const wording = "Thirty days written notice of cancellation will be sent to the certificate holder when required by policy terms.";
+  const result = validate({
+    vendor_legal_name: "Summit Shield Roofing Inc.",
+    cancellation_notice_wording: `Certificate states: ${wording}`,
+  });
+  assertNoCode(result, "NO_CANCELLATION_NOTICE_WORDING");
+  assert.equal(result.certificate.cancellation_notice_wording, wording);
+});
+
 console.log("Stage 4 validation tests complete.");

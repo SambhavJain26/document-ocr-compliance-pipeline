@@ -169,6 +169,15 @@ function normalizeCoverage(coverage) {
   };
 }
 
+function normalizeCancellationNoticeWording(value) {
+  if (value === null || value === undefined) {
+    return null;
+  }
+
+  const cleaned = String(value).trim().replace(/^certificate\s+states:\s*/i, "");
+  return cleaned === "" ? null : cleaned;
+}
+
 function normalizeExtractionShape(extraction) {
   const source = extraction && typeof extraction === "object" ? extraction : {};
   return {
@@ -182,7 +191,7 @@ function normalizeExtractionShape(extraction) {
     certificate_holder: source.certificate_holder ?? null,
     coverages: safeArray(source.coverages).map(normalizeCoverage),
     description_of_operations: source.description_of_operations ?? null,
-    cancellation_notice_wording: source.cancellation_notice_wording ?? null,
+    cancellation_notice_wording: normalizeCancellationNoticeWording(source.cancellation_notice_wording),
     extraction_confidence: source.extraction_confidence ?? null,
     confidence_reason: source.confidence_reason ?? null,
   };

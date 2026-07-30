@@ -4,7 +4,7 @@ Created: 2026-07-30
 
 ## Current Status
 
-Stage 1 local environment scaffolding and credential smoke verification are complete on this machine. Stage 2 database schema and synthetic seed register are complete and verified. Stage 3 synthetic fixtures are generated and verified. Stage 4 extraction and validation core is complete with offline validator tests and live n8n/OpenAI fixture smoke passing locally. Stage 5 intake workflow and persistent storage are complete with deterministic SQL checks and live n8n/OpenAI fixture smoke passing locally. Stage 6 daily watch, drafting, approval-gate workflow, non-PDF reply notices, manual overrides, and escalation are implemented with deterministic SQL checks plus live same-email Gmail approval/send smoke passing locally. Stage 7 dashboard and demo view are implemented with the Postgres read model, generated n8n dashboard webhook, rendered HTML checks, and source-PDF link verification passing locally. Rechecked `coi-demo-build-plan.md` once after the initial plan and made small planning corrections. Rechecked current n8n/OpenAI documentation on 2026-07-30 and changed the recommended model-call implementation from HTTP Request-first to built-in OpenAI node V2-first.
+Stage 1 local environment scaffolding and credential smoke verification are complete on this machine. Stage 2 database schema and synthetic seed register are complete and verified. Stage 3 synthetic fixtures are generated and verified. Stage 4 extraction and validation core is complete with offline validator tests and live n8n/OpenAI fixture smoke passing locally. Stage 5 intake workflow and persistent storage are complete with deterministic SQL checks and live n8n/OpenAI fixture smoke passing locally. Stage 6 daily watch, drafting, approval-gate workflow, non-PDF reply notices, manual overrides, and escalation are implemented with deterministic SQL checks plus live same-email Gmail approval/send smoke passing locally. Stage 7 dashboard and demo view are implemented with the Postgres read model, generated n8n dashboard webhook, rendered HTML checks, and source-PDF link verification passing locally. Stage 8 demo reset, full fixture rehearsal verification, committed fixture results, and local demo runbook are complete; the verifier passed locally and left the demo reset. Rechecked `coi-demo-build-plan.md` once after the initial plan and made small planning corrections. Rechecked current n8n/OpenAI documentation on 2026-07-30 and changed the recommended model-call implementation from HTTP Request-first to built-in OpenAI node V2-first.
 
 ## Source Documents Reviewed
 
@@ -38,7 +38,7 @@ The staged plan in `build-plan.md` follows the later `coi-demo-build-plan.md` wh
 | 5 | Intake Workflow End to End | Complete | Added Stage 5 SQL storage function, intake notices, generated intake/source workflows, local PDF storage mount, form/Gmail/manual intake normalization, source-PDF route, and storage/intake verification scripts. Live fixture smoke passed locally. |
 | 6 | Daily Watch, Drafting, Approval, and Escalation | Complete | SQL bucket/suppression/escalation/manual override logic verified. Stage 6 workflows import and publish in n8n. OpenAI draft, Gmail Send-and-Wait approval, and approved Gmail send passed locally using `worksambhav26@gmail.com` as both approver and test recipient. |
 | 7 | Dashboard and Demo View | Complete | Dashboard read model, generated n8n webhook, responsive HTML register, dynamic counts, source PDF links, and forbidden-language guard verified locally. |
-| 8 | Full Fixture Run, Demo Reset, and Rehearsal | Not started | Depends on full demo workflow. |
+| 8 | Full Fixture Run, Demo Reset, and Rehearsal | Complete | Added fast local reset, full fixture verifier, committed fixture results table, and rehearsal runbook. Live Stage 8 verifier passed locally with no accepted deviations and reset final state to 18 vendors with zero runtime rows. |
 | 9 | Production Readiness Plan | Not started | Should not begin until demo-depth build is proven. |
 
 ## Open Decisions
@@ -157,6 +157,15 @@ The staged plan in `build-plan.md` follows the later `coi-demo-build-plan.md` wh
 - Added `docs/stage-7-dashboard-runbook.md`.
 - Verified Stage 7 locally: workflow JSON and Docker Compose parse, SQL applies, dashboard workflow imports and publishes, all 18 vendors render, current/expiring/expired/review/coverage-gap/manual-status/no-certificate states display correctly, rendered HTML contains none of the forbidden terms, and a dashboard source link returns PDF bytes through the Stage 5 source-document route.
 - Recorded the Stage 7 n8n webhook timing gotcha in `AGENTS.md`: wait for active workflow registration after restart before probing the dashboard route.
+- Added `scripts/reset-demo.ps1` to apply Stage 7 if needed, clear local runtime rows, reset vendor chase state, clear Stage 6/7 date overrides, preserve local credential/email config, and create the current UTC certificate storage path.
+- Extended Stage 5 manual fixture support to the full Stage 8 PDF fixture set: `f01`-`f09`, `f11`, `f12`, `f13`, `f15`-`f18`, and `f20`; kept `f10` as two attachment-specific PDF items, `f19` as a portal-link notice, and `f14` as metadata-only reset/no-file behavior.
+- Marked the generated Stage 5 IMAP fallback trigger disabled so publishing the demo intake workflow does not require unused IMAP credentials.
+- Added `scripts/verify-stage-8-fixtures.ps1` to regenerate, import, and publish demo workflows; run fixture scenarios through the Stage 5 manual trigger; verify Stage 6 no-file watch behavior; verify Stage 7 dashboard/source-link behavior; write raw output under ignored `tmp/`; update `docs/stage-8-fixture-results.md`; and leave the demo reset.
+- Added `docs/stage-8-demo-rehearsal-runbook.md` with reset/preflight commands, local URLs, four-minute local demo sequence, fallback lines, and manual pre-live-demo reminders for fallback video and public mobile-data validation.
+- Added cancellation-notice label cleanup in the shared Stage 4 validator so `Certificate states:` is treated as a fixture label and the stored neutral notice wording remains the factual sentence.
+- Verified Stage 4 validator tests after the cleanup, including the new cancellation-label assertion.
+- Verified `.\scripts\reset-demo.ps1`: 18 vendors, zero certificate/coverage/notice/outreach rows, 18 dashboard rows, and 18 no-certificate dashboard rows.
+- Verified `.\scripts\verify-stage-8-fixtures.ps1` live locally: all Stage 8 fixture scenarios passed, workflows imported/published, dashboard source PDF links returned PDF bytes, dashboard forbidden-word scan passed, Stage 6 no-file watch behavior passed, and final demo state was reset.
 
 ## Outstanding Risks To Track
 
@@ -165,7 +174,8 @@ The staged plan in `build-plan.md` follows the later `coi-demo-build-plan.md` wh
 - Model provider pricing and model IDs are temporally unstable; verify before Stage 1.
 - Gmail OAuth, public webhook URLs, and approval buttons are the most likely demo failure points.
 - The system cannot detect mid-term policy cancellation, forged certificates, missing vendors never entered into the register, or actual endorsement status.
+- Public HTTPS/mobile-data validation and fallback video recording remain manual pre-live-demo blockers.
 
 ## Next Action
 
-Begin Stage 8 full fixture run, demo reset, and rehearsal.
+Begin Stage 9 production readiness planning.

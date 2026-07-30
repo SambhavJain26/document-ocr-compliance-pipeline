@@ -41,9 +41,13 @@ When you set MEDIUM or LOW, state why in confidence_reason, in one short sentenc
 Bias toward LOW. A human reviews everything you mark LOW. Nobody reviews what you mark HIGH.`;
 
 function node(id, name, type, typeVersion, position, parameters = {}, credentials = undefined) {
-  const base = { parameters, id, name, type, typeVersion, position };
+  const { __disabled, ...cleanParameters } = parameters;
+  const base = { parameters: cleanParameters, id, name, type, typeVersion, position };
   if (credentials) {
     base.credentials = credentials;
+  }
+  if (__disabled) {
+    base.disabled = true;
   }
   return base;
 }
@@ -212,10 +216,19 @@ const pdfFixtures = new Set([
   "f02-expiring-20-days",
   "f03-expired-34-days",
   "f04-scanned-clean-current",
+  "f05-inverted-dates",
+  "f06-wrong-holder",
+  "f07-low-limits",
+  "f08-multiple-expiry-dates",
+  "f09-missing-gl",
   "f11-not-a-certificate",
   "f12-renewal-supersede",
   "f13-renewal-coverage-gap",
+  "f15-wc-exempt",
+  "f16-owner-llc-holder",
+  "f17-near-duplicate-vendor",
   "f18-password-protected",
+  "f20-cancellation-notice-wording",
 ]);
 
 function pdfItem(fixtureId, sourceRef = fixtureId) {
@@ -570,6 +583,7 @@ const intakeWorkflow = {
       },
     }, { gmailOAuth2: { id: "Gmail account", name: "Gmail account" } }),
     node("11000000-0000-4500-8500-000000000004", "IMAP Trigger - Disabled Fallback", "n8n-nodes-base.emailReadImap", 2, [0, 700], {
+      __disabled: true,
       options: {
         downloadAttachments: true,
       },
