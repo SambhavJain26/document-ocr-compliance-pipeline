@@ -25,6 +25,8 @@ Stage 6 adds these `client_config` keys:
 
 When `stage_6_outbound_test_mode = true`, the workflow preserves intended recipient and cc in `outreach_log`, but sends only to `stage_6_test_recipient_email`. Keep this enabled until using a real client mailbox and real test addresses.
 
+For local testing, `stage_6_approver_email` and `stage_6_test_recipient_email` may be the same Gmail address. Reapplying Stage 6 SQL preserves existing values for these keys.
+
 ## Behavior
 
 `stage_6_actionable_vendors(as_of_date)` returns one actionable row per unpaused vendor using this bucket order:
@@ -69,13 +71,13 @@ Run workflow checks:
 .\scripts\verify-stage-6-workflows.ps1
 ```
 
-The workflow verifier imports and publishes the two Stage 6 demo-facing workflows. It runs a safe OpenAI draft smoke and stores a config notice if approval/send addresses are blank.
+The workflow verifier imports and publishes the two Stage 6 demo-facing workflows. If `stage_6_approver_email` and `stage_6_test_recipient_email` are blank, it runs the safe config-notice path. If both are configured, it sends an approval email, waits for the Approve click, then verifies that the approved chase email was sent to the configured test recipient.
 
 To test the full Gmail approval/send path locally, set both config values before rerunning:
 
 ```sql
-UPDATE client_config SET value = 'demo+approval@gmail.com' WHERE key = 'stage_6_approver_email';
-UPDATE client_config SET value = 'demo+producer@gmail.com' WHERE key = 'stage_6_test_recipient_email';
+UPDATE client_config SET value = 'worksambhav26@gmail.com' WHERE key = 'stage_6_approver_email';
+UPDATE client_config SET value = 'worksambhav26@gmail.com' WHERE key = 'stage_6_test_recipient_email';
 ```
 
 Public phone approval remains deferred until the public HTTPS webhook path is configured before demo rehearsal.

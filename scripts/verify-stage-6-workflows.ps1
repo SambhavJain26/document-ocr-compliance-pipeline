@@ -113,6 +113,8 @@ try {
     return
   }
 
+  $configuredForApproval = Invoke-Stage6Scalar "SELECT stage_6_config_value('stage_6_approver_email', '') <> '' AND stage_6_config_value('stage_6_test_recipient_email', '') <> '';"
+
   Invoke-Stage6Sql @'
 TRUNCATE TABLE outreach_log, coverages, certificates, intake_notices RESTART IDENTITY;
 UPDATE vendors
@@ -122,12 +124,14 @@ UPDATE vendors
 SET chase_paused = false
 WHERE normalised_name = normalize_vendor_name('Vista Glass and Door LLC');
 UPDATE client_config
-SET value = ''
-WHERE key IN ('stage_6_approver_email', 'stage_6_test_recipient_email');
-UPDATE client_config
 SET value = '2026-07-30'
 WHERE key = 'stage_6_watch_as_of_date';
 '@ | Out-Null
+
+  if ($configuredForApproval -eq "t") {
+    $approverEmail = Invoke-Stage6Scalar "SELECT stage_6_config_value('stage_6_approver_email', '');"
+    Write-Host "Stage 6 live approval smoke is enabled. Approve the email sent to $approverEmail when it arrives."
+  }
 
   $executeOutput = docker compose run --rm --no-deps n8n execute --id $dailyWorkflowId --rawOutput
   $executeText = $executeOutput -join "`n"
@@ -136,13 +140,26 @@ WHERE key = 'stage_6_watch_as_of_date';
   Set-Content -Path $outputPath -Value $executeText -Encoding UTF8
 
   $execution = ConvertFrom-N8nRawOutput -Text $executeText
-  Assert-Stage6Condition ($execution.finished -eq $true) "Stage 6 daily watch execution did not finish successfully. Raw output saved at $outputPath."
+  if ($configuredForApproval -eq "t" -and $execution.status -eq "waiting") {
+    for ($attempt = 1; $attempt -le 36; $attempt++) {
+      $sent = Invoke-Stage6Scalar "SELECT count(*) = 1 FROM outreach_log WHERE bucket = 'NEVER_RECEIVED' AND approved = true AND sent_at IS NOT NULL AND actual_recipient = stage_6_config_value('stage_6_test_recipient_email', '');"
+      if ($sent -eq "t") {
+        break
+      }
+      Start-Sleep -Seconds 10
+    }
+  }
+  elseif ($configuredForApproval -ne "t") {
+    Assert-Stage6Condition ($execution.finished -eq $true) "Stage 6 daily watch execution did not finish successfully. Raw output saved at $outputPath."
+  }
 
   Assert-Stage6Condition ((Invoke-Stage6Scalar "SELECT count(*) = 1 FROM outreach_log WHERE bucket = 'NEVER_RECEIVED' AND drafted_body IS NOT NULL AND drafted_body !~* '\m(compliant|verified|covered|approved)\M';") -eq "t") "Stage 6 draft smoke did not create one safe pending outreach row."
-  Assert-Stage6Condition ((Invoke-Stage6Scalar "SELECT count(*) = 1 FROM intake_notices WHERE notice_code = 'STAGE_6_CONFIG_NOTICE';") -eq "t") "Stage 6 config notice was not stored when approval/send addresses were intentionally blank."
-
-  $configuredForApproval = Invoke-Stage6Scalar "SELECT stage_6_config_value('stage_6_approver_email', '') <> '' AND stage_6_config_value('stage_6_test_recipient_email', '') <> '';"
-  if ($configuredForApproval -ne "t") {
+  if ($configuredForApproval -eq "t") {
+    Assert-Stage6Condition ((Invoke-Stage6Scalar "SELECT count(*) = 1 FROM outreach_log WHERE bucket = 'NEVER_RECEIVED' AND approved = true AND sent_at IS NOT NULL AND follow_up_due IS NOT NULL AND actual_recipient = stage_6_config_value('stage_6_test_recipient_email', '');") -eq "t") "Stage 6 live approval/send smoke did not produce an approved sent outreach row."
+    Assert-Stage6Condition ((Invoke-Stage6Scalar "SELECT count(*) = 0 FROM intake_notices WHERE notice_code = 'STAGE_6_CONFIG_NOTICE';") -eq "t") "Stage 6 config notice was stored even though approval/send addresses were configured."
+  }
+  else {
+    Assert-Stage6Condition ((Invoke-Stage6Scalar "SELECT count(*) = 1 FROM intake_notices WHERE notice_code = 'STAGE_6_CONFIG_NOTICE';") -eq "t") "Stage 6 config notice was not stored when approval/send addresses were blank."
     Write-Warning "Approval/send live path skipped: stage_6_approver_email and stage_6_test_recipient_email are blank. Configure both, then rerun for a real approval email."
   }
 

@@ -29,8 +29,7 @@ INSERT INTO client_config(key, value) VALUES
   ('stage_6_approver_email', ''),
   ('stage_6_copy_vendor', 'true'),
   ('stage_6_watch_as_of_date', '')
-ON CONFLICT (key) DO UPDATE
-SET value = EXCLUDED.value;
+ON CONFLICT (key) DO NOTHING;
 
 CREATE OR REPLACE FUNCTION stage_6_config_value(config_key TEXT, default_value TEXT DEFAULT NULL)
 RETURNS TEXT
