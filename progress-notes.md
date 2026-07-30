@@ -45,8 +45,8 @@ The staged plan in `build-plan.md` follows the later `coi-demo-build-plan.md` wh
 
 1. Exact OpenAI model ID for the demo:
    - Provider/node choice is decided: OpenAI through n8n's built-in OpenAI node V2, using Responses API, PDF File input, and JSON Schema output.
-   - Current balanced default for Stage 1 notes: `gpt-5.6-luna`, because it is the cost-sensitive GPT-5.6 model while avoiding the lowest-cost nano tier for demo-critical extraction.
-   - Fallback if fixture quality is insufficient: `gpt-5.6-terra`.
+   - Current default for Stage 1 notes: `gpt-5.4-nano`.
+   - Fallback if fixture quality is insufficient: `gpt-5.6-luna`.
    - Store the chosen model in `client_config.model_id` during Stage 2 rather than hardcoding workflow nodes.
    - Fallback: OpenAI via HTTP Request if the installed n8n version lacks required controls.
    - Alternative only if OpenAI is unavailable: Anthropic via HTTP Request with prompt-only JSON and defensive parsing.
@@ -94,7 +94,7 @@ The staged plan in `build-plan.md` follows the later `coi-demo-build-plan.md` wh
 - Added `docs/stage-1-local-runbook.md` with exact same-machine setup and credential smoke-test instructions.
 - Verified `docker compose config`, local Postgres readiness/query, and n8n HTTP `200` at `http://localhost:5678`.
 - Noted n8n 2.29 first-start migrations and non-blocking Python task-runner warning in `AGENTS.md`.
-- Confirmed model default as balanced `gpt-5.6-luna`, keeping `gpt-5.6-terra` as fallback and avoiding nano as the default.
+- Set model default to `gpt-5.4-nano`, keeping `gpt-5.6-luna` as fallback.
 - Updated `coi-demo-build-plan.md` to make OpenAI node V2 the default model-call path.
 - Updated `coi-demo-build-plan.md` to make HTTP Request a fallback only.
 - Updated `coi-demo-build-plan.md` to make Gmail approval the default and Telegram optional.
