@@ -1,0 +1,24 @@
+{
+  "fixture_id": "f10-two-certificates-email",
+  "subject": "Fixture 10: Two certificates in one email",
+  "from": "producer@example.test",
+  "to": "demo+intake@example.test",
+  "body": "Attached are the requested synthetic certificate documents for local automation testing.",
+  "attachments": [
+    {
+      "fixture_id": "f01-clean-current",
+      "filename": "f01-clean-current.pdf",
+      "path": "../pdfs/f01-clean-current.pdf"
+    },
+    {
+      "fixture_id": "f02-expiring-20-days",
+      "filename": "f02-expiring-20-days.pdf",
+      "path": "../pdfs/f02-expiring-20-days.pdf"
+    }
+  ],
+  "expected": {
+    "outcome": "TWO_CERTIFICATE_ROWS",
+    "flags": [],
+    "notes": "Email payload references two PDF attachments."
+  }
+}

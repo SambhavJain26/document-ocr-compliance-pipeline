@@ -1,0 +1,335 @@
+{
+  "generated_at": "2026-07-30",
+  "watermark": "SPECIMEN - SYNTHETIC TEST DOCUMENT",
+  "fixtures": [
+    {
+      "id": "f01-clean-current",
+      "number": 1,
+      "title": "Clean and current",
+      "type": "certificate",
+      "expected": {
+        "outcome": "ON_FILE",
+        "confidence": "HIGH",
+        "flags": [],
+        "notes": "Happy path with GL, Auto, and WC."
+      },
+      "artifacts": [
+        "../pdfs/f01-clean-current.pdf"
+      ]
+    },
+    {
+      "id": "f02-expiring-20-days",
+      "number": 2,
+      "title": "Expiring in 20 days",
+      "type": "certificate",
+      "expected": {
+        "outcome": "ON_FILE",
+        "bucket": "30d",
+        "confidence": "HIGH",
+        "flags": [],
+        "notes": "Demo amber state."
+      },
+      "artifacts": [
+        "../pdfs/f02-expiring-20-days.pdf"
+      ]
+    },
+    {
+      "id": "f03-expired-34-days",
+      "number": 3,
+      "title": "Expired 34 days ago",
+      "type": "certificate",
+      "expected": {
+        "outcome": "ON_FILE",
+        "bucket": "EXPIRED",
+        "confidence": "HIGH",
+        "flags": [],
+        "notes": "Demo red state."
+      },
+      "artifacts": [
+        "../pdfs/f03-expired-34-days.pdf"
+      ]
+    },
+    {
+      "id": "f04-scanned-clean-current",
+      "number": 4,
+      "title": "Scanned clean current",
+      "type": "scanned_certificate",
+      "expected": {
+        "outcome": "ON_FILE",
+        "confidence": "MEDIUM",
+        "flags": [],
+        "notes": "Image-only PDF for model vision fallback."
+      },
+      "artifacts": [
+        "../pdfs/f04-scanned-clean-current.pdf"
+      ],
+      "base_fixture": "f01-clean-current"
+    },
+    {
+      "id": "f05-inverted-dates",
+      "number": 5,
+      "title": "Inverted dates",
+      "type": "certificate",
+      "expected": {
+        "outcome": "NEEDS_REVIEW",
+        "confidence": "HIGH",
+        "flags": [
+          "DATE_INVERTED"
+        ],
+        "notes": "Expiration precedes effective date."
+      },
+      "artifacts": [
+        "../pdfs/f05-inverted-dates.pdf"
+      ]
+    },
+    {
+      "id": "f06-wrong-holder",
+      "number": 6,
+      "title": "Wrong certificate holder",
+      "type": "certificate",
+      "expected": {
+        "outcome": "ON_FILE",
+        "confidence": "HIGH",
+        "flags": [
+          "HOLDER_MISMATCH"
+        ],
+        "notes": "Holder does not match configured accepted entities."
+      },
+      "artifacts": [
+        "../pdfs/f06-wrong-holder.pdf"
+      ]
+    },
+    {
+      "id": "f07-low-limits",
+      "number": 7,
+      "title": "Limits below minimum",
+      "type": "certificate",
+      "expected": {
+        "outcome": "ON_FILE",
+        "confidence": "HIGH",
+        "flags": [
+          "LIMIT_BELOW_MINIMUM"
+        ],
+        "notes": "GL each occurrence is 300000."
+      },
+      "artifacts": [
+        "../pdfs/f07-low-limits.pdf"
+      ]
+    },
+    {
+      "id": "f08-multiple-expiry-dates",
+      "number": 8,
+      "title": "Four coverage lines with different expiry dates",
+      "type": "certificate",
+      "expected": {
+        "outcome": "ON_FILE",
+        "confidence": "HIGH",
+        "flags": [],
+        "earliest_expiration": "2026-09-15",
+        "notes": "Earliest date comes from Auto line."
+      },
+      "artifacts": [
+        "../pdfs/f08-multiple-expiry-dates.pdf"
+      ]
+    },
+    {
+      "id": "f09-missing-gl",
+      "number": 9,
+      "title": "No GL line",
+      "type": "certificate",
+      "expected": {
+        "outcome": "ON_FILE",
+        "confidence": "HIGH",
+        "flags": [
+          "NO_GL_LINE"
+        ],
+        "notes": "No General Liability row appears."
+      },
+      "artifacts": [
+        "../pdfs/f09-missing-gl.pdf"
+      ]
+    },
+    {
+      "id": "f10-two-certificates-email",
+      "number": 10,
+      "title": "Two certificates in one email",
+      "type": "email",
+      "expected": {
+        "outcome": "TWO_CERTIFICATE_ROWS",
+        "flags": [],
+        "notes": "Email payload references two PDF attachments."
+      },
+      "artifacts": [
+        "../emails/f10-two-certificates-email.json"
+      ]
+    },
+    {
+      "id": "f11-not-a-certificate",
+      "number": 11,
+      "title": "Not a certificate",
+      "type": "non_certificate_pdf",
+      "expected": {
+        "outcome": "NOT_A_COI",
+        "flags": [
+          "NOT_A_COI"
+        ],
+        "notes": "W-9-style synthetic document, not an insurance certificate."
+      },
+      "artifacts": [
+        "../pdfs/f11-not-a-certificate.pdf"
+      ]
+    },
+    {
+      "id": "f12-renewal-supersede",
+      "number": 12,
+      "title": "Renewal for existing vendor",
+      "type": "certificate",
+      "expected": {
+        "outcome": "ON_FILE",
+        "supersedes_fixture": "f02-expiring-20-days",
+        "confidence": "HIGH",
+        "flags": [],
+        "notes": "Newer certificate should supersede fixture 2 later."
+      },
+      "artifacts": [
+        "../pdfs/f12-renewal-supersede.pdf"
+      ]
+    },
+    {
+      "id": "f13-renewal-coverage-gap",
+      "number": 13,
+      "title": "Renewal with coverage gap",
+      "type": "certificate",
+      "expected": {
+        "outcome": "ON_FILE",
+        "supersedes_fixture": "f03-expired-34-days",
+        "confidence": "HIGH",
+        "flags": [
+          "COVERAGE_GAP"
+        ],
+        "gap_days": 14,
+        "notes": "Old policy ended 2026-03-01; new policy effective 2026-03-15."
+      },
+      "artifacts": [
+        "../pdfs/f13-renewal-coverage-gap.pdf"
+      ]
+    },
+    {
+      "id": "f14-no-file-vendors",
+      "number": 14,
+      "title": "No certificate on file",
+      "type": "metadata_only",
+      "expected": {
+        "outcome": "NEVER_RECEIVED",
+        "bucket": "NEVER_RECEIVED",
+        "flags": [],
+        "notes": "No PDF is generated for this fixture."
+      },
+      "artifacts": [],
+      "vendors": [
+        "Vista Glass and Door LLC",
+        "Oakbend Tree Service LLC",
+        "Northstar Snow Removal LLC",
+        "Rapid Response Restoration LLC"
+      ]
+    },
+    {
+      "id": "f15-wc-exempt",
+      "number": 15,
+      "title": "Sole proprietor with no workers comp",
+      "type": "certificate",
+      "expected": {
+        "outcome": "ON_FILE",
+        "confidence": "HIGH",
+        "flags": [],
+        "notes": "GL-only certificate should not produce a WC flag for this vendor."
+      },
+      "artifacts": [
+        "../pdfs/f15-wc-exempt.pdf"
+      ]
+    },
+    {
+      "id": "f16-owner-llc-holder",
+      "number": 16,
+      "title": "Accepted owner LLC holder",
+      "type": "certificate",
+      "expected": {
+        "outcome": "ON_FILE",
+        "confidence": "HIGH",
+        "flags": [],
+        "notes": "Holder should match accepted holder_entities."
+      },
+      "artifacts": [
+        "../pdfs/f16-owner-llc-holder.pdf"
+      ]
+    },
+    {
+      "id": "f17-near-duplicate-vendor",
+      "number": 17,
+      "title": "Near duplicate vendor",
+      "type": "certificate",
+      "expected": {
+        "outcome": "NEEDS_REVIEW",
+        "confidence": "HIGH",
+        "flags": [
+          "POSSIBLE_DUPLICATE_VENDOR"
+        ],
+        "near_match": "Apex Plumbing Services LLC",
+        "notes": "Later matching should not silently merge this vendor."
+      },
+      "artifacts": [
+        "../pdfs/f17-near-duplicate-vendor.pdf"
+      ]
+    },
+    {
+      "id": "f18-password-protected",
+      "number": 18,
+      "title": "Password protected PDF",
+      "type": "password_certificate",
+      "expected": {
+        "outcome": "NEEDS_REVIEW",
+        "confidence": "LOW",
+        "flags": [
+          "PDF_PASSWORD_PROTECTED"
+        ],
+        "notes": "Unauthenticated extraction should fail cleanly."
+      },
+      "artifacts": [
+        "../pdfs/f18-password-protected.pdf"
+      ],
+      "password": "stage3-test-password"
+    },
+    {
+      "id": "f19-portal-link-email",
+      "number": 19,
+      "title": "Portal link email",
+      "type": "email",
+      "expected": {
+        "outcome": "PORTAL_LINK_NOTICE",
+        "flags": [
+          "PORTAL_LINK_NO_ATTACHMENT"
+        ],
+        "notes": "No attachment should be fetched automatically."
+      },
+      "artifacts": [
+        "../emails/f19-portal-link-email.json"
+      ]
+    },
+    {
+      "id": "f20-cancellation-notice-wording",
+      "number": 20,
+      "title": "Cancellation notice wording",
+      "type": "certificate",
+      "expected": {
+        "outcome": "ON_FILE",
+        "confidence": "HIGH",
+        "flags": [],
+        "cancellation_notice_wording": "Thirty days written notice of cancellation will be sent to the certificate holder when required by policy terms.",
+        "notes": "Capture wording verbatim as a neutral note."
+      },
+      "artifacts": [
+        "../pdfs/f20-cancellation-notice-wording.pdf"
+      ]
+    }
+  ]
+}

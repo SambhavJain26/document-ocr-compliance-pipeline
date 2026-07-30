@@ -1,0 +1,15 @@
+{
+  "fixture_id": "f19-portal-link-email",
+  "subject": "Fixture 19: Portal link email",
+  "from": "producer@example.test",
+  "to": "demo+intake@example.test",
+  "body": "Hello Harbourline team, download the current certificate for Cedar Path Janitorial Services LLC from https://portal.example.test/certificates/cedar-path. Thank you.",
+  "attachments": [],
+  "expected": {
+    "outcome": "PORTAL_LINK_NOTICE",
+    "flags": [
+      "PORTAL_LINK_NO_ATTACHMENT"
+    ],
+    "notes": "No attachment should be fetched automatically."
+  }
+}

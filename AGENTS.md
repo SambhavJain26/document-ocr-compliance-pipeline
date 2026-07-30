@@ -48,12 +48,16 @@ Stage 1 local environment commands:
 - `.\scripts\stop-local.ps1`: stop the local stack without removing volumes.
 - `.\scripts\apply-stage-2.ps1`: apply the Stage 2 Postgres schema and synthetic seed data.
 - `.\scripts\verify-stage-2.ps1`: verify Stage 2 tables, config, seed vendors, normalization, trade fallback, and empty certificate/outreach tables.
+- `.\scripts\generate-stage-3-fixtures.ps1`: regenerate the synthetic Stage 3 fixture PDFs, email payloads, and expected metadata.
+- `.\scripts\verify-stage-3-fixtures.ps1`: verify fixture counts, text layers, scanned/no-text behavior, password protection, forbidden terms, and rendered previews.
 
 Expected local services are n8n at `http://localhost:5678` and Postgres on `127.0.0.1:5432`. Gmail/OpenAI credentials are created manually inside n8n and must not be stored in repo files. One Gmail or Google Workspace mailbox is enough for local testing; use plus-address aliases for logical vendor, producer, approval, and intake roles when needed. Do not assume Docker images, accounts, OAuth apps, API keys, or n8n credentials already exist. On first n8n 2.x startup, internal migrations can take long enough for early HTTP probes to fail; rerun `.\scripts\verify-local.ps1` or rely on its retry loop. The `n8nio/n8n:latest` image may log a Python task-runner warning because Python is absent; this is not a Stage 1 blocker when JS workflows and service health pass.
 
 For n8n 2.29 CLI smoke tests, `n8n execute --file` is deprecated and may still require `--id`; import temporary smoke workflows into the local project, execute them by ID, then delete the temporary workflows from n8n.
 
 Stage 2 SQL scripts are applied by piping them into the running Postgres service with `psql -v ON_ERROR_STOP=1 -f -`. Keep Stage 2 seed SQL idempotent; rerunning it must not duplicate vendors, holder entities, trade requirements, or config rows.
+
+Stage 3 fixture scripts use the bundled Codex Python runtime when available because system Python may not have PDF dependencies. Rendered fixture previews are generated under ignored `tmp/stage-3-previews/`; do not commit preview images unless a later task explicitly asks for visual artifacts.
 
 ## Architecture Rules
 

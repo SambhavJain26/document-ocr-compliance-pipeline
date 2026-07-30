@@ -6,6 +6,7 @@
 data/
 logs/
 tmp/
+__pycache__/
 *.log
 
 # Credentials and real documents
@@ -14,6 +15,8 @@ secrets/
 fixtures/real/
 data/**/*.pdf
 tmp/**/*.pdf
+tmp/**/*.png
+tmp/**/*.jpg
 
 # OS/editor noise
 .DS_Store

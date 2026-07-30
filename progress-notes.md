@@ -4,7 +4,7 @@ Created: 2026-07-30
 
 ## Current Status
 
-Stage 1 local environment scaffolding and credential smoke verification are complete on this machine. Stage 2 database schema and synthetic seed register are complete and verified. Rechecked `coi-demo-build-plan.md` once after the initial plan and made small planning corrections. Rechecked current n8n/OpenAI documentation on 2026-07-30 and changed the recommended model-call implementation from HTTP Request-first to built-in OpenAI node V2-first.
+Stage 1 local environment scaffolding and credential smoke verification are complete on this machine. Stage 2 database schema and synthetic seed register are complete and verified. Stage 3 synthetic fixtures are generated and verified. Rechecked `coi-demo-build-plan.md` once after the initial plan and made small planning corrections. Rechecked current n8n/OpenAI documentation on 2026-07-30 and changed the recommended model-call implementation from HTTP Request-first to built-in OpenAI node V2-first.
 
 ## Source Documents Reviewed
 
@@ -33,7 +33,7 @@ The staged plan in `build-plan.md` follows the later `coi-demo-build-plan.md` wh
 |---|---|---|---|
 | 1 | Environment, Accounts, and Local n8n | Complete | Local Docker Compose environment verified. Public HTTPS intentionally deferred because all Stage 1 testing is same-machine only. Postgres, OpenAI, and Gmail credentials smoke-tested through n8n. |
 | 2 | Database Schema, Client Config, and Seed Vendors | Complete | Seven project tables created. Synthetic Harbourline config, holder entities, trade requirements, and 18 vendors seeded. Certificate, coverage, and outreach tables remain empty. |
-| 3 | Synthetic Test Fixtures | Not started | Must avoid ACORD form/logo/copyright reproduction. |
+| 3 | Synthetic Test Fixtures | Complete | 20 fixture records generated: 17 PDFs, 2 email payloads, and 1 metadata-only no-file case. Verified watermark, text-layer behavior, scanned no-text behavior, password protection, rendered previews, and forbidden-term scan. |
 | 4 | Extraction and Validation Core | Not started | Depends on fixture set and OpenAI node V2 availability. |
 | 5 | Intake Workflow End to End | Not started | Depends on extraction core. |
 | 6 | Daily Watch, Drafting, Approval, and Escalation | Not started | Depends on stored certificate records. |
@@ -107,6 +107,10 @@ The staged plan in `build-plan.md` follows the later `coi-demo-build-plan.md` wh
 - Added `scripts/apply-stage-2.ps1` and `scripts/verify-stage-2.ps1`.
 - Added `docs/stage-2-database-runbook.md`.
 - Verified Stage 2 after an idempotent rerun: seven project tables exist, 10 config keys exist, model defaults are `gpt-5.4-nano` and `gpt-5.6-luna`, one primary holder exists, default/Roofing/Landscaping requirements exist, 18 vendors exist, one vendor is WC-exempt, vendor normalization is deterministic and unique, and `certificates`, `coverages`, and `outreach_log` are empty.
+- Added Stage 3 JSON fixture spec, ReportLab generator, generated fixture PDFs, email payloads, and expected metadata.
+- Added `scripts/generate-stage-3-fixtures.ps1` and `scripts/verify-stage-3-fixtures.ps1`.
+- Added `docs/stage-3-fixtures-runbook.md`.
+- Verified Stage 3: 20 fixture records, 17 PDFs, 2 email payloads, fixture 14 metadata-only, normal PDFs watermarked and text-extractable, scanned fixture has zero extracted text, password PDF is encrypted and blocks unauthenticated text extraction, all PDFs render to previews, and fixture artifacts contain no forbidden terms `ACORD`, `compliant`, `verified`, or `approved`.
 - Updated `coi-demo-build-plan.md` to make OpenAI node V2 the default model-call path.
 - Updated `coi-demo-build-plan.md` to make HTTP Request a fallback only.
 - Updated `coi-demo-build-plan.md` to make Gmail approval the default and Telegram optional.
@@ -124,4 +128,4 @@ The staged plan in `build-plan.md` follows the later `coi-demo-build-plan.md` wh
 
 ## Next Action
 
-Stage 2 is complete. Next approved implementation step is Stage 3 only: synthetic test fixtures.
+Stage 3 is complete. Next approved implementation step is Stage 4 only: extraction and validation core.

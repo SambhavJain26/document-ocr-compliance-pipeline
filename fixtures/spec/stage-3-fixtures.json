@@ -1,0 +1,420 @@
+{
+  "watermark": "SPECIMEN - SYNTHETIC TEST DOCUMENT",
+  "fixture_date": "2026-07-30",
+  "default_holder": "Harbourline Property Management LLC",
+  "carriers": [
+    "Northgate Mutual",
+    "Cardinal Casualty",
+    "Ironvale Indemnity"
+  ],
+  "fixtures": [
+    {
+      "id": "f01-clean-current",
+      "number": 1,
+      "title": "Clean and current",
+      "type": "certificate",
+      "vendor": "Apex Plumbing Services LLC",
+      "trade": "Plumbing",
+      "holder": "Harbourline Property Management LLC",
+      "producer": "Northgate Risk Partners",
+      "producer_email": "certs+northgate@example.test",
+      "certificate_date": "2026-07-30",
+      "description": "Routine plumbing service certificate for Harbourline managed properties.",
+      "expected": {
+        "outcome": "ON_FILE",
+        "confidence": "HIGH",
+        "flags": [],
+        "notes": "Happy path with GL, Auto, and WC."
+      },
+      "coverages": [
+        {"type": "GENERAL_LIABILITY", "carrier": "Northgate Mutual", "policy": "NMG-1001-GL", "effective": "2026-07-01", "expiration": "2027-03-30", "each_occurrence": 1000000, "general_aggregate": 2000000, "addl_insd_asserted": true, "subr_wvd_asserted": false},
+        {"type": "AUTO", "carrier": "Cardinal Casualty", "policy": "CAR-1001-AU", "effective": "2026-07-01", "expiration": "2027-03-30", "each_occurrence": 1000000, "general_aggregate": null, "addl_insd_asserted": false, "subr_wvd_asserted": false},
+        {"type": "WORKERS_COMP", "carrier": "Ironvale Indemnity", "policy": "IRN-1001-WC", "effective": "2026-07-01", "expiration": "2027-03-30", "each_occurrence": 500000, "general_aggregate": null, "addl_insd_asserted": false, "subr_wvd_asserted": false}
+      ]
+    },
+    {
+      "id": "f02-expiring-20-days",
+      "number": 2,
+      "title": "Expiring in 20 days",
+      "type": "certificate",
+      "vendor": "Blue Ridge HVAC Co.",
+      "trade": "HVAC",
+      "holder": "Harbourline Property Management LLC",
+      "producer": "Cardinal Coverage Group",
+      "producer_email": "certs+cardinal@example.test",
+      "certificate_date": "2026-07-30",
+      "description": "HVAC seasonal service certificate.",
+      "expected": {
+        "outcome": "ON_FILE",
+        "bucket": "30d",
+        "confidence": "HIGH",
+        "flags": [],
+        "notes": "Demo amber state."
+      },
+      "coverages": [
+        {"type": "GENERAL_LIABILITY", "carrier": "Cardinal Casualty", "policy": "CAR-2002-GL", "effective": "2025-08-20", "expiration": "2026-08-19", "each_occurrence": 1000000, "general_aggregate": 2000000, "addl_insd_asserted": true, "subr_wvd_asserted": false}
+      ]
+    },
+    {
+      "id": "f03-expired-34-days",
+      "number": 3,
+      "title": "Expired 34 days ago",
+      "type": "certificate",
+      "vendor": "Circuit Square Electric LLC",
+      "trade": "Electrical",
+      "holder": "Harbourline Property Management LLC",
+      "producer": "Ironvale Insurance Services",
+      "producer_email": "certs+ironvale@example.test",
+      "certificate_date": "2025-06-20",
+      "description": "Electrical repair certificate with expired GL policy.",
+      "expected": {
+        "outcome": "ON_FILE",
+        "bucket": "EXPIRED",
+        "confidence": "HIGH",
+        "flags": [],
+        "notes": "Demo red state."
+      },
+      "coverages": [
+        {"type": "GENERAL_LIABILITY", "carrier": "Ironvale Indemnity", "policy": "IRN-3003-GL", "effective": "2025-06-27", "expiration": "2026-06-26", "each_occurrence": 1000000, "general_aggregate": 2000000, "addl_insd_asserted": true, "subr_wvd_asserted": true}
+      ]
+    },
+    {
+      "id": "f04-scanned-clean-current",
+      "number": 4,
+      "title": "Scanned clean current",
+      "type": "scanned_certificate",
+      "base_fixture": "f01-clean-current",
+      "expected": {
+        "outcome": "ON_FILE",
+        "confidence": "MEDIUM",
+        "flags": [],
+        "notes": "Image-only PDF for model vision fallback."
+      }
+    },
+    {
+      "id": "f05-inverted-dates",
+      "number": 5,
+      "title": "Inverted dates",
+      "type": "certificate",
+      "vendor": "Summit Shield Roofing Inc.",
+      "trade": "Roofing",
+      "holder": "Harbourline Property Management LLC",
+      "producer": "Northgate Risk Partners",
+      "producer_email": "certs+summit@example.test",
+      "certificate_date": "2026-07-30",
+      "description": "Roofing certificate with inverted GL dates for validation testing.",
+      "expected": {
+        "outcome": "NEEDS_REVIEW",
+        "confidence": "HIGH",
+        "flags": ["DATE_INVERTED"],
+        "notes": "Expiration precedes effective date."
+      },
+      "coverages": [
+        {"type": "GENERAL_LIABILITY", "carrier": "Northgate Mutual", "policy": "NMG-5005-GL", "effective": "2026-09-01", "expiration": "2026-08-01", "each_occurrence": 2000000, "general_aggregate": 4000000, "addl_insd_asserted": true, "subr_wvd_asserted": false}
+      ]
+    },
+    {
+      "id": "f06-wrong-holder",
+      "number": 6,
+      "title": "Wrong certificate holder",
+      "type": "certificate",
+      "vendor": "Greenline Groundskeeping LLC",
+      "trade": "Landscaping",
+      "holder": "Beacon Ridge Realty",
+      "producer": "Cardinal Coverage Group",
+      "producer_email": "certs+greenline@example.test",
+      "certificate_date": "2026-07-30",
+      "description": "Landscaping certificate naming the wrong holder.",
+      "expected": {
+        "outcome": "ON_FILE",
+        "confidence": "HIGH",
+        "flags": ["HOLDER_MISMATCH"],
+        "notes": "Holder does not match configured accepted entities."
+      },
+      "coverages": [
+        {"type": "GENERAL_LIABILITY", "carrier": "Cardinal Casualty", "policy": "CAR-6006-GL", "effective": "2026-05-01", "expiration": "2027-05-01", "each_occurrence": 500000, "general_aggregate": 1000000, "addl_insd_asserted": false, "subr_wvd_asserted": false}
+      ]
+    },
+    {
+      "id": "f07-low-limits",
+      "number": 7,
+      "title": "Limits below minimum",
+      "type": "certificate",
+      "vendor": "Clearway Pest Control LLC",
+      "trade": "Pest Control",
+      "holder": "Harbourline Property Management LLC",
+      "producer": "Ironvale Insurance Services",
+      "producer_email": "certs+clearway@example.test",
+      "certificate_date": "2026-07-30",
+      "description": "Pest control certificate with GL each occurrence below default requirement.",
+      "expected": {
+        "outcome": "ON_FILE",
+        "confidence": "HIGH",
+        "flags": ["LIMIT_BELOW_MINIMUM"],
+        "notes": "GL each occurrence is 300000."
+      },
+      "coverages": [
+        {"type": "GENERAL_LIABILITY", "carrier": "Ironvale Indemnity", "policy": "IRN-7007-GL", "effective": "2026-01-01", "expiration": "2027-01-01", "each_occurrence": 300000, "general_aggregate": 1000000, "addl_insd_asserted": true, "subr_wvd_asserted": false}
+      ]
+    },
+    {
+      "id": "f08-multiple-expiry-dates",
+      "number": 8,
+      "title": "Four coverage lines with different expiry dates",
+      "type": "certificate",
+      "vendor": "Bright Hall Cleaning Co.",
+      "trade": "Cleaning",
+      "holder": "Harbourline Property Management LLC",
+      "producer": "Northgate Risk Partners",
+      "producer_email": "certs+bright-hall@example.test",
+      "certificate_date": "2026-07-30",
+      "description": "Cleaning certificate with four distinct expiration dates.",
+      "expected": {
+        "outcome": "ON_FILE",
+        "confidence": "HIGH",
+        "flags": [],
+        "earliest_expiration": "2026-09-15",
+        "notes": "Earliest date comes from Auto line."
+      },
+      "coverages": [
+        {"type": "GENERAL_LIABILITY", "carrier": "Northgate Mutual", "policy": "NMG-8008-GL", "effective": "2026-06-01", "expiration": "2026-12-01", "each_occurrence": 1000000, "general_aggregate": 2000000, "addl_insd_asserted": false, "subr_wvd_asserted": false},
+        {"type": "AUTO", "carrier": "Cardinal Casualty", "policy": "CAR-8008-AU", "effective": "2026-03-15", "expiration": "2026-09-15", "each_occurrence": 1000000, "general_aggregate": null, "addl_insd_asserted": false, "subr_wvd_asserted": false},
+        {"type": "UMBRELLA", "carrier": "Ironvale Indemnity", "policy": "IRN-8008-UM", "effective": "2026-04-01", "expiration": "2027-01-01", "each_occurrence": 1000000, "general_aggregate": 1000000, "addl_insd_asserted": false, "subr_wvd_asserted": false},
+        {"type": "WORKERS_COMP", "carrier": "Northgate Mutual", "policy": "NMG-8008-WC", "effective": "2026-05-01", "expiration": "2026-11-01", "each_occurrence": 500000, "general_aggregate": null, "addl_insd_asserted": false, "subr_wvd_asserted": false}
+      ]
+    },
+    {
+      "id": "f09-missing-gl",
+      "number": 9,
+      "title": "No GL line",
+      "type": "certificate",
+      "vendor": "Prime Coat Painting LLC",
+      "trade": "Painting",
+      "holder": "Harbourline Property Management LLC",
+      "producer": "Cardinal Coverage Group",
+      "producer_email": "certs+prime-coat@example.test",
+      "certificate_date": "2026-07-30",
+      "description": "Painting certificate with Auto and WC only.",
+      "expected": {
+        "outcome": "ON_FILE",
+        "confidence": "HIGH",
+        "flags": ["NO_GL_LINE"],
+        "notes": "No General Liability row appears."
+      },
+      "coverages": [
+        {"type": "AUTO", "carrier": "Cardinal Casualty", "policy": "CAR-9009-AU", "effective": "2026-02-01", "expiration": "2027-02-01", "each_occurrence": 1000000, "general_aggregate": null, "addl_insd_asserted": false, "subr_wvd_asserted": false},
+        {"type": "WORKERS_COMP", "carrier": "Ironvale Indemnity", "policy": "IRN-9009-WC", "effective": "2026-02-01", "expiration": "2027-02-01", "each_occurrence": 500000, "general_aggregate": null, "addl_insd_asserted": false, "subr_wvd_asserted": false}
+      ]
+    },
+    {
+      "id": "f10-two-certificates-email",
+      "number": 10,
+      "title": "Two certificates in one email",
+      "type": "email",
+      "attachments": ["f01-clean-current", "f02-expiring-20-days"],
+      "expected": {
+        "outcome": "TWO_CERTIFICATE_ROWS",
+        "flags": [],
+        "notes": "Email payload references two PDF attachments."
+      }
+    },
+    {
+      "id": "f11-not-a-certificate",
+      "number": 11,
+      "title": "Not a certificate",
+      "type": "non_certificate_pdf",
+      "vendor": "Anchor Tile and Flooring LLC",
+      "expected": {
+        "outcome": "NOT_A_COI",
+        "flags": ["NOT_A_COI"],
+        "notes": "W-9-style synthetic document, not an insurance certificate."
+      }
+    },
+    {
+      "id": "f12-renewal-supersede",
+      "number": 12,
+      "title": "Renewal for existing vendor",
+      "type": "certificate",
+      "vendor": "Blue Ridge HVAC Co.",
+      "trade": "HVAC",
+      "holder": "Harbourline Property Management LLC",
+      "producer": "Cardinal Coverage Group",
+      "producer_email": "certs+cardinal@example.test",
+      "certificate_date": "2026-08-10",
+      "description": "Renewal certificate for fixture 2 vendor.",
+      "expected": {
+        "outcome": "ON_FILE",
+        "supersedes_fixture": "f02-expiring-20-days",
+        "confidence": "HIGH",
+        "flags": [],
+        "notes": "Newer certificate should supersede fixture 2 later."
+      },
+      "coverages": [
+        {"type": "GENERAL_LIABILITY", "carrier": "Cardinal Casualty", "policy": "CAR-2012-GL", "effective": "2026-08-20", "expiration": "2027-08-20", "each_occurrence": 1000000, "general_aggregate": 2000000, "addl_insd_asserted": true, "subr_wvd_asserted": false}
+      ]
+    },
+    {
+      "id": "f13-renewal-coverage-gap",
+      "number": 13,
+      "title": "Renewal with coverage gap",
+      "type": "certificate",
+      "vendor": "Circuit Square Electric LLC",
+      "trade": "Electrical",
+      "holder": "Harbourline Property Management LLC",
+      "producer": "Ironvale Insurance Services",
+      "producer_email": "certs+ironvale@example.test",
+      "certificate_date": "2026-03-16",
+      "description": "Replacement certificate that starts after the prior policy ended.",
+      "expected": {
+        "outcome": "ON_FILE",
+        "supersedes_fixture": "f03-expired-34-days",
+        "confidence": "HIGH",
+        "flags": ["COVERAGE_GAP"],
+        "gap_days": 14,
+        "notes": "Old policy ended 2026-03-01; new policy effective 2026-03-15."
+      },
+      "coverages": [
+        {"type": "GENERAL_LIABILITY", "carrier": "Ironvale Indemnity", "policy": "IRN-3013-GL", "effective": "2026-03-15", "expiration": "2027-03-15", "each_occurrence": 1000000, "general_aggregate": 2000000, "addl_insd_asserted": true, "subr_wvd_asserted": true}
+      ]
+    },
+    {
+      "id": "f14-no-file-vendors",
+      "number": 14,
+      "title": "No certificate on file",
+      "type": "metadata_only",
+      "vendors": ["Vista Glass and Door LLC", "Oakbend Tree Service LLC", "Northstar Snow Removal LLC", "Rapid Response Restoration LLC"],
+      "expected": {
+        "outcome": "NEVER_RECEIVED",
+        "bucket": "NEVER_RECEIVED",
+        "flags": [],
+        "notes": "No PDF is generated for this fixture."
+      }
+    },
+    {
+      "id": "f15-wc-exempt",
+      "number": 15,
+      "title": "Sole proprietor with no workers comp",
+      "type": "certificate",
+      "vendor": "Mason Creek Handyman",
+      "trade": "General Contractor",
+      "holder": "Harbourline Property Management LLC",
+      "producer": "Northgate Risk Partners",
+      "producer_email": "certs+mason-creek@example.test",
+      "certificate_date": "2026-07-30",
+      "description": "Sole proprietor fixture; vendor seed has wc_exempt true.",
+      "expected": {
+        "outcome": "ON_FILE",
+        "confidence": "HIGH",
+        "flags": [],
+        "notes": "GL-only certificate should not produce a WC flag for this vendor."
+      },
+      "coverages": [
+        {"type": "GENERAL_LIABILITY", "carrier": "Northgate Mutual", "policy": "NMG-1515-GL", "effective": "2026-07-01", "expiration": "2027-07-01", "each_occurrence": 1000000, "general_aggregate": 2000000, "addl_insd_asserted": true, "subr_wvd_asserted": false}
+      ]
+    },
+    {
+      "id": "f16-owner-llc-holder",
+      "number": 16,
+      "title": "Accepted owner LLC holder",
+      "type": "certificate",
+      "vendor": "Evergreen Appliance Repair LLC",
+      "trade": "Appliance Repair",
+      "holder": "Harbourline Oakview Owner LLC",
+      "producer": "Ironvale Insurance Services",
+      "producer_email": "certs+evergreen@example.test",
+      "certificate_date": "2026-07-30",
+      "description": "Certificate holder is an accepted owner entity.",
+      "expected": {
+        "outcome": "ON_FILE",
+        "confidence": "HIGH",
+        "flags": [],
+        "notes": "Holder should match accepted holder_entities."
+      },
+      "coverages": [
+        {"type": "GENERAL_LIABILITY", "carrier": "Ironvale Indemnity", "policy": "IRN-1616-GL", "effective": "2026-04-01", "expiration": "2027-04-01", "each_occurrence": 1000000, "general_aggregate": 2000000, "addl_insd_asserted": true, "subr_wvd_asserted": false}
+      ]
+    },
+    {
+      "id": "f17-near-duplicate-vendor",
+      "number": 17,
+      "title": "Near duplicate vendor",
+      "type": "certificate",
+      "vendor": "Apex Plumbing and Heating LLC",
+      "trade": "Plumbing",
+      "holder": "Harbourline Property Management LLC",
+      "producer": "Northgate Risk Partners",
+      "producer_email": "certs+northgate@example.test",
+      "certificate_date": "2026-07-30",
+      "description": "Vendor name is intentionally close to an existing seeded vendor.",
+      "expected": {
+        "outcome": "NEEDS_REVIEW",
+        "confidence": "HIGH",
+        "flags": ["POSSIBLE_DUPLICATE_VENDOR"],
+        "near_match": "Apex Plumbing Services LLC",
+        "notes": "Later matching should not silently merge this vendor."
+      },
+      "coverages": [
+        {"type": "GENERAL_LIABILITY", "carrier": "Northgate Mutual", "policy": "NMG-1717-GL", "effective": "2026-07-01", "expiration": "2027-07-01", "each_occurrence": 1000000, "general_aggregate": 2000000, "addl_insd_asserted": true, "subr_wvd_asserted": false}
+      ]
+    },
+    {
+      "id": "f18-password-protected",
+      "number": 18,
+      "title": "Password protected PDF",
+      "type": "password_certificate",
+      "password": "stage3-test-password",
+      "vendor": "Rapid Response Restoration LLC",
+      "trade": "Restoration",
+      "holder": "Harbourline Property Management LLC",
+      "producer": "Cardinal Coverage Group",
+      "producer_email": "certs+rapid@example.test",
+      "certificate_date": "2026-07-30",
+      "description": "Encrypted certificate fixture.",
+      "expected": {
+        "outcome": "NEEDS_REVIEW",
+        "confidence": "LOW",
+        "flags": ["PDF_PASSWORD_PROTECTED"],
+        "notes": "Unauthenticated extraction should fail cleanly."
+      },
+      "coverages": [
+        {"type": "GENERAL_LIABILITY", "carrier": "Cardinal Casualty", "policy": "CAR-1818-GL", "effective": "2026-07-01", "expiration": "2027-07-01", "each_occurrence": 1000000, "general_aggregate": 2000000, "addl_insd_asserted": true, "subr_wvd_asserted": false}
+      ]
+    },
+    {
+      "id": "f19-portal-link-email",
+      "number": 19,
+      "title": "Portal link email",
+      "type": "email",
+      "attachments": [],
+      "body": "Hello Harbourline team, download the current certificate for Cedar Path Janitorial Services LLC from https://portal.example.test/certificates/cedar-path. Thank you.",
+      "expected": {
+        "outcome": "PORTAL_LINK_NOTICE",
+        "flags": ["PORTAL_LINK_NO_ATTACHMENT"],
+        "notes": "No attachment should be fetched automatically."
+      }
+    },
+    {
+      "id": "f20-cancellation-notice-wording",
+      "number": 20,
+      "title": "Cancellation notice wording",
+      "type": "certificate",
+      "vendor": "Cedar Path Janitorial Services LLC",
+      "trade": "Cleaning",
+      "holder": "Harbourline Property Management LLC",
+      "producer": "Ironvale Insurance Services",
+      "producer_email": "certs+cedar-path@example.test",
+      "certificate_date": "2026-07-30",
+      "description": "Certificate states: Thirty days written notice of cancellation will be sent to the certificate holder when required by policy terms.",
+      "expected": {
+        "outcome": "ON_FILE",
+        "confidence": "HIGH",
+        "flags": [],
+        "cancellation_notice_wording": "Thirty days written notice of cancellation will be sent to the certificate holder when required by policy terms.",
+        "notes": "Capture wording verbatim as a neutral note."
+      },
+      "coverages": [
+        {"type": "GENERAL_LIABILITY", "carrier": "Ironvale Indemnity", "policy": "IRN-2020-GL", "effective": "2026-07-01", "expiration": "2027-07-01", "each_occurrence": 1000000, "general_aggregate": 2000000, "addl_insd_asserted": true, "subr_wvd_asserted": false}
+      ]
+    }
+  ]
+}
