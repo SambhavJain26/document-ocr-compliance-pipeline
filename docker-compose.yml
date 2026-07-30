@@ -60,6 +60,7 @@ services:
       - --listen=8081
       - --skip-open
       - --readonly
+      - --lock-session
     ports:
       - "127.0.0.1:${PGWEB_PORT:-8081}:8081"
 

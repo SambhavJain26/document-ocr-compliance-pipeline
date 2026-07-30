@@ -63,7 +63,7 @@ GENERIC_TIMEZONE=America/New_York
 
 Use these settings only for same-machine testing. Approval links opened on another device will not reach this n8n instance because `localhost` points to that device, not this computer.
 
-pgweb is bound to localhost only and starts in read-only mode against the local Postgres database. It connects as `coi_readonly`, which is granted SELECT only on the COI demo tables. Use it to inspect tables during the demo, not to edit runtime state.
+pgweb is bound to localhost only and starts in read-only mode against the local Postgres database. It connects as `coi_readonly` with `--lock-session` and uses the `coi_pgweb` schema, which exposes read-only views for the COI demo tables. Use it to inspect rows during the demo, not to edit runtime state.
 
 ## Postgres Credential In n8n
 

@@ -93,7 +93,10 @@ $coiTables = @(
 
 $escapedPgwebUser = $pgwebUser.Replace("'", "''")
 $escapedPgwebPassword = $pgwebPassword.Replace("'", "''")
-$tableList = ($coiTables | ForEach-Object { "public.$_" }) -join ", "
+$viewerSchema = "coi_pgweb"
+$viewSql = ($coiTables | ForEach-Object {
+  "CREATE OR REPLACE VIEW $viewerSchema.$_ AS SELECT * FROM public.$_;"
+}) -join "`n"
 
 $sql = @"
 DO `$do`$
@@ -107,10 +110,22 @@ END
 `$do`$;
 
 GRANT CONNECT ON DATABASE $postgresDb TO $pgwebUser;
-GRANT USAGE ON SCHEMA public TO $pgwebUser;
+
+CREATE SCHEMA IF NOT EXISTS $viewerSchema;
+$viewSql
+
+REVOKE USAGE ON SCHEMA public FROM PUBLIC;
+GRANT USAGE, CREATE ON SCHEMA public TO $postgresUser;
+REVOKE USAGE ON SCHEMA public FROM $pgwebUser;
 REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM $pgwebUser;
-GRANT SELECT ON TABLE $tableList TO $pgwebUser;
+
+REVOKE ALL ON SCHEMA $viewerSchema FROM PUBLIC;
+REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA $viewerSchema FROM PUBLIC;
+GRANT USAGE ON SCHEMA $viewerSchema TO $pgwebUser;
+GRANT SELECT ON ALL TABLES IN SCHEMA $viewerSchema TO $pgwebUser;
+
 ALTER ROLE $pgwebUser SET default_transaction_read_only = on;
+ALTER ROLE $pgwebUser SET search_path = $viewerSchema;
 "@
 
 Push-Location $repoRoot
@@ -121,23 +136,25 @@ try {
   docker compose up -d pgweb | Out-Host
   docker compose restart pgweb | Out-Host
 
-  $visibleTablesSql = "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE' ORDER BY table_name;"
+  $visibleTablesSql = "SELECT table_schema || '.' || table_name FROM information_schema.tables WHERE table_schema NOT IN ('pg_catalog', 'information_schema') ORDER BY table_schema, table_name;"
   $visibleTables = docker compose exec -T -e PGPASSWORD=$pgwebPassword postgres psql -h localhost -U $pgwebUser -d $postgresDb -t -A -c $visibleTablesSql
   if ($LASTEXITCODE -ne 0) {
     throw "Could not verify pgweb readonly user table visibility."
   }
   $visibleTableList = @($visibleTables | Where-Object { $_ -ne "" })
-  $unexpectedTables = @($visibleTableList | Where-Object { $coiTables -notcontains $_ })
+  $expectedVisibleObjects = @($coiTables | ForEach-Object { "$viewerSchema.$_" })
+  $unexpectedTables = @($visibleTableList | Where-Object { $expectedVisibleObjects -notcontains $_ })
   foreach ($table in $coiTables) {
-    if ($visibleTableList -notcontains $table) {
-      throw "Restricted pgweb user cannot see expected table '$table'."
+    $expectedObject = "$viewerSchema.$table"
+    if ($visibleTableList -notcontains $expectedObject) {
+      throw "Restricted pgweb user cannot see expected view '$expectedObject'."
     }
   }
   if ($unexpectedTables.Count -gt 0) {
-    throw "Restricted pgweb user can still see unexpected tables: $($unexpectedTables -join ', ')"
+    throw "Restricted pgweb user can still see unexpected objects: $($unexpectedTables -join ', ')"
   }
 
-  Write-Host "pgweb readonly user '$pgwebUser' can see only COI demo tables: $($visibleTableList -join ', ')."
+  Write-Host "pgweb readonly user '$pgwebUser' can see only COI demo views: $($visibleTableList -join ', ')."
 }
 finally {
   Pop-Location

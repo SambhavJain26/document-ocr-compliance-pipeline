@@ -81,32 +81,32 @@ try {
 
   if ($pgwebUser -and $pgwebPassword) {
     Write-Host "Checking pgweb readonly table scope..."
-    $expectedCoiTables = @(
-      "certificates",
-      "client_config",
-      "coverages",
-      "holder_entities",
-      "intake_notices",
-      "outreach_log",
-      "trade_requirements",
-      "vendors"
+    $expectedCoiObjects = @(
+      "coi_pgweb.certificates",
+      "coi_pgweb.client_config",
+      "coi_pgweb.coverages",
+      "coi_pgweb.holder_entities",
+      "coi_pgweb.intake_notices",
+      "coi_pgweb.outreach_log",
+      "coi_pgweb.trade_requirements",
+      "coi_pgweb.vendors"
     )
-    $tableSql = "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE' ORDER BY table_name;"
+    $tableSql = "SELECT table_schema || '.' || table_name FROM information_schema.tables WHERE table_schema NOT IN ('pg_catalog', 'information_schema') ORDER BY table_schema, table_name;"
     $visibleTables = docker compose exec -T -e PGPASSWORD=$pgwebPassword postgres psql -h localhost -U $pgwebUser -d $postgresDb -t -A -c $tableSql
     if ($LASTEXITCODE -ne 0) {
       throw "Could not verify pgweb readonly table scope. Run .\scripts\apply-pgweb-viewer.ps1."
     }
     $visibleTableList = @($visibleTables | Where-Object { $_ -ne "" })
-    $unexpectedTables = @($visibleTableList | Where-Object { $expectedCoiTables -notcontains $_ })
-    foreach ($table in $expectedCoiTables) {
+    $unexpectedTables = @($visibleTableList | Where-Object { $expectedCoiObjects -notcontains $_ })
+    foreach ($table in $expectedCoiObjects) {
       if ($visibleTableList -notcontains $table) {
-        throw "pgweb readonly user cannot see expected table '$table'. Run .\scripts\apply-pgweb-viewer.ps1."
+        throw "pgweb readonly user cannot see expected object '$table'. Run .\scripts\apply-pgweb-viewer.ps1."
       }
     }
     if ($unexpectedTables.Count -gt 0) {
-      throw "pgweb readonly user can see unexpected tables: $($unexpectedTables -join ', '). Run .\scripts\apply-pgweb-viewer.ps1."
+      throw "pgweb readonly user can see unexpected objects: $($unexpectedTables -join ', '). Run .\scripts\apply-pgweb-viewer.ps1."
     }
-    Write-Host "pgweb readonly user sees only COI demo tables."
+    Write-Host "pgweb readonly user sees only COI demo views."
   }
 
   Write-Host "Local verification complete."
