@@ -37,7 +37,7 @@ In scope:
 - Stand up self-hosted n8n and Postgres with persistent volumes.
 - Set core n8n environment variables: `WEBHOOK_URL`, `N8N_HOST`, `GENERIC_TIMEZONE`, and `N8N_ENCRYPTION_KEY`.
 - Set up the model API account and hard spend limit, recommended at `$10`.
-- Set up a demo Gmail/Google Workspace account or OAuth-capable mailbox for intake, approvals, and outbound test email.
+- Set up one demo Gmail/Google Workspace account or OAuth-capable mailbox for local intake, approvals, and outbound test email. Use plus-address aliases for logical test roles if needed.
 - Optionally create a Telegram bot and chat ID for manager alerts.
 
 Out of scope:

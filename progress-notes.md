@@ -58,6 +58,7 @@ The staged plan in `build-plan.md` follows the later `coi-demo-build-plan.md` wh
 
 3. Approval channel:
    - Recommended default: Gmail `Send and Wait for Response`.
+   - One Gmail/Google Workspace mailbox is enough for local testing; use plus-address aliases to simulate vendor, producer, approval, and intake roles.
    - Optional: Telegram only when the prospect already uses it.
 
 4. Demo vendor names:
@@ -95,6 +96,7 @@ The staged plan in `build-plan.md` follows the later `coi-demo-build-plan.md` wh
 - Verified `docker compose config`, local Postgres readiness/query, and n8n HTTP `200` at `http://localhost:5678`.
 - Noted n8n 2.29 first-start migrations and non-blocking Python task-runner warning in `AGENTS.md`.
 - Set model default to `gpt-5.4-nano`, keeping `gpt-5.6-luna` as fallback.
+- Recorded that one Gmail/Google Workspace mailbox is enough for local testing, using plus-address aliases for logical roles.
 - Updated `coi-demo-build-plan.md` to make OpenAI node V2 the default model-call path.
 - Updated `coi-demo-build-plan.md` to make HTTP Request a fallback only.
 - Updated `coi-demo-build-plan.md` to make Gmail approval the default and Telegram optional.

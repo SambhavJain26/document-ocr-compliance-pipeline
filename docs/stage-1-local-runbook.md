@@ -10,7 +10,7 @@ This stage creates only the local n8n and Postgres environment. It does not add 
   - `postgres:16`
 - Browser access to `http://localhost:5678`.
 - OpenAI account for a later n8n credential smoke test.
-- Gmail or Google Workspace account for a later n8n OAuth smoke test.
+- One Gmail or Google Workspace account for a later n8n OAuth smoke test.
 
 ## Start The Local Stack
 
@@ -71,7 +71,17 @@ For Stage 1, the smoke test is a trivial OpenAI node request from n8n. Do not bu
 
 ## Gmail Credential In n8n
 
-Create the Gmail OAuth credential in n8n using the demo Gmail or Google Workspace mailbox. For Stage 1, only test that OAuth completes and that a simple send or approval email can be exercised from this same machine.
+Create the Gmail OAuth credential in n8n using one demo Gmail or Google Workspace mailbox. For Stage 1, only test that OAuth completes and that a simple send or approval email can be exercised from this same machine.
+
+One mailbox is enough for local testing. Use Gmail plus-address aliases to simulate roles while delivering everything to the same inbox:
+
+```text
+demo@gmail.com
+demo+vendor@gmail.com
+demo+producer@gmail.com
+demo+approval@gmail.com
+demo+intake@gmail.com
+```
 
 Gmail approval links should be opened in a browser on this computer during local-only testing.
 

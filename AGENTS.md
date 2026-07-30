@@ -47,7 +47,7 @@ Stage 1 local environment commands:
 - `.\scripts\verify-local.ps1`: verify Compose config, Postgres readiness/query, and n8n HTTP availability.
 - `.\scripts\stop-local.ps1`: stop the local stack without removing volumes.
 
-Expected local services are n8n at `http://localhost:5678` and Postgres on `127.0.0.1:5432`. Gmail/OpenAI credentials are created manually inside n8n and must not be stored in repo files. Do not assume Docker images, accounts, OAuth apps, API keys, or n8n credentials already exist. On first n8n 2.x startup, internal migrations can take long enough for early HTTP probes to fail; rerun `.\scripts\verify-local.ps1` or rely on its retry loop. The `n8nio/n8n:latest` image may log a Python task-runner warning because Python is absent; this is not a Stage 1 blocker when JS workflows and service health pass.
+Expected local services are n8n at `http://localhost:5678` and Postgres on `127.0.0.1:5432`. Gmail/OpenAI credentials are created manually inside n8n and must not be stored in repo files. One Gmail or Google Workspace mailbox is enough for local testing; use plus-address aliases for logical vendor, producer, approval, and intake roles when needed. Do not assume Docker images, accounts, OAuth apps, API keys, or n8n credentials already exist. On first n8n 2.x startup, internal migrations can take long enough for early HTTP probes to fail; rerun `.\scripts\verify-local.ps1` or rely on its retry loop. The `n8nio/n8n:latest` image may log a Python task-runner warning because Python is absent; this is not a Stage 1 blocker when JS workflows and service health pass.
 
 ## Architecture Rules
 
