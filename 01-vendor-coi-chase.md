@@ -246,45 +246,52 @@ Coverage lines are consistent: Commercial General Liability, Automobile Liabilit
 ### n8n architecture
 
 ```
-[Email Trigger (IMAP)]  ← Download Attachments: ON
+[Gmail Trigger]                 [n8n Form Trigger]
+  poll: 1 min                    instant upload URL
         ↓
-[IF: has PDF attachment?]
+[Filter: PDF attachments only]
         ↓
-[Extract from File]  ← operation: Extract from PDF
+[Extract From File]  ← operation: Extract from PDF
         ↓
-[IF: text extracted?] ──No──→ [OCR Bro node] (Tesseract, local, free)
-        ↓ Yes
-[AI node: extract to JSON schema]  ← Haiku-class model
+[IF: text length > 200?]
+        ↓ Yes                         ↓ No / scanned
+[OpenAI node V2: text input]      [OpenAI node V2: PDF File input]
+ Generate Model Response           Generate Model Response
+ JSON Schema output                 JSON Schema output
         ↓
 [Code node: validation rules]
         ↓
-[Google Sheets / Postgres: upsert vendor record]
+[Postgres: upsert vendor record]
         ↓
-[Telegram: notify manager — new COI processed]
+[Manager notice — Gmail or Telegram]
 
 ──── separate scheduled workflow ────
 
 [Schedule Trigger: daily 08:00]
         ↓
-[Sheets: read all vendor records]
+[Postgres: read all vendor records]
         ↓
 [Code node: compute days-to-expiry buckets]
         ↓
-[Switch: 60d / 30d / 14d / expired]
+[Switch: never received / expired / 14d / 30d / 60d / re-attest]
         ↓
-[AI node: draft vendor email]
+[OpenAI node V2: draft vendor email]
         ↓
-[Approval step → Gmail send]
+[Gmail Send and Wait for Approval]
         ↓
-[Sheets: log outreach + set follow-up flag]
+[IF approved → Gmail send]
+        ↓
+[Postgres: log outreach + set follow-up flag]
 ```
 
 **Node notes:**
 
-- **Email Trigger (IMAP)** has a Download Attachments toggle and supports custom fetch rules — you can filter to a dedicated inbox address like `coi@theircompany.com`[^12]
+- **Gmail Trigger** is the default inbox path for the demo. It can poll a dedicated label/address and retrieve attachment data through the Gmail API.
+- **Email Trigger (IMAP)** remains a fallback for non-Google clients. Keep it disabled in the demo unless you are testing a non-Gmail mailbox.
 - **Extract from File** replaced the old Read PDF node from n8n v1.21.0 onwards and handles native PDF text extraction[^13]
-- n8n has **no built-in OCR**. For scanned or photographed certificates use the free `n8n-nodes-ocrbro` community node, which runs Tesseract.js locally with no external API and no data leaving your server[^14]
-- Use **Telegram** for demo notifications — free Bot API, native n8n node, and it puts a real message on the prospect's phone during the call
+- Use **OpenAI node V2** for model calls when running current n8n. The `Generate a Model Response` operation supports the Responses API, PDF File message input, and JSON Schema output.[^14] Use HTTP Request only as a fallback for older n8n versions, missing node controls, or Anthropic.
+- Do **not** use OCR Bro in the default build. For scanned or photographed certificates, route the raw PDF to the model's PDF File/vision path.
+- Use **Gmail Send and Wait for Approval** as the default approval gate. Telegram is optional for manager alerts or for prospects who already use it.
 
 ### Extraction schema
 
@@ -346,9 +353,9 @@ Run these after extraction. They catch most model errors for free:
 |---|---|
 | n8n self-hosted | Free |
 | Extract from File | Free |
-| OCR Bro (Tesseract, local) | Free |
+| Model PDF vision fallback | API tokens only |
 | LLM extraction | ~$0.002 per certificate |
-| Storage (Sheets or Postgres) | Free |
+| Storage (Postgres) | Free |
 | Email (Gmail) | Free |
 | **Monthly at 30 certificates** | **Under $0.10** |
 
@@ -439,4 +446,4 @@ That ask — ten PDFs by email — is the smallest first commitment in this enti
 
 [^13]: n8n Docs, "Extract From File." https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.extractfromfile — replaced Read PDF node from v1.21.0.
 
-[^14]: n8n-nodes-ocrbro. https://github.com/blankarrayy/ocrbro — Tesseract.js OCR and PDF text extraction, local processing, no external API.
+[^14]: n8n Docs, "OpenAI Text Operations." https://docs.n8n.io/integrations/builtin/app-nodes/n8n-nodes-langchain.openai/text-operations — documents `Generate a Model Response`, PDF File message input, and JSON Schema output support in the OpenAI node.

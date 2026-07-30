@@ -15,7 +15,7 @@
 | Buildium API gated behind Premium | **Confirmed, and worse** — Premium is now **$400/mo** (was $375). Open API is Premium-only. | None. Reinforces zero-integration design. Update your sales numbers. |
 | Extract From File replaced Read PDF | **Confirmed.** Current core node. | Use as specified. |
 | Email Trigger (IMAP) exists with attachment download | **Confirmed.** Core node. | Kept, but **not** as the live demo path (see 1.4). |
-| Telegram node is free with native n8n support | **Confirmed, and much better than you thought** | See 1.3 — this is now the centrepiece. |
+| n8n has native approval flows | **Confirmed, and much better than expected** | See 1.3 — Gmail approval is now the centrepiece; Telegram is optional. |
 | Use `n8n-nodes-ocrbro` for OCR | **Rejected.** See 1.2. | OCR removed from the build entirely. |
 | ACORD 25 is a standardised one-page form | **Confirmed.** Note there are multiple live revisions (a 2025/12 revision is filed with NY DFS alongside the older 2016/03). | Extraction prompt must not assume one revision's exact field order. |
 | Certificate ≠ proof of coverage; AI status needs endorsement | **Confirmed.** ACORD's own form text states it is issued as a matter of information only and confers no rights on the certificate holder. | This is your best credibility line. Section 11. |
@@ -34,13 +34,13 @@ The better-maintained alternative is `n8n-nodes-tesseractjs` (jreyesr, MIT, acti
 
 ### 1.3 n8n has native human-in-the-loop, and it is your best demo moment
 
-I did not expect this to be as strong as it is. The Telegram node has a **`Send and Wait for Response`** operation with an `Approval` response type that renders **inline Approve / Decline buttons** and **pauses the workflow** until tapped. The same primitive exists on Gmail, Slack, Teams, Discord, WhatsApp and the Chat node.
+I did not expect this to be as strong as it is. n8n has **Send and Wait** approval operations that render **Approve / Decline buttons** and **pause the workflow** until tapped. Gmail is now the default approval channel for this demo because it works in the prospect's normal inbox with no app install. Telegram remains useful for manager alerts and for prospects who already use it.
 
-This means your human-in-the-loop gate is not a compromise you have to explain away — it is a live, physical interaction you hand to the prospect. They tap Approve on their own phone and the vendor email sends in front of them. Build the demo around this.
+This means your human-in-the-loop gate is not a compromise you have to explain away — it is a live, physical interaction you hand to the prospect. They tap Approve in their own email client and the vendor email sends in front of them. Build the demo around this.
 
 **Two verified caveats:**
 - The approval button resolves against your n8n webhook URL, so `WEBHOOK_URL`/`N8N_HOST` must be set to a publicly reachable HTTPS address. Multiple community reports of "invalid URL" failures trace to this. **This is the single most likely thing to break on the call.** Mitigation in Section 10.
-- The node returns a minimal payload (`{ data: { approved: true } }`) — no `message_id` or `chat_id`. Don't design anything that needs to edit or delete the prompt message afterwards.
+- The approval operation returns a minimal approval result. Don't design anything that needs to edit or delete the prompt message afterwards.
 
 ### 1.4 Licensing — one finding that affects your business model, not just the build
 
@@ -81,7 +81,7 @@ I am not a lawyer and this is not legal advice — it is a description of the ri
 
 | Gate | Applies? | Why |
 |---|---|---|
-| **A2P 10DLC** | **Not to the demo. Blocks SMS in production.** | Registration takes 1–4 weeks; AT&T's manual campaign review alone is consistently 2–4 weeks and cannot be expedited. Critically, **brand registration requires a US EIN — which you, in India, do not have.** SMS must therefore be registered and billed under the *client's* entity, not yours. Unregistered A2P traffic is filtered, and T-Mobile levies per-violation fees. Telegram for the demo sidesteps all of this. |
+| **A2P 10DLC** | **Not to the demo. Blocks SMS in production.** | Registration takes 1–4 weeks; AT&T's manual campaign review alone is consistently 2–4 weeks and cannot be expedited. Critically, **brand registration requires a US EIN — which you, in India, do not have.** SMS must therefore be registered and billed under the *client's* entity, not yours. Unregistered A2P traffic is filtered, and T-Mobile levies per-violation fees. Gmail approval and optional Telegram alerts sidestep all of this for the demo. |
 | **CAN-SPAM** | **Applies, but you land in the exempt category** | A renewal request to an existing vendor is transactional/relationship content, not commercial advertisement. Per the FTC, such messages must not contain false or misleading routing information but are otherwise exempt from most CAN-SPAM provisions. **Design implication: send from the client's own mailbox and domain, with their real reply-to. Never spoof, never send vendor mail from your infrastructure under your identity.** |
 | **TCPA** | **Not applicable to this build** | TCPA governs calls, texts and faxes — not email. It becomes relevant only if you add SMS in production. |
 | **Fair housing** | **Not applicable** | Nothing here is tenant-facing or housing-transaction-related. This is vendor administration. Say so plainly if asked; it is a point in your favour. |
@@ -117,9 +117,17 @@ What you should do:
 
 ### 1.9 Using OpenAI instead of Anthropic
 
-**Verdict: both work. The switch touches three nodes and nothing else. It does not change the architecture, the demo, the fixtures, the validation rules, or anything you say to a prospect.**
+**Verdict: use OpenAI by default for the demo, through n8n's built-in OpenAI node V2. Keep Anthropic as a fallback option.**
 
-The build is provider-portable on purpose — every model call goes through an **HTTP Request** node rather than the vendor-specific node, so swapping providers means changing a URL, an auth header, and a request body shape. Nothing downstream of the Code node knows or cares which model produced the JSON.
+Current n8n documentation changes the earlier implementation choice. n8n OpenAI node V2, introduced in n8n 1.117.0, supports the OpenAI Responses API. Its **Generate a Model Response** operation supports message types including **Text**, **Image**, and **File**, with File currently supporting PDFs. It also exposes an **Output Format** option that can return Text, JSON Object, or a specified JSON Schema.
+
+That means the default implementation should use the built-in OpenAI node, not a raw HTTP Request node:
+
+- Text branch: OpenAI node V2 -> Generate a Model Response -> Text message -> JSON Schema output
+- Scanned/PDF fallback branch: OpenAI node V2 -> Generate a Model Response -> File message, PDF binary from the previous node -> JSON Schema output
+- Email drafting: OpenAI node V2 -> Generate a Model Response -> Text message
+
+Use **HTTP Request** only if the installed n8n version is older than 1.117.0, the OpenAI node UI does not expose a setting we need, or you switch to Anthropic. Do not build provider-switching logic for the demo.
 
 Four things genuinely differ.
 
@@ -129,7 +137,7 @@ OpenAI's `response_format: {"type": "json_schema", "strict": true}` constrains t
 
 Anthropic has no equivalent `json_schema` response format; you get schema conformance through prompting, which is highly reliable but not guaranteed.
 
-For a demo that must not break in front of a prospect, a hard guarantee beats a strong tendency. This lets you delete defensive parsing and shorten the system prompt (see 5.3). **If you have no other preference, this is the reason to pick OpenAI for this particular build.**
+For a demo that must not break in front of a prospect, a hard guarantee beats a strong tendency. This lets you reduce defensive parsing and shorten the system prompt (see 5.3). **If you have no other preference, this is the reason to pick OpenAI for this particular build.**
 
 Three caveats, all verified:
 - Strict mode restricts which JSON Schema features you can use. Every property must appear in `required`, `additionalProperties: false` is mandatory, and optional fields must be expressed as a union with `null` (which is already how the Section 5.2 schema is written — no change needed).
@@ -158,9 +166,9 @@ OpenAI bills requests above a 272K-token input threshold at roughly 2× input an
 
 **What does not change:** the two-branch design, the JSON schema, every validation rule, the approval gate, the dashboard, every fixture, the demo script, the honesty list, and the privacy answer (see 1.7).
 
-**Recommendation:** if you already have OpenAI credits or are more fluent there, switch and take Structured Outputs as a genuine bonus. If you are indifferent, either is defensible — pick one and stop thinking about it, because the difference does not justify the deliberation. Do not build provider-switching logic; that is production scope at best and probably never.
+**Recommendation:** use OpenAI through n8n's built-in OpenAI node V2 for the demo. Pin the model ID in `client_config`. Keep HTTP Request documented as a fallback path, not the default path.
 
-You share your screen showing a clean dashboard listing eighteen of their vendors — except it's empty, because nothing has been processed yet. You say "I'm going to send this system a certificate the same way your vendors send you one," and you forward an email with a PDF attached. While it processes, you keep talking — you explain that this is exactly what lands in their inbox on a Tuesday. Then you switch back and the row has filled itself in: vendor name, carrier, policy number, general liability limit, and an expiry date, with the source PDF one click away for verification. The row is amber, and it says *expires in 20 days*. You drop in a second certificate; that row goes red and reads *expired 34 days ago*. Then you say "here's the part that matters" — and their phone buzzes. It's a Telegram message showing a drafted email to that vendor's insurance agent, with the policy number already filled in, and two buttons: **Approve** and **Decline**. You ask them to tap Approve. They do, on their own phone, and the email sends — from their address, to the agent, in front of them. Total elapsed time: under four minutes. Then you close: *"Send me ten of your actual vendor certificates. I'll run them tonight and tell you tomorrow morning where you actually stand. Costs you nothing to find out."*
+You share your screen showing a clean dashboard listing eighteen of their vendors — except it's empty, because nothing has been processed yet. You say "I'm going to send this system a certificate the same way your vendors send you one," and you forward an email with a PDF attached. While it processes, you keep talking — you explain that this is exactly what lands in their inbox on a Tuesday. Then you switch back and the row has filled itself in: vendor name, carrier, policy number, general liability limit, and an expiry date, with the source PDF one click away for verification. The row is amber, and it says *expires in 20 days*. You drop in a second certificate; that row goes red and reads *expired 34 days ago*. Then you say "here's the part that matters" — and their phone buzzes. It's an approval email showing a drafted message to that vendor's insurance agent, with the policy number already filled in, and two buttons: **Approve** and **Decline**. You ask them to tap Approve. They do, on their own phone, and the email sends — from the configured client mailbox, to the agent, in front of them. Total elapsed time: under four minutes. Then you close: *"Send me ten of your actual vendor certificates and I'll run this over them. You'll have a real picture of where you stand tomorrow morning, and it costs you nothing to find out."*
 
 The whole demo is engineered around one sentence you want them to say to themselves: **"I approved that. It didn't do it on its own."** That is what makes a stranger from another country safe to hire.
 
@@ -187,9 +195,9 @@ The whole demo is engineered around one sentence you want them to say to themsel
 │                   │           │                                    │
 │              true │           │ false  (scanned / photographed)    │
 │                   ▼           ▼                                    │
-│        [HTTP Request]    [HTTP Request]                            │
-│         text block        document block (base64 PDF, vision)      │
-│         Haiku 4.5         Haiku 4.5                                │
+│        [OpenAI node V2]  [OpenAI node V2]                          │
+│         text message      PDF File message (vision fallback)       │
+│         JSON Schema       JSON Schema                              │
 │                   │           │                                    │
 │                   └─────┬─────┘                                    │
 │                         ▼                                          │
@@ -218,7 +226,7 @@ The whole demo is engineered around one sentence you want them to say to themsel
 │  [Switch: NEVER_RECEIVED / EXPIRED / 14d / 30d / 60d /            │
 │           RE-ATTEST (quarterly) / none]                            │
 │                         ▼                                          │
-│         [HTTP Request: draft vendor email]  ← Haiku 4.5, short     │
+│         [OpenAI node V2: draft vendor email]  ← short text call    │
 │                         ▼                                          │
 │  ╔═══════════════════════════════════════════════════╗             │
 │  ║  [Gmail: Send and Wait for Response]   ← DEFAULT   ║  ◄── GATE 1 │
@@ -281,12 +289,14 @@ The whole demo is engineered around one sentence you want them to say to themsel
 | **Email Trigger (IMAP)** (`n8n-nodes-base.emailimap`) | Alternative ingest for non-Google clients | Free | Core node | Build it, keep it disabled for the demo. Needed for Outlook/M365 clients later. |
 | **n8n Form Trigger** (`n8n-nodes-base.formtrigger`) | Instant upload page | Free | Core node | Zero-latency ingest for the live demo, and the thing you hand the prospect to try themselves. |
 | **Extract From File** (`n8n-nodes-base.extractfromfile`) | PDF text layer extraction | Free | Core node | Replaced Read PDF at v1.21. Confirmed current. |
-| **HTTP Request** (`n8n-nodes-base.httprequest`) | Calls the model API | Free | Core node | Chosen over the vendor nodes because you need file/document content blocks for the vision fallback and precise control of the response format. **This is also mandatory on OpenAI** — the n8n OpenAI node does not support `input_file`, only `input_image`, which rejects PDFs. One node type for both branches and both providers. |
+| **OpenAI node V2** (`n8n-nodes-langchain.openai`) | Calls the model for extraction and drafting | Free | Core node | Current n8n supports the Responses API, PDF File message input, and JSON Schema output format. This is now the default model node for the OpenAI build. |
+| **HTTP Request** (`n8n-nodes-base.httprequest`) | Fallback model API call path | Free | Core node | Keep only as a fallback if the installed n8n version is older than 1.117.0, if the OpenAI node cannot expose a required setting, or if you switch to Anthropic. |
 | **Code** (`n8n-nodes-base.code`) | Validation, date maths, HTML build | Free | Core node | Deterministic checks cost zero tokens and catch most model errors. |
 | **Postgres node** (`n8n-nodes-base.postgres`) | Upsert / select | Free | Core node | |
 | **Switch / IF / Filter** | Routing | Free | Core nodes | |
-| **Telegram** (`n8n-nodes-base.telegram`) | Manager alerts + **approval gate** | Free | Core node | Free Bot API, no A2P registration, no per-message cost, and puts a real notification on the prospect's phone mid-call. |
+| **Telegram** (`n8n-nodes-base.telegram`) | Optional manager alerts + optional approval gate | Free | Core node | Free Bot API and no A2P registration. Use for alerts or for prospects who already use Telegram; do not make it the default approval path. |
 | **Gmail node** (`n8n-nodes-base.gmail`) | Sends approved vendor emails | Free | Core node | Supports threading headers (the Send Email SMTP node does not) — matters for follow-ups landing in the same thread. |
+| **Send Email / SMTP node** (`n8n-nodes-base.sendemail`) | Generic SMTP fallback | Free | Core node | Not required for the Gmail demo. Use only for non-Gmail clients when no native mail node is available; it does not support threading headers. |
 | **Webhook + Respond to Webhook** | Serves the dashboard | Free | Core nodes | |
 | **Model — Anthropic option:** Claude Haiku 4.5 (`claude-haiku-4-5-20251001`) | Extraction + email drafting | $1 / $5 per MTok | Commercial terms | Cheapest current-generation Claude. Good structured extraction, reads scanned PDFs via vision. |
 | **Model — OpenAI option:** GPT-5.4 Mini (`gpt-5.4-mini`) | Same | $0.75 / $4.50 per MTok | Commercial terms | Closest equivalent tier, marginally cheaper, and unlocks strict Structured Outputs. **Pin the dated snapshot ID, not the alias.** |
@@ -301,11 +311,11 @@ The whole demo is engineered around one sentence you want them to say to themsel
 
 | Step | Model | Rationale |
 |---|---|---|
-| Certificate → JSON (text branch) | **Cheap tier** (Haiku 4.5 / GPT-5.4 Mini) | ~1,200 input tokens of tabular text. Quality is verifiable against the source document on screen, but the task is extraction, not judgement. |
+| Certificate → JSON (text branch) | **OpenAI cheap tier** (GPT-5.4 Mini or current equivalent) | ~1,200 input tokens of tabular text. Quality is verifiable against the source document on screen, but the task is extraction, not judgement. |
 | Certificate → JSON (vision branch) | **Same cheap tier** | Higher token count per page; still fractions of a cent. Same model as the text branch so there's one thing to debug. |
 | Is this even a certificate? | **No model.** Code node regex on extracted text | Free, instant, deterministic. Don't spend a classification call on this. |
 | Days-to-expiry bucketing | **No model.** SQL + Code node | Never let a model do date arithmetic. |
-| Vendor email drafting | **Same cheap tier** | Short output (~150 tokens), visible to the prospect, but it's a templated business email. You review every one at the approval gate anyway. |
+| Vendor email drafting | **Same OpenAI cheap tier** | Short output (~150 tokens), visible to the prospect, but it's a templated business email. You review every one at the approval gate anyway. |
 
 **Cost-risk flag:** nothing here repeatedly processes long documents. A certificate is one page, ~800–1,500 tokens. If you later extend to leases or management agreements (20,000+ tokens), revisit — that is where caching and cheaper tiers start to matter. For this product they don't.
 
@@ -582,7 +592,7 @@ Work the phases in sequence — each depends on the one before it. Within a phas
 → **Done when:** `docker compose up -d` brings all services healthy and n8n loads over HTTPS at a public hostname.
 
 **1.2** Set n8n environment variables: `WEBHOOK_URL` and `N8N_HOST` to the public HTTPS hostname, `GENERIC_TIMEZONE` to the client's timezone (use `America/New_York` for the demo), `N8N_ENCRYPTION_KEY` to a generated secret.
-→ **Done when:** a test Webhook node returns a public URL on the real hostname, not `localhost`. **Verify this by loading the URL on your phone over mobile data, not wifi.** If this is wrong, the Telegram approval button fails on the call and you will not know why.
+→ **Done when:** a test Webhook node returns a public URL on the real hostname, not `localhost`. **Verify this by loading the URL on your phone over mobile data, not wifi.** If this is wrong, the approval button fails on the call and you will not know why.
 
 **1.3** Apply the Section 5.1 schema. Seed `client_config` with `min_each_occurrence = 1000000`, `min_general_aggregate = 2000000`, `reminder_days = '60,30,14,0'`, `reattest_days = '90'`, `approval_channel = 'email'`. Seed `holder_entities` with the client's management company plus two owner LLCs. Seed `trade_requirements` for at least Roofing (higher limits), Landscaping (lower), and a default row.
 → **Done when:** `\dt` lists seven tables, and a vendor's applicable minimum resolves from `trade_requirements` with a fallback to the global default.
@@ -592,40 +602,31 @@ Work the phases in sequence — each depends on the one before it. Within a phas
 
 **Why this is the highest-leverage step in the build:** a prospect seeing *their own* eighteen vendor names on screen, four of them grey, is a categorically different experience from seeing a sample. It stops being a demo of your software and becomes a picture of their business. It also removes the "whose vendors are those?" question that makes a staged demo visible.
 
-**1.5** Create the model-provider credential in n8n as an **OpenAI API** credential. Configure the HTTP Request node with its predefined OpenAI API credential type. Generate an API key with a **spend limit of $10** set in the provider console. Store the model ID in `client_config` as `model_id`, not hardcoded in the node.
-→ **Done when:** a trivial HTTP Request returns 200, and changing `model_id` in Postgres changes which model the workflow calls.
+**1.5** Create the model-provider credential in n8n as an **OpenAI API** credential. Use n8n's built-in **OpenAI node V2**. Generate an API key with a **spend limit of $10** set in the provider console. Store the model ID in `client_config` as `model_id`, not hardcoded in workflow notes or duplicated across nodes.
+→ **Done when:** a trivial OpenAI node call succeeds, and changing `model_id` in Postgres changes which model the workflow is configured to call.
 
-**1.6** Build the **text-branch extraction call** — HTTP Request node, `max_tokens` (or `max_output_tokens`) 1500, system prompt from 5.3, user content = extracted PDF text.
-
-| | Anthropic | OpenAI |
-|---|---|---|
-| Endpoint | `POST https://api.anthropic.com/v1/messages` | `POST https://api.openai.com/v1/chat/completions` |
-| Auth header | `x-api-key` + `anthropic-version: 2023-06-01` | `Authorization: Bearer <key>` |
-| Model | `claude-haiku-4-5-20251001` | `gpt-5.4-mini` (pin the dated snapshot) |
-| Schema enforcement | Prompt only; parse defensively | `response_format` with `json_schema`, `strict: true` |
-
+**1.6** Build the **text-branch extraction call** with OpenAI node V2: Resource `Text`, Operation `Generate a Model Response`, message type `Text`, output format `JSON Schema`, max output around 1500 tokens, system prompt from 5.3, user content = extracted PDF text.
 → **Done when:** feeding fixture 1's text returns schema-valid JSON with the correct vendor name and all four dates.
 
-**1.7** Build the **vision-branch extraction call**: identical node, but the user content carries the raw PDF.
-
-- **Anthropic:** a `document` block — `{"type":"document","source":{"type":"base64","media_type":"application/pdf","data":"<base64>"}}` — followed by a text block with the instruction.
-- **OpenAI (Chat Completions):** a `file` content part — `{"type":"file","file":{"filename":"cert.pdf","file_data":"data:application/pdf;base64,<base64>"}}` — followed by a `text` part. Note the **data-URI prefix**, which Anthropic does not use and which is the most common cause of a 400 here.
-
+**1.7** Build the **vision-branch extraction call** with OpenAI node V2: same operation, but the user message includes a **File** message using the PDF binary from the previous node. Keep the same JSON Schema output.
 → **Done when:** fixture 4 (the fake scan) returns schema-valid JSON with the correct expiry date.
 
-**1.7b** *(OpenAI only)* Add the refusal check: if `choices[0].message.refusal` is non-null, route to `NEEDS_REVIEW` with flag `MODEL_REFUSED` instead of parsing.
-→ **Done when:** the branch exists and is exercised by a forced test input.
+**1.7b** Keep an **HTTP Request fallback note**, not a default node: if the installed n8n version is older than 1.117.0 or the OpenAI node cannot express the required PDF/JSON Schema settings, recreate the two model calls with HTTP Request against the OpenAI API. If switching to Anthropic, use HTTP Request with prompt-only JSON and defensive parsing.
+→ **Done when:** the fallback condition is documented and the default workflow still uses the OpenAI node.
 
-**1.8** Write the Code node implementing all eight validation rules from 5.4, plus name normalisation for vendor matching.
+**1.8** Write the Code node implementing all validation rules from 5.4, plus name normalisation for vendor matching.
 → **Done when:** unit-tested against hand-written JSON inputs covering every flag, including rule 8.
 
 ### Phase 2 — Intake workflow end to end
 
-**2.1** Build Workflow 1 skeleton: Form Trigger → Filter (PDF only) → Extract From File → IF (text length > 200) → the two HTTP Request branches → Code (validate) → IF (hard flags) → Postgres upsert (two paths) → Telegram sendMessage.
-→ **Done when:** uploading fixture 1 through the form URL creates one `vendors` row, one `certificates` row with `status = ON_FILE`, four `coverages` rows, and a Telegram message arrives.
+**2.1** Build Workflow 1 skeleton: Form Trigger → Filter (PDF only) → Extract From File → IF (text length > 200) → the two OpenAI node V2 branches → Code (validate) → IF (hard flags) → Postgres upsert (two paths) → manager notice.
+→ **Done when:** uploading fixture 1 through the form URL creates one `vendors` row, one `certificates` row with `status = ON_FILE`, four `coverages` rows, and a manager notice arrives through the configured notice channel.
 
 **2.2** Add the Gmail Trigger as a second entry point into the same Filter node. Poll every minute, download attachments, filter to a dedicated label or address.
 → **Done when:** emailing fixture 2 to the demo inbox produces the same result within ~60 seconds.
+
+**2.2b** Add the Email Trigger (IMAP) as a disabled fallback intake path for non-Google clients. It should feed into the same Filter node and downstream processing, but it is not the live demo path.
+→ **Done when:** the disabled IMAP path exists and can be enabled later without changing extraction, validation, or storage nodes.
 
 **2.3** Implement the supersede path: existing vendor + newer certificate date → mark old certificate `SUPERSEDED`, insert new. Existing vendor + older certificate → flag `OLDER_THAN_ON_FILE`, do not overwrite.
 → **Done when:** fixture 12 (renewal) supersedes correctly, and re-uploading fixture 1 afterwards does *not* regress the record.
@@ -633,8 +634,8 @@ Work the phases in sequence — each depends on the one before it. Within a phas
 **2.4** Handle multi-attachment emails — one email, two PDFs, both processed independently.
 → **Done when:** fixture 10 produces two certificate rows.
 
-**2.5** Handle the non-certificate case: `NOT_A_COI` → Telegram message saying it was ignored, no vendor record created.
-→ **Done when:** fixture 11 creates zero rows and produces a clear Telegram notice.
+**2.5** Handle the non-certificate case: `NOT_A_COI` → manager notice saying it was ignored, no vendor record created.
+→ **Done when:** fixture 11 creates zero rows and produces a clear manager notice.
 
 **2.6** Store the original PDF to a mounted volume, record `stored_path`, and expose it via a webhook route so the dashboard can link to it.
 → **Done when:** clicking a dashboard row opens the source PDF in a new tab.
@@ -652,7 +653,7 @@ Branches: `NEVER_RECEIVED` (no certificate row exists for the vendor) → `EXPIR
 
 ⚠️ **This ordering is a real bug fix, not a preference.** A vendor with no certificate has a NULL expiry date. Bucket on days-to-expiry alone and that vendor silently falls through to `none` and is never contacted — meaning the system ignores your client's *most* non-compliant vendors while diligently chasing the ones who are merely close to renewal. A prospect finds this within minutes of real use, and it is the exact failure the product claims to prevent. Give `NEVER_RECEIVED` its own email template ("we don't have a current certificate on file for you").
 
-**3.3** Build the email-drafting HTTP Request (Haiku 4.5). Prompt it to write a short, polite renewal request addressed to the **producer** (the agent), copying the vendor, referencing the policy number and expiry date, and requesting an updated certificate naming the client as certificate holder.
+**3.3** Build the email-drafting OpenAI node call. Prompt it to write a short, polite renewal request addressed to the **producer** (the agent), copying the vendor, referencing the policy number and expiry date, and requesting an updated certificate naming the client as certificate holder.
 → **Done when:** the draft reads like a human wrote it, is under 120 words, contains the correct policy number, and contains **no claim about coverage status**.
 
 **3.4** Add the approval gate. **Default to the Gmail node's `Send and Wait for Response` operation**, Response Type `Approval`, Type of Approval `Approve and Disapprove`. Message body: vendor name, expiry date, recipient address, and the full drafted email. Set **Limit Wait Time** to 24 hours so a forgotten approval doesn't wedge an execution forever.
@@ -725,7 +726,7 @@ You have no client data, so every fixture is synthetic. Generate them with a Rep
 | 8 | **Four coverage lines, four different expiry dates** spanning 3 months | Earliest-expiry logic | Dashboard shows the **earliest** date, not the GL date |
 | 9 | **No GL line.** Auto + WC only | Validation rule 3 | `ON_FILE` with flag `NO_GL_LINE` |
 | 10 | **Two certificates in one email** | Multi-attachment handling | Two independent certificate rows |
-| 11 | **Not a certificate.** A W-9-style form | Classification / rejection | Zero rows created, `NOT_A_COI` Telegram notice |
+| 11 | **Not a certificate.** A W-9-style form | Classification / rejection | Zero rows created, `NOT_A_COI` manager notice |
 | 12 | **Renewal for an existing vendor.** Same vendor as fixture 2, certificate dated later, expiry 12 months out | Supersede logic, rule 8 | Old certificate → `SUPERSEDED`, new → `ON_FILE`, row turns green |
 | 13 | **Renewal with a coverage gap.** Replacement for fixture 3; old policy expired 1 Mar, new one effective 15 Mar | Validation rule 9 — **the sleeper demo moment** | `ON_FILE` with `COVERAGE_GAP`, dashboard reads "14-day gap in March" |
 | 14 | **No fixture — a vendor with nothing.** Leave 4 seeded vendors with zero certificates | `NEVER_RECEIVED` bucket | All four enter the chase queue on the first scheduled run |
@@ -976,9 +977,9 @@ Rehearse the lines. Reading them cold is how a small failure becomes a large one
 
 | What breaks | Likelihood | What you say | What you do |
 |---|---|---|---|
-| **Telegram approval button 404s** | **High — most likely failure** | *"That's my webhook URL, not the workflow — one second."* | This is why 1.2 exists. If it fails, approve from the n8n Executions view on screen instead: *"Same gate, just approving it from here."* The concept survives; only the theatre is lost. |
+| **Approval button 404s** | **High — most likely failure** | *"That's my webhook URL, not the workflow — one second."* | This is why 1.2 exists. If it fails, approve from the n8n Executions view on screen instead: *"Same gate, just approving it from here."* The concept survives; only the theatre is lost. |
 | **Gmail Trigger doesn't fire** | Medium | *"Email polling is on a one-minute cycle and it's being slow — let me use the upload page instead, it's the same pipeline."* | Drag the fixture into the Form Trigger. Rehearse this switch until it's smooth. |
-| **Anthropic API 429 / 500** | Low | *"That's the model API rate-limiting me — this is why the system retries rather than failing silently."* | Re-run the node. If it fails twice, cut to a pre-processed row: *"Here's one I ran this morning."* |
+| **Model API 429 / 500** | Low | *"That's the model API rate-limiting me — this is why the system retries rather than failing silently."* | Re-run the node. If it fails twice, cut to a pre-processed row: *"Here's one I ran this morning."* |
 | **Your internet drops entirely** | Low | *"I've lost my connection — give me thirty seconds, and if it doesn't come back I've got a recording."* | Phone hotspot first. Then the fallback video from your phone. **Never** try to fix infrastructure live; you look like a hobbyist. |
 | **Extraction returns a wrong field** | Medium | *"Good — this is exactly what I want you to see."* | Then show it flagged, or open the source PDF beside it. A visible wrong answer *next to its source document* proves the review model works. Do not apologise; explain the gate. |
 | **Dashboard renders broken** | Low | *"Let me pull it up fresh."* | Second tab already open on the dashboard URL. This is why you open it before the call. |
@@ -1105,7 +1106,7 @@ What has to change once a paying client depends on it. None of this belongs in t
 
 ### Robustness and error handling
 - **Error Trigger workflow** on every production workflow, routing failures to Telegram with workflow name, node, and execution URL.
-- **Retry with backoff** on all Anthropic calls (3 attempts, exponential) and on Gmail sends.
+- **Retry with backoff** on all model calls (3 attempts, exponential) and on Gmail sends.
 - **Dead-letter table**: any certificate that fails processing entirely lands in a row a human can see, rather than vanishing from an execution log.
 - **Idempotency**: key on message-ID plus attachment hash so a re-delivered email doesn't create duplicates.
 - **Schema-validate the model output** against the JSON schema before the Code node touches it, and re-prompt once on failure.
@@ -1133,7 +1134,7 @@ This product's failure mode is silence. If the Gmail Trigger quietly stops polli
 - Postgres not exposed outside the Docker network.
 - Form Trigger rate-limited and file-type-restricted (PDF only, 10MB cap).
 - Certificate PDFs on an encrypted volume.
-- Separate Anthropic API key per client, with per-key spend limits.
+- Separate model API key per client where possible, with per-key spend limits.
 - Documented, tested backup of Postgres — daily dump, offsite, restore tested once.
 
 ### Onboarding (build this before client one, not after)
@@ -1141,7 +1142,7 @@ This product's failure mode is silence. If the Gmail Trigger quietly stops polli
 - **Historical backfill**: process their existing certificate folder in one batch — this is also the deliverable from your free trial offer.
 - **Config interview**: legal name(s), minimum limits, reminder cadence, who approves, which mailbox sends.
 - **A one-page runbook**: what the statuses mean, what to do with a `NEEDS_REVIEW` row, who to contact.
-- **Approver training**: fifteen minutes on the Telegram gate. The whole trust model depends on a human actually reading before tapping Approve, and if they start rubber-stamping, the product's honesty claim quietly becomes false.
+- **Approver training**: fifteen minutes on the Gmail approval gate. The whole trust model depends on a human actually reading before tapping Approve, and if they start rubber-stamping, the product's honesty claim quietly becomes false.
 
 ### Commercial and legal
 - **Written scope** stating explicitly what the system does not do — reuse Section 11 verbatim. This is the document that protects you if a vendor's lapsed policy ever becomes a dispute.
@@ -1155,7 +1156,7 @@ This product's failure mode is silence. If the Gmail Trigger quietly stops polli
 ## Summary of changes from your source document
 
 1. **OCR removed entirely.** `n8n-nodes-ocrbro` is effectively unmaintained (two releases, same day, no dependents). Native PDF vision on the model replaces it — better quality on scans, zero community-node dependency.
-2. **The Telegram approval gate is promoted from a step to the centrepiece.** n8n's native Send-and-Wait with inline Approve/Decline is stronger than your doc assumed, and it solves your trust problem physically rather than rhetorically.
+2. **The human approval gate is promoted from a step to the centrepiece.** Gmail is the default because n8n's Send-and-Wait approval works in an ordinary email client. Telegram remains optional for prospects who already use it.
 3. **Demo sequencing changed** — send the email *first*, talk over the polling delay. Your original script has 60 seconds of dead air in it.
 4. **ACORD form copyright** flagged; affects fixtures and marketing wording. Missing from your doc.
 5. **n8n Sustainable Use License** affects your hosting model, not just the build. Client-hosted resolves it and sells better.
@@ -1172,4 +1173,4 @@ This product's failure mode is silence. If the Gmail Trigger quietly stops polli
 14. **Demo seeded with the prospect's real vendor names** (build step 1.4) — the highest-leverage step in the plan, and it removes the "whose vendors are those?" question that makes a staged demo visible.
 15. **Section 9b added:** rehearsed answers for the six questions a serious buyer asks — mid-term cancellation, what if you disappear, the timezone, confidentiality of the ten certificates, isn't-this-a-spreadsheet, and price.
 16. **Competitive notes added to Section 13.** Certificial is the one real competitor at your price point (~$99/month, AMS-connected) and you should be able to name it first. Includes why you cannot build the AMS-connected version and what to say when a prospect raises it.
-17. **Provider choice (Section 1.9).** The build is portable by design — every model call goes through HTTP Request, so Anthropic and OpenAI are a three-node swap. OpenAI's strict Structured Outputs is the one genuine engineering advantage; OpenAI's faster model churn is the one genuine operational risk. Cost is a wash. Pin dated model IDs and keep the ID in `client_config` whichever you choose.
+17. **Provider choice (Section 1.9).** Use OpenAI through n8n's built-in OpenAI node V2 by default because current n8n supports the Responses API, PDF File input, and JSON Schema output. HTTP Request is now a fallback for older n8n versions, missing node controls, or Anthropic. OpenAI's strict Structured Outputs is the main engineering advantage; OpenAI's faster model churn remains the main operational risk. Pin model IDs and keep the ID in `client_config`.
