@@ -4,7 +4,7 @@ Created: 2026-07-30
 
 ## Current Status
 
-Stage 1 local environment scaffolding and credential smoke verification are complete on this machine. Stage 2 database schema and synthetic seed register are complete and verified. Stage 3 synthetic fixtures are generated and verified. Stage 4 extraction and validation core is complete with offline validator tests and live n8n/OpenAI fixture smoke passing locally. Stage 5 intake workflow and persistent storage are complete with deterministic SQL checks and live n8n/OpenAI fixture smoke passing locally. Stage 6 daily watch, drafting, approval-gate workflow, non-PDF reply notices, manual overrides, and escalation are implemented with deterministic SQL checks plus live same-email Gmail approval/send smoke passing locally. Stage 7 dashboard and demo view are implemented with the Postgres read model, generated n8n dashboard webhook, rendered HTML checks, and source-PDF link verification passing locally. Stage 8 demo reset, full fixture rehearsal verification, committed fixture results, and local demo runbook are complete; the verifier passed locally and left the demo reset. Rechecked `coi-demo-build-plan.md` once after the initial plan and made small planning corrections. Rechecked current n8n/OpenAI documentation on 2026-07-30 and changed the recommended model-call implementation from HTTP Request-first to built-in OpenAI node V2-first.
+Stage 1 local environment scaffolding and credential smoke verification are complete on this machine. Stage 2 database schema and synthetic seed register are complete and verified. Stage 3 synthetic fixtures are generated and verified. Stage 4 extraction and validation core is complete with offline validator tests and live n8n/OpenAI fixture smoke passing locally. Stage 5 intake workflow and persistent storage are complete with deterministic SQL checks and live n8n/OpenAI fixture smoke passing locally. Stage 6 daily watch, drafting, approval-gate workflow, non-PDF reply notices, manual overrides, and escalation are implemented with deterministic SQL checks plus live same-email Gmail approval/send smoke passing locally. Stage 7 dashboard and demo view are implemented with the Postgres read model, generated n8n dashboard webhook, rendered HTML checks, and source-PDF link verification passing locally. Stage 8 demo reset, full fixture rehearsal verification, committed fixture results, and local demo runbook are complete; the verifier passed locally and left the demo reset. Stage 9 production-readiness planning is complete with hosting, controls, scope, retention, onboarding, backlog, and verification artifacts. Rechecked `coi-demo-build-plan.md` once after the initial plan and made small planning corrections. Rechecked current n8n/OpenAI documentation on 2026-07-30 and changed the recommended model-call implementation from HTTP Request-first to built-in OpenAI node V2-first.
 
 ## Source Documents Reviewed
 
@@ -39,7 +39,7 @@ The staged plan in `build-plan.md` follows the later `coi-demo-build-plan.md` wh
 | 6 | Daily Watch, Drafting, Approval, and Escalation | Complete | SQL bucket/suppression/escalation/manual override logic verified. Stage 6 workflows import and publish in n8n. OpenAI draft, Gmail Send-and-Wait approval, and approved Gmail send passed locally using `worksambhav26@gmail.com` as both approver and test recipient. |
 | 7 | Dashboard and Demo View | Complete | Dashboard read model, generated n8n webhook, responsive HTML register, dynamic counts, source PDF links, and forbidden-language guard verified locally. |
 | 8 | Full Fixture Run, Demo Reset, and Rehearsal | Complete | Added fast local reset, full fixture verifier, committed fixture results table, and rehearsal runbook. Live Stage 8 verifier passed locally with no accepted deviations and reset final state to 18 vendors with zero runtime rows. |
-| 9 | Production Readiness Plan | Not started | Should not begin until demo-depth build is proven. |
+| 9 | Production Readiness Plan | Complete | Added production hosting decision, required control plan, scope/limitations document, data processing and retention terms, onboarding checklist, implementation backlog, and verifier. This is a planning gate; production controls still need implementation before client reliance. |
 
 ## Open Decisions
 
@@ -66,8 +66,8 @@ The staged plan in `build-plan.md` follows the later `coi-demo-build-plan.md` wh
    - Fallback: synthetic 18-vendor list.
 
 5. Production hosting model:
-   - Recommended: client-hosted or client-owned VPS.
-   - Avoid unverified multi-tenant n8n hosting until licensing is clarified.
+   - Stage 9 decision: default to one client per client-owned VPS or cloud account.
+   - Avoid shared multi-tenant n8n hosting unless licensing is clarified in writing for that exact model.
 
 ## Deviations From Original Source Document
 
@@ -171,6 +171,8 @@ The staged plan in `build-plan.md` follows the later `coi-demo-build-plan.md` wh
 - Confirmed the approved Stage 6 run did complete: `outreach_log` recorded `approved = true`, `sent_at = 2026-07-30 18:26:38.925994+00`, `actual_recipient = worksambhav26@gmail.com`, and Gmail send response ID `19fb44746f7bb40e`.
 - Confirmed Gmail could read final message `19fb44746f7bb40e` by ID with subject `Certificate request for Vista Glass and Door LLC`, labels `UNREAD`, `SENT`, and `INBOX`, and both sender/recipient as `worksambhav26@gmail.com`; added verifier readback so future live-email rehearsals record the final Gmail message labels.
 - Added read-only pgweb to the local Docker Compose stack at `http://localhost:8081` for visual Postgres table inspection during demo rehearsal, and extended `.\scripts\verify-local.ps1` to check pgweb HTTP availability.
+- Added Stage 9 production-readiness artifacts: `docs/stage-9-production-readiness-plan.md`, `docs/stage-9-scope-limitations.md`, `docs/stage-9-data-processing-retention.md`, `docs/stage-9-client-onboarding-checklist.md`, and `docs/stage-9-implementation-backlog.md`.
+- Added `scripts/verify-stage-9-production-readiness.ps1` and verified the Stage 9 artifact set covers hosting, n8n licensing, error alerts, retry/backoff, dead letters, idempotency, heartbeat, canary, digest, uptime, backup/restore, scope limits, data retention, onboarding, and exit/export.
 
 ## Outstanding Risks To Track
 
@@ -183,4 +185,4 @@ The staged plan in `build-plan.md` follows the later `coi-demo-build-plan.md` wh
 
 ## Next Action
 
-Begin Stage 9 production readiness planning.
+Run the full end-to-end demo rehearsal sequence, then complete pre-live external checks before any prospect demo.
