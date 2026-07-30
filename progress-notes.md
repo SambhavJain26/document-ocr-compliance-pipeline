@@ -4,7 +4,7 @@ Created: 2026-07-30
 
 ## Current Status
 
-Stage 1 local environment scaffolding and credential smoke verification are complete on this machine. Stage 2 database schema and synthetic seed register are complete and verified. Stage 3 synthetic fixtures are generated and verified. Stage 4 extraction and validation core is complete with offline validator tests and live n8n/OpenAI fixture smoke passing locally. Stage 5 intake workflow and persistent storage are complete with deterministic SQL checks and live n8n/OpenAI fixture smoke passing locally. Rechecked `coi-demo-build-plan.md` once after the initial plan and made small planning corrections. Rechecked current n8n/OpenAI documentation on 2026-07-30 and changed the recommended model-call implementation from HTTP Request-first to built-in OpenAI node V2-first.
+Stage 1 local environment scaffolding and credential smoke verification are complete on this machine. Stage 2 database schema and synthetic seed register are complete and verified. Stage 3 synthetic fixtures are generated and verified. Stage 4 extraction and validation core is complete with offline validator tests and live n8n/OpenAI fixture smoke passing locally. Stage 5 intake workflow and persistent storage are complete with deterministic SQL checks and live n8n/OpenAI fixture smoke passing locally. Stage 6 daily watch, drafting, approval-gate workflow, non-PDF reply notices, manual overrides, and escalation are implemented with deterministic SQL checks and local-safe n8n/OpenAI draft smoke passing. Rechecked `coi-demo-build-plan.md` once after the initial plan and made small planning corrections. Rechecked current n8n/OpenAI documentation on 2026-07-30 and changed the recommended model-call implementation from HTTP Request-first to built-in OpenAI node V2-first.
 
 ## Source Documents Reviewed
 
@@ -36,7 +36,7 @@ The staged plan in `build-plan.md` follows the later `coi-demo-build-plan.md` wh
 | 3 | Synthetic Test Fixtures | Complete | 20 fixture records generated: 17 PDFs, 2 email payloads, and 1 metadata-only no-file case. Verified watermark, text-layer behavior, scanned no-text behavior, password protection, rendered previews, and forbidden-term scan. |
 | 4 | Extraction and Validation Core | Complete | Added schema, shared validator, generated n8n workflow export, fixture mount, runbook, and verification scripts. Offline validator tests pass. Live n8n/OpenAI extraction smoke passes for fixed fixtures `f01`, `f04`, `f11`, and `f18`. |
 | 5 | Intake Workflow End to End | Complete | Added Stage 5 SQL storage function, intake notices, generated intake/source workflows, local PDF storage mount, form/Gmail/manual intake normalization, source-PDF route, and storage/intake verification scripts. Live fixture smoke passed locally. |
-| 6 | Daily Watch, Drafting, Approval, and Escalation | Not started | Depends on stored certificate records. |
+| 6 | Daily Watch, Drafting, Approval, and Escalation | Complete | SQL bucket/suppression/escalation/manual override logic verified. Stage 6 workflows import and publish in n8n, and local-safe OpenAI draft/config-notice smoke passes. Full Approve -> Gmail send smoke is pending `stage_6_approver_email` and `stage_6_test_recipient_email` config. |
 | 7 | Dashboard and Demo View | Not started | Depends on populated database and status logic. |
 | 8 | Full Fixture Run, Demo Reset, and Rehearsal | Not started | Depends on full demo workflow. |
 | 9 | Production Readiness Plan | Not started | Should not begin until demo-depth build is proven. |
@@ -139,6 +139,14 @@ The staged plan in `build-plan.md` follows the later `coi-demo-build-plan.md` wh
 - Updated fixture `f13-renewal-coverage-gap` so it starts 14 days after `f03-expired-34-days` ends, matching the coverage-gap expectation.
 - Verified Stage 5 storage checks: clean insert, coverage insert, duplicate source skip, review preservation, non-certificate notice, older-than-current notice, unknown-vendor review downgrade, and no vendor creation.
 - Verified Stage 5 live n8n/OpenAI intake smoke: clean fixture storage, source PDF route, two-attachment fixture, renewal supersede, older-upload prevention, coverage-gap renewal, non-certificate notice, password-protected review row, and portal-link notice.
+- Added Stage 6 SQL migration with outreach audit columns, config defaults, `stage_6_actionable_vendors(as_of_date)`, pending/sent/declined outreach logging, overdue escalation, no-PDF reply notices, config notices, and manual `CANCELLED`/`NON_RENEWED` override support.
+- Added generated Stage 6 daily watch/chase workflow and non-PDF reply notice workflow exports.
+- Added `scripts/generate-stage-6-workflows.ps1`, `scripts/apply-stage-6.ps1`, `scripts/verify-stage-6-watch.ps1`, and `scripts/verify-stage-6-workflows.ps1`.
+- Added `docs/stage-6-watch-chase-runbook.md`.
+- Verified Stage 6 deterministic SQL behavior: never-received, expired, 14-day, 30-day, 60-day, and re-attestation buckets; earliest active coverage selection; paused vendor suppression; pending approval suppression; active follow-up suppression; one-overdue second request; two-overdue escalation and chase pause; newer-certificate stale escalation suppression; text reply and portal-link notice storage; and manual cancelled/non-renewed actionability.
+- Verified Stage 6 workflow JSON parses, imports into n8n 2.29.10, publishes the two demo-facing workflows, runs an OpenAI draft smoke, and stores a config notice when approval/send addresses are blank.
+- Found and fixed a Stage 6 n8n continuation issue: the escalation pre-pass can return zero rows, so its Postgres node must use `alwaysOutputData` to continue into actionable-vendor loading.
+- Full Stage 6 Gmail Approve -> Send smoke was not run because `stage_6_approver_email` and `stage_6_test_recipient_email` are blank; configure both and rerun `.\scripts\verify-stage-6-workflows.ps1` to exercise that path.
 
 ## Outstanding Risks To Track
 
@@ -150,4 +158,4 @@ The staged plan in `build-plan.md` follows the later `coi-demo-build-plan.md` wh
 
 ## Next Action
 
-Begin Stage 6 daily watch, drafting, approval, and escalation on top of the Stage 5 certificate store.
+Configure `stage_6_approver_email` and `stage_6_test_recipient_email` for the full local Gmail approval/send smoke, then begin Stage 7 dashboard and demo view.

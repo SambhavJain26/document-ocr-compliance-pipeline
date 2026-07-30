@@ -1,0 +1,105 @@
+{
+  "id": "stage-6-non-pdf-reply-notice",
+  "name": "Stage 6 - Non PDF Reply Notice",
+  "nodes": [
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "event": "messageReceived",
+        "simple": false,
+        "maxResults": 10,
+        "filters": {
+          "q": "-has:attachment",
+          "readStatus": "unread"
+        },
+        "options": {
+          "downloadAttachments": true,
+          "dataPropertyAttachmentsPrefixName": "attachment_"
+        }
+      },
+      "id": "81000000-0000-4600-8600-000000000001",
+      "name": "Gmail Trigger - Stage 6 Replies",
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "Gmail account",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "function bodyText(json) {\n  return [json.text, json.html, json.body, json.snippet].filter(Boolean).join(\"\\n\");\n}\n\nreturn $input.all().flatMap((item, index) => {\n  const binaryEntries = Object.entries(item.binary || {});\n  const pdfEntries = binaryEntries.filter(([, binary]) => {\n    const fileName = String(binary?.fileName || \"\");\n    const mimeType = String(binary?.mimeType || \"\");\n    return mimeType === \"application/pdf\" || fileName.toLowerCase().endsWith(\".pdf\");\n  });\n\n  if (pdfEntries.length > 0) {\n    return [];\n  }\n\n  const text = bodyText(item.json);\n  const baseRef = item.json.id || item.json.messageId || item.json.threadId || String(Date.now()) + \":\" + index;\n  return [{\n    json: {\n      source: \"email\",\n      source_ref: \"email:\" + baseRef + \":stage-6-no-pdf\",\n      from: item.json.from || item.json.sender || null,\n      subject: item.json.subject || null,\n      text,\n      snippet: text.slice(0, 500),\n    },\n  }];\n});"
+      },
+      "id": "81000000-0000-4600-8600-000000000002",
+      "name": "Normalize Stage 6 Reply Notice",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        300,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT stage_6_store_reply_notice($1::jsonb) AS reply_notice_result;",
+        "options": {
+          "queryReplacement": "={{ JSON.stringify($json) }}"
+        }
+      },
+      "id": "81000000-0000-4600-8600-000000000003",
+      "name": "Store Stage 6 Reply Notice",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        600,
+        0
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "Postgres account",
+          "name": "Postgres account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Gmail Trigger - Stage 6 Replies": {
+      "main": [
+        [
+          {
+            "node": "Normalize Stage 6 Reply Notice",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Stage 6 Reply Notice": {
+      "main": [
+        [
+          {
+            "node": "Store Stage 6 Reply Notice",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {},
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2026-07-30T00:00:00.000Z",
+  "versionId": "stage-6-generated"
+}
