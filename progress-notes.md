@@ -4,7 +4,7 @@ Created: 2026-07-30
 
 ## Current Status
 
-Stage 1 local environment scaffolding and credential smoke verification are complete on this machine. Stage 2 database schema and synthetic seed register are complete and verified. Stage 3 synthetic fixtures are generated and verified. Stage 4 extraction and validation core artifacts are implemented and offline validator tests pass; live n8n/OpenAI smoke verification is pending because the local n8n/Postgres stack was not running during implementation. Rechecked `coi-demo-build-plan.md` once after the initial plan and made small planning corrections. Rechecked current n8n/OpenAI documentation on 2026-07-30 and changed the recommended model-call implementation from HTTP Request-first to built-in OpenAI node V2-first.
+Stage 1 local environment scaffolding and credential smoke verification are complete on this machine. Stage 2 database schema and synthetic seed register are complete and verified. Stage 3 synthetic fixtures are generated and verified. Stage 4 extraction and validation core is complete with offline validator tests and live n8n/OpenAI fixture smoke passing locally. Rechecked `coi-demo-build-plan.md` once after the initial plan and made small planning corrections. Rechecked current n8n/OpenAI documentation on 2026-07-30 and changed the recommended model-call implementation from HTTP Request-first to built-in OpenAI node V2-first.
 
 ## Source Documents Reviewed
 
@@ -34,7 +34,7 @@ The staged plan in `build-plan.md` follows the later `coi-demo-build-plan.md` wh
 | 1 | Environment, Accounts, and Local n8n | Complete | Local Docker Compose environment verified. Public HTTPS intentionally deferred because all Stage 1 testing is same-machine only. Postgres, OpenAI, and Gmail credentials smoke-tested through n8n. |
 | 2 | Database Schema, Client Config, and Seed Vendors | Complete | Seven project tables created. Synthetic Harbourline config, holder entities, trade requirements, and 18 vendors seeded. Certificate, coverage, and outreach tables remain empty. |
 | 3 | Synthetic Test Fixtures | Complete | 20 fixture records generated: 17 PDFs, 2 email payloads, and 1 metadata-only no-file case. Verified watermark, text-layer behavior, scanned no-text behavior, password protection, rendered previews, and forbidden-term scan. |
-| 4 | Extraction and Validation Core | Implemented, live smoke pending | Added schema, shared validator, generated n8n workflow export, fixture mount, runbook, and verification scripts. Offline validator tests pass. Live n8n/OpenAI extraction smoke is pending a running local stack. |
+| 4 | Extraction and Validation Core | Complete | Added schema, shared validator, generated n8n workflow export, fixture mount, runbook, and verification scripts. Offline validator tests pass. Live n8n/OpenAI extraction smoke passes for fixed fixtures `f01`, `f04`, `f11`, and `f18`. |
 | 5 | Intake Workflow End to End | Not started | Depends on extraction core. |
 | 6 | Daily Watch, Drafting, Approval, and Escalation | Not started | Depends on stored certificate records. |
 | 7 | Dashboard and Demo View | Not started | Depends on populated database and status logic. |
@@ -119,7 +119,10 @@ The staged plan in `build-plan.md` follows the later `coi-demo-build-plan.md` wh
 - Added `docs/stage-4-extraction-runbook.md`.
 - Verified Stage 4 offline validation: hard flags route to review/ignore, soft flags preserve `ON_FILE`, note flags remain informational, holder matching accepts configured holder entities, near-duplicate vendors route to review, WC checks are suppressed for exempt vendors, and renewal context catches older-than-on-file and coverage-gap cases.
 - Verified Stage 4 workflow JSON parses with `ConvertFrom-Json`.
-- Ran `.\scripts\verify-stage-4-extraction.ps1`; workflow JSON parsed, but live extraction was skipped because n8n and Postgres were not both running.
+- Updated Stage 3 fixture generation to make synthetic PDFs deterministic and to make the image-only scanned fixture readable enough for the Stage 4 vision smoke while preserving zero extractable text.
+- Verified Stage 3 again after fixture readability changes: 20 fixture records, 17 PDFs, two email payloads, image-only scanned fixture has zero extracted text, and password PDF still blocks unauthenticated extraction.
+- Updated the generated Stage 4 workflow for n8n 2.29 OpenAI node V2 `response` operation, strict JSON Schema output, dynamic model IDs, explicit context reattachment after file nodes, one-off CLI execution, and password-PDF short-circuit handling.
+- Verified Stage 4 live n8n/OpenAI smoke with Docker running: `f01-clean-current` used text extraction and returned `ON_FILE`; `f04-scanned-clean-current` used PDF vision fallback and returned `ON_FILE`; `f11-not-a-certificate` returned `NOT_A_COI` and `ignore_not_certificate`; `f18-password-protected` returned `PDF_PASSWORD_PROTECTED` and `NEEDS_REVIEW` without crashing.
 - Updated `coi-demo-build-plan.md` to make OpenAI node V2 the default model-call path.
 - Updated `coi-demo-build-plan.md` to make HTTP Request a fallback only.
 - Updated `coi-demo-build-plan.md` to make Gmail approval the default and Telegram optional.
@@ -133,9 +136,8 @@ The staged plan in `build-plan.md` follows the later `coi-demo-build-plan.md` wh
 - ACORD copyright affects fixtures and marketing materials.
 - Model provider pricing and model IDs are temporally unstable; verify before Stage 1.
 - Gmail OAuth, public webhook URLs, and approval buttons are the most likely demo failure points.
-- Stage 4 OpenAI node execution has not been live-smoked after workflow import because the local n8n/Postgres stack was not running during implementation.
 - The system cannot detect mid-term policy cancellation, forged certificates, missing vendors never entered into the register, or actual endorsement status.
 
 ## Next Action
 
-Start the local stack with `.\scripts\start-local.ps1`, rerun `.\scripts\verify-local.ps1`, then run `.\scripts\verify-stage-4-extraction.ps1` to live-smoke the Stage 4 n8n/OpenAI workflow before beginning Stage 5.
+Begin Stage 5 intake storage: persist accepted Stage 4 storage-ready results into `certificates` and `coverages`, retain original PDFs, and prepare manager review/notice handoffs.

@@ -53,7 +53,14 @@ Then run:
 .\scripts\verify-stage-4-extraction.ps1
 ```
 
-The script regenerates and parses the workflow export. If n8n and Postgres are running, it imports the Stage 4 workflow, executes it by workflow ID, checks that the fixed smoke fixture IDs appear in the output, and attempts to delete the temporary workflow.
+The script regenerates and parses the workflow export. If n8n and Postgres are running, it deletes any prior temporary workflow row with the Stage 4 smoke ID, imports the workflow, executes it by workflow ID in a one-off n8n container, parses the final validation node output, and deletes the temporary workflow row afterward.
+
+The live smoke asserts:
+
+- `f01-clean-current` uses the text branch, exact-matches the seeded vendor, returns `ON_FILE`, and extracts the expected holder, certificate date, and GL limits.
+- `f04-scanned-clean-current` uses the vision branch, returns `ON_FILE`, and extracts a March 2027 GL expiration without hard validation flags.
+- `f11-not-a-certificate` returns `NOT_A_COI` and `ignore_not_certificate`.
+- `f18-password-protected` returns `PDF_PASSWORD_PROTECTED` and a graceful `NEEDS_REVIEW` result.
 
 The smoke fixture set is:
 
@@ -73,3 +80,7 @@ The n8n service mounts fixture files read-only at:
 This matches n8n 2.x file-node access restrictions and keeps the workflow from reading arbitrary repo paths.
 
 The workflow uses n8n's built-in OpenAI node as the default path. If a future n8n version changes the OpenAI node parameters for PDF file input, JSON Schema output, or dynamic model IDs, keep HTTP Request as the fallback path documented in the build plan rather than adding provider-switching logic to the demo workflow.
+
+For n8n 2.29, the OpenAI node V2 extraction call uses `resource: text`, `operation: response`, messages under `responses.values`, dynamic `modelId`, and strict JSON Schema output under `options.textFormat.textOptions`. File read and text extraction nodes can remove original JSON or binary context, so the workflow reattaches fixture context after file read, after text extraction, and after model output.
+
+The password-protected fixture is intentionally routed around `Extract From File`, because that node aborts encrypted PDFs before a downstream validator can turn the condition into structured review JSON.

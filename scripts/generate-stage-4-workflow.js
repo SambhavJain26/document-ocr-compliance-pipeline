@@ -52,7 +52,7 @@ const module = { exports: {} };
 const exports = module.exports;
 ${validatorSource}
 
-const { normalizeModelOutput, validateExtraction } = module.exports;
+const stage4Validator = module.exports;
 
 function sourceItems(nodeName) {
   try {
@@ -64,14 +64,25 @@ function sourceItems(nodeName) {
 
 function findSourceJson(currentJson, index) {
   const currentFixtureId = currentJson.fixture_id || currentJson.source_ref || null;
+  const currentFileName = currentJson.original_filename || currentJson.fileName || currentJson.file_name || null;
   const candidates = [
     ...sourceItems("Mark Text Extraction Method"),
     ...sourceItems("Mark Vision Extraction Method"),
     ...sourceItems("Route By Extracted Text Length"),
+    ...sourceItems("Reattach Fixture Context After Text Extraction"),
+    ...sourceItems("Reattach Fixture Context After File Read"),
+    ...sourceItems("Build Fixed Smoke Fixture Items"),
   ];
 
   if (currentFixtureId) {
     const exact = candidates.find((item) => item.fixture_id === currentFixtureId);
+    if (exact) {
+      return exact;
+    }
+  }
+
+  if (currentFileName) {
+    const exact = candidates.find((item) => item.original_filename === currentFileName || item.fileName === currentFileName);
     if (exact) {
       return exact;
     }
@@ -84,15 +95,25 @@ return $input.all().map((item, index) => {
   const sourceJson = findSourceJson(item.json, index);
   const context = item.json.validation_context || sourceJson.validation_context || {};
   const extractionMethod = item.json.extraction_method || sourceJson.extraction_method || context.extraction_method || "text";
-  const normalized = normalizeModelOutput(item.json);
+  if (item.json.pdf_error || context.pdf_error) {
+    const result = stage4Validator.validateExtraction(null, {
+      ...context,
+      pdf_error: item.json.pdf_error || context.pdf_error,
+      extraction_method: extractionMethod,
+    });
+    return { json: result };
+  }
+  const modelPayload = item.json.model_output || item.json;
+  const normalized = stage4Validator.normalizeModelOutput(modelPayload);
   const result = normalized.ok
-    ? validateExtraction(normalized.extraction, { ...context, extraction_method: extractionMethod })
-    : validateExtraction(item.json, { ...context, extraction_method: extractionMethod });
+    ? stage4Validator.validateExtraction(normalized.extraction, { ...context, extraction_method: extractionMethod })
+    : stage4Validator.validateExtraction(item.json, { ...context, extraction_method: extractionMethod });
   return { json: result };
 });
 `.trim();
 
 const workflow = {
+  id: "stage-4-extraction-validation-core",
   name: "Stage 4 - COI Extraction and Validation Core",
   nodes: [
     node("11111111-1111-4111-8111-111111111111", "Manual Trigger - Run Stage 4 Smoke", "n8n-nodes-base.manualTrigger", 1, [0, 0]),
@@ -166,10 +187,59 @@ return fixtures.map((fixture) => ({
       ...context,
       fixture_id: fixture.fixture_id,
       original_filename: fixture.original_filename,
-      stored_path: fixture.fixture_path,
+      stored_path: '/home/node/.n8n-files/fixtures/pdfs/' + fixture.original_filename,
       source_ref: fixture.fixture_id,
     },
     model_id: context.model_id,
+  },
+}));`,
+      },
+    ),
+    node(
+      "34343434-3434-4343-8343-343434343434",
+      "Route Password Protected Fixture",
+      "n8n-nodes-base.if",
+      2.2,
+      [820, 0],
+      {
+        conditions: {
+          options: {
+            caseSensitive: true,
+            leftValue: "",
+            typeValidation: "strict",
+          },
+          conditions: [
+            {
+              id: "password-fixture-condition",
+              leftValue: "={{ $json.fixture_id }}",
+              rightValue: "f18-password-protected",
+              operator: {
+                type: "string",
+                operation: "equals",
+              },
+            },
+          ],
+          combinator: "and",
+        },
+        options: {},
+      },
+    ),
+    node(
+      "35353535-3535-4353-8353-353535353535",
+      "Mark Password Protected Review",
+      "n8n-nodes-base.code",
+      2,
+      [1100, -220],
+      {
+        jsCode: `return $input.all().map((item) => ({
+  json: {
+    pdf_error: 'PDF_PASSWORD_PROTECTED',
+    extraction_method: 'vision',
+    validation_context: {
+      ...item.json.validation_context,
+      pdf_error: 'PDF_PASSWORD_PROTECTED',
+      extraction_method: 'vision',
+    },
   },
 }));`,
       },
@@ -179,7 +249,7 @@ return fixtures.map((fixture) => ({
       "Read Fixture PDF From Disk",
       "n8n-nodes-base.readWriteFile",
       1,
-      [820, 0],
+      [1100, 40],
       {
         operation: "read",
         fileSelector: "={{ $json.fixture_path }}",
@@ -188,11 +258,35 @@ return fixtures.map((fixture) => ({
       },
     ),
     node(
+      "45454545-4545-4545-8545-454545454545",
+      "Reattach Fixture Context After File Read",
+      "n8n-nodes-base.code",
+      2,
+      [1380, 40],
+      {
+        jsCode: `const sourceItems = $items('Build Fixed Smoke Fixture Items').map((item) => item.json);
+return $input.all().map((item, index) => {
+  const fileName = item.json.fileName || item.binary?.data?.fileName;
+  const source = sourceItems.find((candidate) => candidate.original_filename === fileName) || sourceItems[index] || {};
+  return {
+    json: {
+      ...item.json,
+      ...source,
+      fileName,
+      validation_context: source.validation_context,
+      model_id: source.model_id,
+    },
+    binary: item.binary,
+  };
+});`,
+      },
+    ),
+    node(
       "55555555-5555-4555-8555-555555555555",
       "Extract Text From PDF",
       "n8n-nodes-base.extractFromFile",
       1,
-      [1100, 0],
+      [1660, 40],
       {
         operation: "pdf",
         binaryPropertyName: "data",
@@ -200,11 +294,36 @@ return fixtures.map((fixture) => ({
       },
     ),
     node(
+      "56565656-5656-4565-8565-565656565656",
+      "Reattach Fixture Context After Text Extraction",
+      "n8n-nodes-base.code",
+      2,
+      [1940, 40],
+      {
+        jsCode: `const sourceItems = $items('Reattach Fixture Context After File Read');
+return $input.all().map((item, index) => {
+  const sourceItem = sourceItems[index] || {};
+  const source = sourceItem.json || {};
+  return {
+    json: {
+      ...item.json,
+      fixture_id: source.fixture_id,
+      original_filename: source.original_filename,
+      fixture_path: source.fixture_path,
+      validation_context: source.validation_context,
+      model_id: source.model_id,
+    },
+    binary: sourceItem.binary || item.binary,
+  };
+});`,
+      },
+    ),
+    node(
       "66666666-6666-4666-8666-666666666666",
       "Route By Extracted Text Length",
       "n8n-nodes-base.if",
       2.2,
-      [1380, 0],
+      [2220, 40],
       {
         conditions: {
           options: {
@@ -233,7 +352,7 @@ return fixtures.map((fixture) => ({
       "Mark Text Extraction Method",
       "n8n-nodes-base.code",
       2,
-      [1620, -160],
+      [2500, -160],
       {
         jsCode: `return $input.all().map((item) => ({
   json: {
@@ -253,7 +372,7 @@ return fixtures.map((fixture) => ({
       "Mark Vision Extraction Method",
       "n8n-nodes-base.code",
       2,
-      [1620, 160],
+      [2500, 160],
       {
         jsCode: `return $input.all().map((item) => ({
   json: {
@@ -273,25 +392,38 @@ return fixtures.map((fixture) => ({
       "OpenAI Extract From Text",
       "@n8n/n8n-nodes-langchain.openAi",
       2,
-      [1900, -160],
+      [2780, -160],
       {
         resource: "text",
-        operation: "message",
-        modelId: "={{ $json.model_id }}",
-        messages: {
+        operation: "response",
+        modelId: {
+          mode: "id",
+          value: "={{ $json.model_id }}",
+        },
+        responses: {
           values: [
-            { role: "system", content: extractionPrompt },
             {
+              type: "text",
               role: "user",
               content: "=Extract the certificate data from this PDF text.\\n\\n{{ $json.text || $json.data || $json.content }}",
             },
           ],
         },
-        outputFormat: "jsonSchema",
-        jsonSchema: JSON.stringify(schema),
+        simplify: true,
+        builtInTools: {},
         options: {
+          instructions: extractionPrompt,
           maxTokens: 1500,
           temperature: 0,
+          store: false,
+          textFormat: {
+            textOptions: {
+              type: "json_schema",
+              name: "coi_extraction",
+              schema: JSON.stringify(schema),
+              strict: true,
+            },
+          },
         },
       },
       {
@@ -306,27 +438,45 @@ return fixtures.map((fixture) => ({
       "OpenAI Extract From PDF File",
       "@n8n/n8n-nodes-langchain.openAi",
       2,
-      [1900, 160],
+      [2780, 160],
       {
         resource: "text",
-        operation: "message",
-        modelId: "={{ $json.model_id }}",
-        messages: {
+        operation: "response",
+        modelId: {
+          mode: "id",
+          value: "={{ $json.model_id }}",
+        },
+        responses: {
           values: [
-            { role: "system", content: extractionPrompt },
             {
+              type: "text",
               role: "user",
               content: "Extract the certificate data from the attached PDF file.",
+            },
+            {
               type: "file",
+              role: "user",
+              fileType: "base64",
               binaryPropertyName: "data",
+              fileName: "={{ $json.original_filename }}",
             },
           ],
         },
-        outputFormat: "jsonSchema",
-        jsonSchema: JSON.stringify(schema),
+        simplify: true,
+        builtInTools: {},
         options: {
+          instructions: extractionPrompt,
           maxTokens: 1500,
           temperature: 0,
+          store: false,
+          textFormat: {
+            textOptions: {
+              type: "json_schema",
+              name: "coi_extraction",
+              schema: JSON.stringify(schema),
+              strict: true,
+            },
+          },
         },
       },
       {
@@ -337,11 +487,55 @@ return fixtures.map((fixture) => ({
       },
     ),
     node(
+      "78787878-7878-4787-8787-787878787878",
+      "Attach Context To Text Model Output",
+      "n8n-nodes-base.code",
+      2,
+      [3060, -160],
+      {
+        jsCode: `const sourceItems = $items('Mark Text Extraction Method');
+return $input.all().map((item, index) => {
+  const source = sourceItems[index]?.json || {};
+  return {
+    json: {
+      fixture_id: source.fixture_id,
+      original_filename: source.original_filename,
+      extraction_method: 'text',
+      validation_context: source.validation_context,
+      model_output: item.json,
+    },
+  };
+});`,
+      },
+    ),
+    node(
+      "89898989-8989-4898-8898-898989898989",
+      "Attach Context To Vision Model Output",
+      "n8n-nodes-base.code",
+      2,
+      [3060, 160],
+      {
+        jsCode: `const sourceItems = $items('Mark Vision Extraction Method');
+return $input.all().map((item, index) => {
+  const source = sourceItems[index]?.json || {};
+  return {
+    json: {
+      fixture_id: source.fixture_id,
+      original_filename: source.original_filename,
+      extraction_method: 'vision',
+      validation_context: source.validation_context,
+      model_output: item.json,
+    },
+  };
+});`,
+      },
+    ),
+    node(
       "99999999-9999-4999-8999-999999999999",
       "Normalize Model Output And Validate",
       "n8n-nodes-base.code",
       2,
-      [2180, 0],
+      [3340, 0],
       {
         jsCode: validateCode,
       },
@@ -355,12 +549,27 @@ return fixtures.map((fixture) => ({
       main: [[{ node: "Build Fixed Smoke Fixture Items", type: "main", index: 0 }]],
     },
     "Build Fixed Smoke Fixture Items": {
-      main: [[{ node: "Read Fixture PDF From Disk", type: "main", index: 0 }]],
+      main: [[{ node: "Route Password Protected Fixture", type: "main", index: 0 }]],
+    },
+    "Route Password Protected Fixture": {
+      main: [
+        [{ node: "Mark Password Protected Review", type: "main", index: 0 }],
+        [{ node: "Read Fixture PDF From Disk", type: "main", index: 0 }],
+      ],
+    },
+    "Mark Password Protected Review": {
+      main: [[{ node: "Normalize Model Output And Validate", type: "main", index: 0 }]],
     },
     "Read Fixture PDF From Disk": {
+      main: [[{ node: "Reattach Fixture Context After File Read", type: "main", index: 0 }]],
+    },
+    "Reattach Fixture Context After File Read": {
       main: [[{ node: "Extract Text From PDF", type: "main", index: 0 }]],
     },
     "Extract Text From PDF": {
+      main: [[{ node: "Reattach Fixture Context After Text Extraction", type: "main", index: 0 }]],
+    },
+    "Reattach Fixture Context After Text Extraction": {
       main: [[{ node: "Route By Extracted Text Length", type: "main", index: 0 }]],
     },
     "Route By Extracted Text Length": {
@@ -376,9 +585,15 @@ return fixtures.map((fixture) => ({
       main: [[{ node: "OpenAI Extract From PDF File", type: "main", index: 0 }]],
     },
     "OpenAI Extract From Text": {
-      main: [[{ node: "Normalize Model Output And Validate", type: "main", index: 0 }]],
+      main: [[{ node: "Attach Context To Text Model Output", type: "main", index: 0 }]],
     },
     "OpenAI Extract From PDF File": {
+      main: [[{ node: "Attach Context To Vision Model Output", type: "main", index: 0 }]],
+    },
+    "Attach Context To Text Model Output": {
+      main: [[{ node: "Normalize Model Output And Validate", type: "main", index: 0 }]],
+    },
+    "Attach Context To Vision Model Output": {
       main: [[{ node: "Normalize Model Output And Validate", type: "main", index: 0 }]],
     },
   },

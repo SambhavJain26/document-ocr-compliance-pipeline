@@ -234,11 +234,14 @@ function extractModelContent(raw) {
   }
 
   if (raw.output && Array.isArray(raw.output)) {
-    const text = raw.output
+    const contentValues = raw.output
       .flatMap((entry) => safeArray(entry.content))
       .map((entry) => entry.text || entry.output_text || "")
-      .filter(Boolean)
-      .join("");
+      .filter(Boolean);
+    if (contentValues.length === 1 && typeof contentValues[0] === "object") {
+      return contentValues[0];
+    }
+    const text = contentValues.join("");
     if (text) {
       return text;
     }

@@ -24,7 +24,7 @@ fixtures/emails/
 fixtures/expected/stage-3-expected.json
 ```
 
-The generator uses the bundled Codex Python runtime when available because it includes `reportlab`, `pypdf`, `pdfplumber`, and `Pillow`. It also uses bundled Poppler for the scanned fixture.
+The generator uses the bundled Codex Python runtime when available because it includes `reportlab`, `pypdf`, `pdfplumber`, and `Pillow`. It also uses bundled Poppler for the scanned fixture. ReportLab output uses deterministic PDF generation so fixture regeneration does not create timestamp-only binary churn.
 
 ## Verify Fixtures
 
@@ -47,5 +47,7 @@ The verifier checks:
 ## Fixture Notes
 
 All fixture data is fictional and uses `example.test` email addresses. The certificate-like PDFs use a custom layout rather than an industry form replica. Do not add real client documents, real vendor data, logos, or copyrighted form text to `fixtures/`.
+
+The scanned fixture is intentionally image-only but clean enough for Stage 4 PDF-vision smoke testing. Do not make it heavily blurred or compressed unless the expected Stage 4 review outcome is changed at the same time.
 
 The password-protected PDF uses the local test password recorded in `fixtures/expected/stage-3-expected.json`; it is not a secret.

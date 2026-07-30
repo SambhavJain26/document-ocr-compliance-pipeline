@@ -5,7 +5,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from PIL import Image, ImageEnhance, ImageFilter
+from PIL import Image, ImageEnhance
 from pypdf import PdfReader, PdfWriter
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
@@ -81,7 +81,7 @@ def draw_wrapped(c, text, x, y, width, leading=10, font="Helvetica", size=8):
 
 
 def draw_certificate_pdf(fixture, output_path):
-    c = canvas.Canvas(str(output_path), pagesize=letter)
+    c = canvas.Canvas(str(output_path), pagesize=letter, invariant=1)
     draw_watermark(c)
 
     margin = 0.45 * inch
@@ -115,28 +115,28 @@ def draw_certificate_pdf(fixture, output_path):
 
     columns = [
         ("Type", 0.95 * inch),
-        ("Carrier", 1.15 * inch),
+        ("Carrier", 1.05 * inch),
         ("Policy #", 0.95 * inch),
-        ("Eff", 0.62 * inch),
-        ("Exp", 0.62 * inch),
-        ("Each", 0.65 * inch),
-        ("Agg", 0.65 * inch),
-        ("AI", 0.28 * inch),
-        ("SW", 0.28 * inch),
+        ("Eff", 0.75 * inch),
+        ("Exp", 0.75 * inch),
+        ("Each", 0.72 * inch),
+        ("Agg", 0.72 * inch),
+        ("AI", 0.27 * inch),
+        ("SW", 0.27 * inch),
     ]
     x = margin
     c.setFillColor(colors.HexColor("#e2e8f0"))
     c.rect(margin, y - 0.22 * inch, PAGE_WIDTH - 2 * margin, 0.22 * inch, stroke=0, fill=1)
     c.setFillColor(colors.HexColor("#111827"))
-    c.setFont("Helvetica-Bold", 6.5)
+    c.setFont("Helvetica-Bold", 7)
     for header, width in columns:
         c.drawString(x + 2, y - 0.14 * inch, header)
         x += width
     y -= 0.22 * inch
 
-    c.setFont("Helvetica", 6.5)
+    c.setFont("Helvetica", 7.4)
     for idx, cov in enumerate(fixture.get("coverages", [])):
-        row_h = 0.27 * inch
+        row_h = 0.30 * inch
         c.setFillColor(colors.white if idx % 2 == 0 else colors.HexColor("#f8fafc"))
         c.rect(margin, y - row_h, PAGE_WIDTH - 2 * margin, row_h, stroke=0, fill=1)
         c.setStrokeColor(colors.HexColor("#cbd5e1"))
@@ -178,7 +178,7 @@ def draw_certificate_pdf(fixture, output_path):
 
 
 def draw_non_certificate_pdf(fixture, output_path):
-    c = canvas.Canvas(str(output_path), pagesize=letter)
+    c = canvas.Canvas(str(output_path), pagesize=letter, invariant=1)
     draw_watermark(c)
     margin = 0.7 * inch
     y = PAGE_HEIGHT - margin
@@ -222,17 +222,16 @@ def make_scanned_pdf(base_pdf, output_path, work_dir):
         raise RuntimeError("pdftoppm not found on PATH")
 
     prefix = work_dir / "scan-source"
-    subprocess.run([pdftoppm, "-r", "150", "-png", str(base_pdf), str(prefix)], check=True)
+    subprocess.run([pdftoppm, "-r", "220", "-png", str(base_pdf), str(prefix)], check=True)
     source_image = work_dir / "scan-source-1.png"
     image = Image.open(source_image).convert("RGB")
-    image = ImageEnhance.Contrast(image).enhance(0.9)
-    image = ImageEnhance.Brightness(image).enhance(0.93)
-    image = image.filter(ImageFilter.GaussianBlur(radius=0.35))
-    image = image.rotate(1.5, expand=True, fillcolor=(232, 232, 228))
+    image = ImageEnhance.Contrast(image).enhance(1.05)
+    image = ImageEnhance.Brightness(image).enhance(0.98)
+    image = image.rotate(0.35, expand=True, fillcolor=(246, 246, 242))
     jpeg_path = work_dir / "scan-image.jpg"
-    image.save(jpeg_path, "JPEG", quality=68)
+    image.save(jpeg_path, "JPEG", quality=88)
 
-    c = canvas.Canvas(str(output_path), pagesize=letter)
+    c = canvas.Canvas(str(output_path), pagesize=letter, invariant=1)
     c.setFillColor(colors.HexColor("#e7e5df"))
     c.rect(0, 0, PAGE_WIDTH, PAGE_HEIGHT, stroke=0, fill=1)
     c.drawImage(str(jpeg_path), 0.25 * inch, 0.25 * inch, width=PAGE_WIDTH - 0.5 * inch, height=PAGE_HEIGHT - 0.5 * inch, preserveAspectRatio=True, anchor="c")
