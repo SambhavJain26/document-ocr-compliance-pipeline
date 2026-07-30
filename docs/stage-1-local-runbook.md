@@ -65,7 +65,7 @@ Use the n8n credential test button. Stage 1 does not create project tables.
 
 Create an OpenAI API credential inside n8n. Do not store the API key in `.env` or workflow JSON.
 
-Before testing, set a hard spend limit of `$10` in the OpenAI dashboard. For later workflow stages, prefer pinned model `gpt-5.4-nano` for cheap extraction and drafting if it passes fixture tests, and fall back to `gpt-5.6-luna` if quality is not good enough. Do not use floating model-family aliases such as `gpt-5.6`.
+Before testing, set a hard spend limit of `$10` in the OpenAI dashboard. For later workflow stages, prefer pinned model `gpt-5.6-luna` as the balanced default for extraction and drafting, and fall back to `gpt-5.6-terra` if fixture quality is not good enough. Do not use floating model-family aliases such as `gpt-5.6`.
 
 For Stage 1, the smoke test is a trivial OpenAI node request from n8n. Do not build extraction prompts or COI workflows yet.
 
