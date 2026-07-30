@@ -4,7 +4,7 @@ Created: 2026-07-30
 
 ## Current Status
 
-Stage 1 local environment scaffolding has been implemented and verified on this machine. User reports the requested n8n credentials have been created; smoke verification is still pending. Rechecked `coi-demo-build-plan.md` once after the initial plan and made small planning corrections. Rechecked current n8n/OpenAI documentation on 2026-07-30 and changed the recommended model-call implementation from HTTP Request-first to built-in OpenAI node V2-first.
+Stage 1 local environment scaffolding and credential smoke verification are complete on this machine. Rechecked `coi-demo-build-plan.md` once after the initial plan and made small planning corrections. Rechecked current n8n/OpenAI documentation on 2026-07-30 and changed the recommended model-call implementation from HTTP Request-first to built-in OpenAI node V2-first.
 
 ## Source Documents Reviewed
 
@@ -31,7 +31,7 @@ The staged plan in `build-plan.md` follows the later `coi-demo-build-plan.md` wh
 
 | Stage | Name | Status | Notes |
 |---|---|---|---|
-| 1 | Environment, Accounts, and Local n8n | In progress | Local Docker Compose environment verified. Public HTTPS intentionally deferred because all Stage 1 testing is same-machine only. n8n credentials created by user; smoke tests remain. |
+| 1 | Environment, Accounts, and Local n8n | Complete | Local Docker Compose environment verified. Public HTTPS intentionally deferred because all Stage 1 testing is same-machine only. Postgres, OpenAI, and Gmail credentials smoke-tested through n8n. |
 | 2 | Database Schema, Client Config, and Seed Vendors | Not started | Depends on Stage 1 Postgres access. |
 | 3 | Synthetic Test Fixtures | Not started | Must avoid ACORD form/logo/copyright reproduction. |
 | 4 | Extraction and Validation Core | Not started | Depends on fixture set and OpenAI node V2 availability. |
@@ -97,7 +97,12 @@ The staged plan in `build-plan.md` follows the later `coi-demo-build-plan.md` wh
 - Noted n8n 2.29 first-start migrations and non-blocking Python task-runner warning in `AGENTS.md`.
 - Set model default to `gpt-5.4-nano`, keeping `gpt-5.6-luna` as fallback.
 - Recorded that one Gmail/Google Workspace mailbox is enough for local testing, using plus-address aliases for logical roles.
-- Recorded user report that requested n8n credentials have been created; smoke verification remains.
+- Recorded user report that requested n8n credentials were created, then completed smoke verification.
+- Smoke-tested n8n credential records: `Postgres account`, `OpenAI account`, and `Gmail account`.
+- Postgres smoke workflow executed through n8n and returned `ok = 1`.
+- OpenAI smoke workflow executed through n8n OpenAI node V2 using `gpt-5.4-nano` and returned `ok`; token usage was 11 input and 5 output tokens.
+- Gmail smoke workflow sent a same-machine test email successfully; Gmail returned message/thread ID `19fb2b6f6dec3dec`.
+- Removed temporary smoke workflows from n8n after verification.
 - Updated `coi-demo-build-plan.md` to make OpenAI node V2 the default model-call path.
 - Updated `coi-demo-build-plan.md` to make HTTP Request a fallback only.
 - Updated `coi-demo-build-plan.md` to make Gmail approval the default and Telegram optional.
@@ -115,4 +120,4 @@ The staged plan in `build-plan.md` follows the later `coi-demo-build-plan.md` wh
 
 ## Next Action
 
-Complete the remaining Stage 1 smoke checks in n8n: test the Postgres credential, test the OpenAI credential with a trivial model call, and test Gmail OAuth with a simple same-machine send or approval email. Do not begin Stage 2 schema work until those checks are recorded.
+Stage 1 is complete. Next approved implementation step is Stage 2 only: database schema, client config, and seed vendors.

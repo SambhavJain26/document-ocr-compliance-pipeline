@@ -49,6 +49,8 @@ Stage 1 local environment commands:
 
 Expected local services are n8n at `http://localhost:5678` and Postgres on `127.0.0.1:5432`. Gmail/OpenAI credentials are created manually inside n8n and must not be stored in repo files. One Gmail or Google Workspace mailbox is enough for local testing; use plus-address aliases for logical vendor, producer, approval, and intake roles when needed. Do not assume Docker images, accounts, OAuth apps, API keys, or n8n credentials already exist. On first n8n 2.x startup, internal migrations can take long enough for early HTTP probes to fail; rerun `.\scripts\verify-local.ps1` or rely on its retry loop. The `n8nio/n8n:latest` image may log a Python task-runner warning because Python is absent; this is not a Stage 1 blocker when JS workflows and service health pass.
 
+For n8n 2.29 CLI smoke tests, `n8n execute --file` is deprecated and may still require `--id`; import temporary smoke workflows into the local project, execute them by ID, then delete the temporary workflows from n8n.
+
 ## Architecture Rules
 
 - n8n orchestrates the workflow; Postgres is durable automation state.
