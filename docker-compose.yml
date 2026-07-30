@@ -47,6 +47,22 @@ services:
       - ./fixtures:/home/node/.n8n-files/fixtures:ro
       - ./data/certificates:/home/node/.n8n-files/certificates
 
+  pgweb:
+    image: sosedoff/pgweb:latest
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      PGWEB_DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?sslmode=disable
+    command:
+      - --bind=0.0.0.0
+      - --listen=8081
+      - --skip-open
+      - --readonly
+    ports:
+      - "127.0.0.1:${PGWEB_PORT:-8081}:8081"
+
 volumes:
   n8n_data:
   postgres_data:

@@ -8,7 +8,9 @@ This stage creates only the local n8n and Postgres environment. It does not add 
 - Local Docker images already available:
   - `n8nio/n8n:latest`
   - `postgres:16`
+  - `sosedoff/pgweb:latest`
 - Browser access to `http://localhost:5678`.
+- Browser access to read-only pgweb at `http://localhost:8081`.
 - OpenAI account for a later n8n credential smoke test.
 - One Gmail or Google Workspace account for a later n8n OAuth smoke test.
 
@@ -29,6 +31,12 @@ Open n8n at:
 http://localhost:5678
 ```
 
+Open read-only pgweb at:
+
+```text
+http://localhost:8081
+```
+
 On first launch, create the local n8n owner account in the browser. This account is local to the Docker volume.
 
 ## Environment Defaults
@@ -41,10 +49,13 @@ N8N_PORT=5678
 N8N_PROTOCOL=http
 WEBHOOK_URL=http://localhost:5678
 N8N_EDITOR_BASE_URL=http://localhost:5678
+PGWEB_PORT=8081
 GENERIC_TIMEZONE=America/New_York
 ```
 
 Use these settings only for same-machine testing. Approval links opened on another device will not reach this n8n instance because `localhost` points to that device, not this computer.
+
+pgweb is bound to localhost only and starts in read-only mode against the local Postgres database. Use it to inspect tables during the demo, not to edit runtime state.
 
 ## Postgres Credential In n8n
 

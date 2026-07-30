@@ -22,6 +22,10 @@ $n8nPort = $envValues["N8N_PORT"]
 if (-not $n8nPort) {
   $n8nPort = "5678"
 }
+$pgwebPort = $envValues["PGWEB_PORT"]
+if (-not $pgwebPort) {
+  $pgwebPort = "8081"
+}
 
 Push-Location $repoRoot
 try {
@@ -54,6 +58,24 @@ try {
     }
   }
   Write-Host "n8n returned HTTP $($response.StatusCode)."
+
+  $pgwebUrl = "http://localhost:$pgwebPort"
+  Write-Host "Checking pgweb at $pgwebUrl..."
+  $pgwebResponse = $null
+  for ($attempt = 1; $attempt -le 20; $attempt++) {
+    try {
+      $pgwebResponse = Invoke-WebRequest -Uri $pgwebUrl -UseBasicParsing -TimeoutSec 10
+      break
+    }
+    catch {
+      if ($attempt -eq 20) {
+        throw
+      }
+      Write-Host "pgweb not ready yet; retrying in 3 seconds..."
+      Start-Sleep -Seconds 3
+    }
+  }
+  Write-Host "pgweb returned HTTP $($pgwebResponse.StatusCode)."
 
   Write-Host "Local verification complete."
 }

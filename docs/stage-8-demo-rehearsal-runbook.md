@@ -48,6 +48,7 @@ Stage 8 is a local demo-readiness pass. It does not add public HTTPS, mobile-dat
 ## Local URLs
 
 - n8n editor: `http://localhost:5678`
+- pgweb read-only Postgres browser: `http://localhost:8081`
 - Dashboard active webhook: `http://localhost:5678/webhook/stage-7-dashboard-webhook/coi`
 - Dashboard short webhook path, when active routing is registered: `http://localhost:5678/webhook/coi`
 - Stage 5 upload form, when the intake workflow is published: `http://localhost:5678/form/coi-intake`
@@ -56,6 +57,8 @@ Stage 8 is a local demo-readiness pass. It does not add public HTTPS, mobile-dat
 
 1. Open the dashboard after `.\scripts\reset-demo.ps1`.
    Show the 18-vendor register, the no-certificate rows near the top, and the five-second refresh.
+
+   Optionally keep pgweb open to `vendors`, `certificates`, `coverages`, `intake_notices`, and `outreach_log` so the local Postgres state is visible during the walkthrough.
 
 2. Run the deterministic fixture verifier or a single Stage 5 manual fixture from n8n.
    Use `f02-expiring-20-days` for an amber state, `f05-inverted-dates` for review, and `f13-renewal-coverage-gap` after `f03-expired-34-days` to show renewal and gap tracking.

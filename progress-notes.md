@@ -170,6 +170,7 @@ The staged plan in `build-plan.md` follows the later `coi-demo-build-plan.md` wh
 - Investigated a missing-email report on 2026-07-31: `stage-6-daily-watch-chase` was marked inactive in `workflow_entity`, so it was republished with `docker compose run --rm --no-deps n8n update:workflow --id=stage-6-daily-watch-chase --active=true` and n8n was restarted; all five demo-facing workflows then reported active.
 - Confirmed the approved Stage 6 run did complete: `outreach_log` recorded `approved = true`, `sent_at = 2026-07-30 18:26:38.925994+00`, `actual_recipient = worksambhav26@gmail.com`, and Gmail send response ID `19fb44746f7bb40e`.
 - Confirmed Gmail could read final message `19fb44746f7bb40e` by ID with subject `Certificate request for Vista Glass and Door LLC`, labels `UNREAD`, `SENT`, and `INBOX`, and both sender/recipient as `worksambhav26@gmail.com`; added verifier readback so future live-email rehearsals record the final Gmail message labels.
+- Added read-only pgweb to the local Docker Compose stack at `http://localhost:8081` for visual Postgres table inspection during demo rehearsal, and extended `.\scripts\verify-local.ps1` to check pgweb HTTP availability.
 
 ## Outstanding Risks To Track
 
