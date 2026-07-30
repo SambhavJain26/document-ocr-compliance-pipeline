@@ -139,7 +139,7 @@ In scope:
   - WC exemption suppression
   - near-duplicate vendor review
   - absence of cancellation-notice wording for high-risk trades, surfaced as a neutral document note
-- Store raw extraction and validation flags in a testable shape.
+- Store raw extraction and structured validation flags in a testable shape. Each flag should carry at least `code`, `severity`, `message`, and `details`.
 
 Out of scope:
 

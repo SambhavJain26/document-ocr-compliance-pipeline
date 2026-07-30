@@ -4,7 +4,7 @@ Created: 2026-07-30
 
 ## Current Status
 
-Stage 1 local environment scaffolding and credential smoke verification are complete on this machine. Stage 2 database schema and synthetic seed register are complete and verified. Stage 3 synthetic fixtures are generated and verified. Rechecked `coi-demo-build-plan.md` once after the initial plan and made small planning corrections. Rechecked current n8n/OpenAI documentation on 2026-07-30 and changed the recommended model-call implementation from HTTP Request-first to built-in OpenAI node V2-first.
+Stage 1 local environment scaffolding and credential smoke verification are complete on this machine. Stage 2 database schema and synthetic seed register are complete and verified. Stage 3 synthetic fixtures are generated and verified. Stage 4 extraction and validation core artifacts are implemented and offline validator tests pass; live n8n/OpenAI smoke verification is pending because the local n8n/Postgres stack was not running during implementation. Rechecked `coi-demo-build-plan.md` once after the initial plan and made small planning corrections. Rechecked current n8n/OpenAI documentation on 2026-07-30 and changed the recommended model-call implementation from HTTP Request-first to built-in OpenAI node V2-first.
 
 ## Source Documents Reviewed
 
@@ -34,7 +34,7 @@ The staged plan in `build-plan.md` follows the later `coi-demo-build-plan.md` wh
 | 1 | Environment, Accounts, and Local n8n | Complete | Local Docker Compose environment verified. Public HTTPS intentionally deferred because all Stage 1 testing is same-machine only. Postgres, OpenAI, and Gmail credentials smoke-tested through n8n. |
 | 2 | Database Schema, Client Config, and Seed Vendors | Complete | Seven project tables created. Synthetic Harbourline config, holder entities, trade requirements, and 18 vendors seeded. Certificate, coverage, and outreach tables remain empty. |
 | 3 | Synthetic Test Fixtures | Complete | 20 fixture records generated: 17 PDFs, 2 email payloads, and 1 metadata-only no-file case. Verified watermark, text-layer behavior, scanned no-text behavior, password protection, rendered previews, and forbidden-term scan. |
-| 4 | Extraction and Validation Core | Not started | Depends on fixture set and OpenAI node V2 availability. |
+| 4 | Extraction and Validation Core | Implemented, live smoke pending | Added schema, shared validator, generated n8n workflow export, fixture mount, runbook, and verification scripts. Offline validator tests pass. Live n8n/OpenAI extraction smoke is pending a running local stack. |
 | 5 | Intake Workflow End to End | Not started | Depends on extraction core. |
 | 6 | Daily Watch, Drafting, Approval, and Escalation | Not started | Depends on stored certificate records. |
 | 7 | Dashboard and Demo View | Not started | Depends on populated database and status logic. |
@@ -111,6 +111,15 @@ The staged plan in `build-plan.md` follows the later `coi-demo-build-plan.md` wh
 - Added `scripts/generate-stage-3-fixtures.ps1` and `scripts/verify-stage-3-fixtures.ps1`.
 - Added `docs/stage-3-fixtures-runbook.md`.
 - Verified Stage 3: 20 fixture records, 17 PDFs, 2 email payloads, fixture 14 metadata-only, normal PDFs watermarked and text-extractable, scanned fixture has zero extracted text, password PDF is encrypted and blocks unauthenticated text extraction, all PDFs render to previews, and fixture artifacts contain no forbidden terms `ACORD`, `compliant`, `verified`, or `approved`.
+- Added Stage 4 strict extraction schema at `docs/schemas/coi-extraction.schema.json`.
+- Added shared deterministic Stage 4 validator at `scripts/lib/coi-stage-4-validator.js`.
+- Added `scripts/test-stage-4-validation.js`, `scripts/verify-stage-4-validation.ps1`, `scripts/generate-stage-4-workflow.ps1`, `scripts/generate-stage-4-workflow.js`, and `scripts/verify-stage-4-extraction.ps1`.
+- Added generated Stage 4 n8n workflow export at `n8n-workflows/stage-4-extraction-validation-core.json`.
+- Mounted `./fixtures` read-only into n8n at `/home/node/.n8n-files/fixtures`.
+- Added `docs/stage-4-extraction-runbook.md`.
+- Verified Stage 4 offline validation: hard flags route to review/ignore, soft flags preserve `ON_FILE`, note flags remain informational, holder matching accepts configured holder entities, near-duplicate vendors route to review, WC checks are suppressed for exempt vendors, and renewal context catches older-than-on-file and coverage-gap cases.
+- Verified Stage 4 workflow JSON parses with `ConvertFrom-Json`.
+- Ran `.\scripts\verify-stage-4-extraction.ps1`; workflow JSON parsed, but live extraction was skipped because n8n and Postgres were not both running.
 - Updated `coi-demo-build-plan.md` to make OpenAI node V2 the default model-call path.
 - Updated `coi-demo-build-plan.md` to make HTTP Request a fallback only.
 - Updated `coi-demo-build-plan.md` to make Gmail approval the default and Telegram optional.
@@ -124,8 +133,9 @@ The staged plan in `build-plan.md` follows the later `coi-demo-build-plan.md` wh
 - ACORD copyright affects fixtures and marketing materials.
 - Model provider pricing and model IDs are temporally unstable; verify before Stage 1.
 - Gmail OAuth, public webhook URLs, and approval buttons are the most likely demo failure points.
+- Stage 4 OpenAI node execution has not been live-smoked after workflow import because the local n8n/Postgres stack was not running during implementation.
 - The system cannot detect mid-term policy cancellation, forged certificates, missing vendors never entered into the register, or actual endorsement status.
 
 ## Next Action
 
-Stage 3 is complete. Next approved implementation step is Stage 4 only: extraction and validation core.
+Start the local stack with `.\scripts\start-local.ps1`, rerun `.\scripts\verify-local.ps1`, then run `.\scripts\verify-stage-4-extraction.ps1` to live-smoke the Stage 4 n8n/OpenAI workflow before beginning Stage 5.
