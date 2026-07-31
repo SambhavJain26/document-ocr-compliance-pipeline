@@ -10,35 +10,39 @@ The arc is deliberate: show the problem, show what it costs, show the system doi
 
 ## Before You Hit Record
 
-The board must already have data on it. Do not load fixtures on camera — `verify-stage-8-fixtures.ps1` resets the demo to zero rows when it finishes, so running it during a recording ends with an empty dashboard.
+The board must already have data on it before you record. All of this is done through the same screens you use in the demo — no terminal at any point.
 
-Start the stack and stage the board:
+**1. Start the stack.** In Docker Desktop, start the `vendor-coi-chasing` containers. Wait until n8n, postgres, and pgweb all show as running.
 
-```powershell
-.\scripts\start-local.ps1
-```
+**2. Check the workflows.** Open n8n at `http://localhost:5678` → Workflows. All five must show **Active**:
 
-```powershell
-.\scripts\verify-local.ps1
-```
+- Stage 5 - COI Intake Workflow
+- Stage 5 - Source Document Route
+- Stage 6 - Daily Watch Chase
+- Stage 6 - Non PDF Reply Notice
+- Stage 7 - Dashboard Demo View
 
-```powershell
-.\scripts\reset-demo.ps1
-```
+An inactive Stage 6 watch is the single most likely reason no approval email shows up in Scene 6. If anything is inactive, toggle it on and restart n8n from Docker Desktop.
 
-Load a representative mix through the manual intake path. The fixture set is comma-separated and processed in order, so `f03` must come before `f13` for the coverage gap to appear:
+**3. Stage the board.** Open the upload form at `http://localhost:5678/form/coi-intake` and upload these seven PDFs from `fixtures/pdfs/`, one submission at a time. Each belongs to a different vendor, so none of them overwrite each other:
 
-```powershell
-"UPDATE client_config SET value = 'f01-clean-current,f02-expiring-20-days,f03-expired-34-days,f05-inverted-dates,f07-low-limits,f16-owner-llc-holder,f20-cancellation-notice-wording,f13-renewal-coverage-gap' WHERE key = 'stage_5_smoke_fixture_set';" | docker compose exec -T postgres psql -U vendor_coi -d vendor_coi -v ON_ERROR_STOP=1 -f -
-```
+| File | Lands as |
+|---|---|
+| `f01-clean-current.pdf` | Apex Plumbing Services LLC — green, current |
+| `f03-expired-34-days.pdf` | Circuit Square Electric LLC — red, expired |
+| `f05-inverted-dates.pdf` | Summit Shield Roofing Inc. — needs review |
+| `f06-wrong-holder.pdf` | Greenline Groundskeeping LLC — filed, holder note |
+| `f07-low-limits.pdf` | Clearway Pest Control LLC — filed, low-limit note |
+| `f16-owner-llc-holder.pdf` | Evergreen Appliance Repair LLC — green, accepted owner LLC |
+| `f20-cancellation-notice-wording.pdf` | Cedar Path Janitorial Services LLC — green, neutral note |
 
-```powershell
-docker compose run --rm --no-deps n8n execute --id stage-5-intake-workflow --rawOutput
-```
+Do not upload `f13-renewal-coverage-gap.pdf` or `f12-renewal-supersede.pdf`. They are renewals for vendors already in that list — `f13` supersedes the expired Circuit Square row, `f12` supersedes Blue Ridge — and you lose states the story depends on.
 
-Rehearse this staging sequence once before the real recording so you know exactly which rows land where.
+Hold back `fixtures/pdfs/f02-expiring-20-days.pdf`. That is the one you upload live in Scene 3. Its vendor, Blue Ridge HVAC Co., is untouched by everything above, so it lands as a clean new amber row on camera.
 
-Then hold back **one** unprocessed PDF for the live upload moment in Scene 3. `fixtures/pdfs/f02-expiring-20-days.pdf` is a good choice if you drop `f02` from the staging list above.
+**4. Confirm the board.** Open the dashboard and check those seven rows look right before you record anything.
+
+**On resetting:** clearing the register back to 18 blank rows is the one thing that cannot be done from these screens — it needs a script from a terminal. You do not need it. Re-uploading a fixture through the form simply supersedes the earlier copy, so staging works from whatever state the board is currently in.
 
 Tabs to have open, in this order:
 
@@ -64,7 +68,7 @@ Let the rows sit on screen for a beat.
 
 Point at the status column.
 
-> "Read the status wording carefully, because it is the whole design. Current until a date. Expires in twenty days. Expired thirty-four days ago. No certificate on file. Needs review. Every one of those is a fact printed on a document. None of them is a judgment about insurance."
+> "Read the status wording carefully, because it is the whole design. Current until a date. Expires in a number of days. Expired a number of days ago. No certificate on file. Needs review. Every one of those is a fact printed on a document. None of them is a judgment about insurance."
 
 *4-minute cut: keep this scene whole. It sets up everything.*
 
@@ -110,7 +114,9 @@ Switch to the dashboard tab. It refreshes every five seconds.
 
 Point at the row that just changed.
 
-> "Carrier, policy number, general liability limit, expiration date. The status now reads: expires in twenty days. That row went from a blank line to a tracked date without anyone opening the file."
+> "Carrier, policy number, general liability limit, expiration date. The status now names the exact day it runs out, and counts down to it. That row went from a blank line to a tracked date without anyone opening the file."
+
+**Do not quote a specific day count anywhere in the narration.** The fixture dates are fixed, so the countdown shifts by one every day that passes since the fixtures were generated. Describe the behaviour and let the screen show the number.
 
 *4-minute cut: keep the upload and the result. Drop the middle explanation.*
 
@@ -140,7 +146,7 @@ Point at a review row.
 
 Point at the amber note under a vendor name.
 
-> "Smaller things become notes rather than alarms. This renewal left a fourteen-day gap between the old policy ending and the new one starting. That is worth seeing. It is not worth a red light."
+> "Smaller things become notes rather than alarms. This one came in under the general liability limit we ask for on that trade. This one lists a holder name that is not one of ours. Both are filed, both are visible, neither is treated as a crisis."
 
 *4-minute cut: keep current, expired, and review. Drop the notes line.*
 
@@ -164,19 +170,15 @@ Close the tab. Return to the dashboard.
 
 ## Scene 6 — The Human Checkpoint (4:15–5:30)
 
-**Screen:** Terminal, then Gmail.
+**Screen:** Gmail.
+
+**Set this up a minute before you record the scene.** In n8n, open **Stage 6 - Daily Watch Chase** and click **Execute workflow**. The run pauses at the Gmail approval step and one approval email lands in the demo mailbox. Do this off camera so the email is already waiting when the scene starts — or show the click on camera if you would rather the trigger be visible.
 
 > "Last piece, and it is the one that decides whether something like this belongs in a small office."
 
-Run:
+> "When paperwork is missing or expiring, the system writes the chase email. It does not send it. Normally this runs on its own first thing in the morning."
 
-```powershell
-.\scripts\verify-stage-8-fixtures.ps1 -OnlyLiveEmail
-```
-
-> "When paperwork is missing or expiring, the system writes the chase email. It does not send it."
-
-Switch to Gmail. Open the approval email when it lands.
+Open the approval email.
 
 > "The manager gets this first. The vendor, the reason, who it would go to, and the exact message that would be sent. Short, factual, no claims about coverage."
 
@@ -290,14 +292,16 @@ The distinction to keep in your head: the system reports what a document says. I
 
 ## Pre-Recording Checklist
 
-- [ ] Stack started and `verify-local.ps1` passes
-- [ ] Board staged, and the staging sequence rehearsed once
-- [ ] One PDF held back for the Scene 3 upload
-- [ ] Approver and test recipient emails configured for the Scene 6 rehearsal
+- [ ] Containers running in Docker Desktop
+- [ ] All five workflows showing Active in n8n
+- [ ] Dashboard loads and auto-refreshes
+- [ ] Seven fixtures uploaded and the board checked
+- [ ] `f02-expiring-20-days.pdf` held back for the Scene 3 upload
+- [ ] Stage 6 watch executed so the approval email is waiting
+- [ ] Approval email actually arrived in the demo mailbox
+- [ ] No day counts quoted in the narration
 - [ ] Notifications silenced, unrelated tabs closed
 - [ ] Screen readable at the resolution you are recording
-
-After recording, run `.\scripts\reset-demo.ps1` to leave the demo at its opening state.
 
 ---
 
