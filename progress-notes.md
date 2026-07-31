@@ -178,6 +178,18 @@ The staged plan in `build-plan.md` follows the later `coi-demo-build-plan.md` wh
 - Added `docs/prospect-overview.md` with a non-technical business explanation of the system, office-day flow, value, limits, and first implementation steps.
 - Grounded the sales docs in current vendor-insurance tracking and credentialing research from Buildium, RealPage, property-manager onboarding guidance, ACORD 25 certificate language, and Texas Department of Insurance COI guidance; kept the language away from vendor-status claims such as compliant, verified, covered, or approved.
 
+2026-07-31:
+
+- Added `CLAUDE.md` as the Claude Code copy of the repository guidance; it mirrors `AGENTS.md` section for section, and both files now state that they must be kept in sync.
+- Changed the maintenance checkpoint in both files from an `AGENTS.md`-only update to a paired update of `AGENTS.md` and `CLAUDE.md`.
+- Removed stale pre-implementation wording from both guidance files: the project structure section no longer says the repo is documentation-only or offers `workflows/` as an alternative to `n8n-workflows/`, and the commands section no longer says there is no runnable app or qualifies Docker/workflow commands with "once ... exists".
+- Relabelled the script list in both files from "Stage 1 local environment commands" to stage scripts run from the repo root with Docker running, since the list covers Stages 1 through 9.
+- Rewrote `docs/demo-script.md` as a timed eight-scene recorded walkthrough with a marked four-minute cut, an objection section, and a pre-recording checklist.
+- Fixed a recording-breaking instruction in the old demo script: it told the presenter to run `.\scripts\verify-stage-8-fixtures.ps1` on camera during the intake scene, but that verifier resets the demo when it finishes, so the recording would have ended on an empty dashboard. Fixture staging now happens before recording, and the on-camera intake moment uses the Stage 5 upload form at `http://localhost:5678/form/coi-intake`.
+- Documented the pre-recording staging path in the demo script: set `client_config.stage_5_smoke_fixture_set` to a comma-separated fixture list, then run `docker compose run --rm --no-deps n8n execute --id stage-5-intake-workflow --rawOutput`. The list is processed in order, so `f03-expired-34-days` must precede `f13-renewal-coverage-gap`. This sequence is documented from the workflow and verifier source and still needs one live rehearsal run to confirm the resulting board.
+- Deleted `docs/prospect-overview.md`. Its research links are preserved in `docs/demo-script.md`.
+- Added `docs/how-the-system-works.md` as the plain-language reference for the full system behaviour: intake paths, storage-before-reading ordering, text versus vision reading, the hard/soft/note flag vocabulary with severities, filing outcomes, manual cancelled/non-renewed statuses, watch buckets and cadence, the approval gate and escalation, dashboard status wording, storage locations, refusals, real limits, and a troubleshooting map.
+
 ## Outstanding Risks To Track
 
 - n8n licensing for any hosted-for-client or multi-tenant production model remains ambiguous.
