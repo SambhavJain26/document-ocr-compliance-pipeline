@@ -131,6 +131,7 @@ const tableRows = rows.map((row) => {
     + '<td>' + escapeHtml(money(row.gl_each_occurrence)) + '</td>'
     + '<td>' + escapeHtml(formatDate(row.expiration_date)) + '</td>'
     + '<td><span class="status-pill">' + escapeHtml(row.display_status || "Needs review") + '</span></td>'
+    + '<td class="chase-cell">' + escapeHtml(row.display_chase || "Not yet chased") + '</td>'
     + '<td>' + sourceCell(row) + '</td>'
     + '</tr>';
 }).join("\\n");
@@ -292,6 +293,11 @@ tbody tr:last-child td { border-bottom: 0; }
   color: var(--none);
   white-space: nowrap;
 }
+.chase-cell {
+  color: var(--muted);
+  font-size: 13px;
+  white-space: nowrap;
+}
 .row-good .status-pill { background: var(--good-bg); color: var(--good); }
 .row-warning .status-pill { background: var(--warn-bg); color: var(--warn); }
 .row-critical .status-pill { background: var(--critical-bg); color: var(--critical); }
@@ -370,6 +376,7 @@ const mobileRows = rows.map((row) => {
     + '<div><span class="mobile-label">Policy #</span>' + escapeHtml(row.policy_number || "-") + '</div>'
     + '<div><span class="mobile-label">GL Limit</span>' + escapeHtml(money(row.gl_each_occurrence)) + '</div>'
     + '<div><span class="mobile-label">Expires</span>' + escapeHtml(formatDate(row.expiration_date)) + '</div>'
+    + '<div><span class="mobile-label">Chase</span>' + escapeHtml(row.display_chase || "Not yet chased") + '</div>'
     + '<div><span class="mobile-label">Source</span>' + sourceCell(row) + '</div>'
     + '</div></article>';
 }).join("\\n");
@@ -394,7 +401,7 @@ let html = '<!doctype html><html lang="en"><head>'
   + '</section>'
   + '<section id="register" class="table-wrap" aria-label="Vendor register"><table>'
   + '<caption>Rows show certificate dates and document notes from the local demo database.</caption>'
-  + '<thead><tr><th scope="col">Vendor</th><th scope="col">Trade</th><th scope="col">Carrier</th><th scope="col">Policy #</th><th scope="col">GL Limit</th><th scope="col">Expires</th><th scope="col">Status</th><th scope="col">Source</th></tr></thead>'
+  + '<thead><tr><th scope="col">Vendor</th><th scope="col">Trade</th><th scope="col">Carrier</th><th scope="col">Policy #</th><th scope="col">GL Limit</th><th scope="col">Expires</th><th scope="col">Status</th><th scope="col">Chase</th><th scope="col">Source</th></tr></thead>'
   + '<tbody>' + tableRows + '</tbody></table></section>'
   + '<section class="mobile-list" aria-label="Vendor register mobile">' + mobileRows + '</section>'
   + '</main></body></html>';

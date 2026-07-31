@@ -21,6 +21,7 @@ Stage 6 adds these `client_config` keys:
 - `stage_6_test_recipient_email`: actual Gmail recipient during test mode.
 - `stage_6_approver_email`: approver address for Gmail Send-and-Wait.
 - `stage_6_copy_vendor`: default `true`; only used for live sends, not test override sends.
+- `stage_6_upload_form_url`: default `http://localhost:5678/form/coi-intake`. The chase email links this behind the anchor text `certificate upload link` and never prints the URL in the visible body. The approval email does show the raw URL so the approver can check the destination before sending. The default is reachable only on the demo machine; replace it with the public HTTPS form URL before any recipient outside localhost is expected to use it.
 - `stage_6_watch_as_of_date`: optional fixed date for deterministic local tests.
 
 When `stage_6_outbound_test_mode = true`, the workflow preserves intended recipient and cc in `outreach_log`, but sends only to `stage_6_test_recipient_email`. Keep this enabled until using a real client mailbox and real test addresses.

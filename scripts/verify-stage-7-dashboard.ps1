@@ -241,7 +241,7 @@ ORDER BY check_name;
     Assert-Stage7Condition (-not $lowerHtml.Contains($blocked)) "Dashboard HTML contained forbidden word '$blocked'."
   }
 
-  foreach ($required in @("Vendor Insurance Register", "Apex Plumbing Services LLC", "Expires in 20 days", "Expired 34 days ago", "Needs review", "14-day paperwork gap", "Certificate states cancellation notice wording.", "Carrier notice received.", "Open PDF")) {
+  foreach ($required in @("Vendor Insurance Register", "Apex Plumbing Services LLC", "Expires in 20 days", "Expired 34 days ago", "Needs review", "14-day paperwork gap", "Certificate states cancellation notice wording.", "Carrier notice received.", "Open PDF", "<th scope=""col"">Chase</th>", "Not yet chased")) {
     Assert-Stage7Condition ($html.Contains($required)) "Dashboard HTML did not contain expected text '$required'."
   }
 

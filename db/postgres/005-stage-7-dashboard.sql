@@ -4,6 +4,10 @@ INSERT INTO client_config(key, value) VALUES
   ('stage_7_dashboard_as_of_date', '')
 ON CONFLICT (key) DO NOTHING;
 
+-- Dropped first because the returned row type changes when dashboard columns
+-- are added; CREATE OR REPLACE cannot alter OUT parameters.
+DROP FUNCTION IF EXISTS stage_7_dashboard_rows(DATE);
+
 CREATE OR REPLACE FUNCTION stage_7_dashboard_rows(as_of_date DATE DEFAULT CURRENT_DATE)
 RETURNS TABLE (
   vendor_id INT,
@@ -25,6 +29,11 @@ RETURNS TABLE (
   cancellation_notice_wording TEXT,
   status_note TEXT,
   status_set_by TEXT,
+  last_chased_at TIMESTAMPTZ,
+  chase_follow_up_due DATE,
+  chase_count INT,
+  chase_paused BOOLEAN,
+  display_chase TEXT,
   sort_rank INT
 )
 LANGUAGE sql
@@ -69,11 +78,21 @@ selected_cert AS (
   LEFT JOIN latest_manual lm ON lm.vendor_id = v.id
   LEFT JOIN latest_review lr ON lr.vendor_id = v.id
 ),
+outreach_summary AS (
+  SELECT
+    o.vendor_id,
+    max(o.sent_at) AS last_chased_at,
+    max(o.follow_up_due) FILTER (WHERE o.sent_at IS NOT NULL) AS chase_follow_up_due,
+    count(*) FILTER (WHERE o.sent_at IS NOT NULL)::INT AS chase_count
+  FROM outreach_log o
+  GROUP BY o.vendor_id
+),
 chosen AS (
   SELECT
     v.id AS vendor_id,
     v.legal_name AS vendor_legal_name,
     v.trade,
+    v.chase_paused,
     c.id AS certificate_id,
     c.status AS certificate_status,
     c.stored_path,
@@ -130,11 +149,16 @@ classified AS (
     f.coverage_gap_count_marker,
     ch.cancellation_notice_wording,
     ch.status_note,
-    ch.status_set_by
+    ch.status_set_by,
+    ch.chase_paused,
+    os.last_chased_at,
+    os.chase_follow_up_due,
+    coalesce(os.chase_count, 0) AS chase_count
   FROM chosen ch
   LEFT JOIN earliest_coverage ec ON ec.certificate_id = ch.certificate_id
   LEFT JOIN gl_coverage gl ON gl.certificate_id = ch.certificate_id
   LEFT JOIN flags f ON f.vendor_id = ch.vendor_id
+  LEFT JOIN outreach_summary os ON os.vendor_id = ch.vendor_id
 )
 SELECT
   c.vendor_id,
@@ -176,6 +200,26 @@ SELECT
   c.cancellation_notice_wording,
   c.status_note,
   c.status_set_by,
+  c.last_chased_at,
+  c.chase_follow_up_due,
+  c.chase_count,
+  c.chase_paused,
+  CASE
+    WHEN c.chase_paused THEN 'Chasing paused'
+    WHEN c.chase_count = 0 OR c.last_chased_at IS NULL THEN 'Not yet chased'
+    ELSE
+      CASE (as_of_date - c.last_chased_at::DATE)
+        WHEN 0 THEN 'Chased today'
+        WHEN 1 THEN 'Chased 1 day ago'
+        ELSE 'Chased ' || (as_of_date - c.last_chased_at::DATE)::TEXT || ' days ago'
+      END
+      || CASE WHEN c.chase_count > 1 THEN ' (' || c.chase_count::TEXT || ' requests)' ELSE '' END
+      || CASE
+           WHEN c.chase_follow_up_due IS NULL THEN ''
+           WHEN c.chase_follow_up_due < as_of_date THEN ', follow-up overdue'
+           ELSE ', follow-up ' || to_char(c.chase_follow_up_due, 'FMMon FMDD')
+         END
+  END AS display_chase,
   CASE
     WHEN c.certificate_id IS NULL THEN 1
     WHEN c.certificate_status IN ('NEEDS_REVIEW', 'CANCELLED', 'NON_RENEWED') THEN 2

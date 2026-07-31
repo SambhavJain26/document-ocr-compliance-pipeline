@@ -28,7 +28,11 @@ INSERT INTO client_config(key, value) VALUES
   ('stage_6_test_recipient_email', ''),
   ('stage_6_approver_email', ''),
   ('stage_6_copy_vendor', 'true'),
-  ('stage_6_watch_as_of_date', '')
+  ('stage_6_watch_as_of_date', ''),
+  -- Local-only for now. Chase emails link this behind anchor text rather than
+  -- printing the URL, so it must be reachable by the recipient to be useful.
+  -- Replace with the public HTTPS form URL once that decision is made.
+  ('stage_6_upload_form_url', 'http://localhost:5678/form/coi-intake')
 ON CONFLICT (key) DO NOTHING;
 
 CREATE OR REPLACE FUNCTION stage_6_config_value(config_key TEXT, default_value TEXT DEFAULT NULL)
@@ -68,6 +72,12 @@ AS $$
   SELECT CASE WHEN value ~ '^\d{4}-\d{2}-\d{2}$' THEN value::DATE ELSE default_value END;
 $$;
 
+-- The bucket is deliberately excluded from the key. A vendor's outstanding
+-- paperwork is one continuous issue as it moves 60d -> 30d -> 14d -> EXPIRED,
+-- so follow-up suppression and the two-strike escalation count carry across
+-- those transitions. Including the bucket made every boundary crossing a new
+-- issue, which bypassed the follow-up interval and reset the escalation count.
+-- bucket_value is retained in the signature for existing callers.
 CREATE OR REPLACE FUNCTION stage_6_vendor_issue_key(
   vendor_id_value INT,
   certificate_id_value INT,
@@ -82,11 +92,14 @@ AS $$
     ':',
     'vendor',
     vendor_id_value::TEXT,
-    coalesce(bucket_value, 'none'),
     coalesce(certificate_id_value::TEXT, 'no-cert'),
     coalesce(expiration_date_value::TEXT, 'no-expiry')
   );
 $$;
+
+-- Dropped first because the returned row type changes when columns are added;
+-- CREATE OR REPLACE cannot alter OUT parameters.
+DROP FUNCTION IF EXISTS stage_6_actionable_vendors(DATE);
 
 CREATE OR REPLACE FUNCTION stage_6_actionable_vendors(as_of_date DATE DEFAULT CURRENT_DATE)
 RETURNS TABLE (
@@ -114,7 +127,8 @@ RETURNS TABLE (
   model_id TEXT,
   follow_up_days INT,
   ignored_request_count INT,
-  last_sent_at TIMESTAMPTZ
+  last_sent_at TIMESTAMPTZ,
+  upload_form_url TEXT
 )
 LANGUAGE sql
 STABLE
@@ -127,6 +141,7 @@ WITH config AS (
     stage_6_bool(stage_6_config_value('stage_6_outbound_test_mode', 'true'), true) AS test_mode,
     nullif(stage_6_config_value('stage_6_test_recipient_email', ''), '') AS test_recipient_email,
     nullif(stage_6_config_value('stage_6_approver_email', ''), '') AS approver_email,
+    nullif(stage_6_config_value('stage_6_upload_form_url', ''), '') AS upload_form_url,
     coalesce(nullif(stage_6_config_value('approval_channel', 'email'), ''), 'email') AS approval_channel,
     stage_6_config_value('model_id', 'gpt-5.4-nano') AS model_id
 ),
@@ -253,7 +268,8 @@ SELECT
   (SELECT model_id FROM config) AS model_id,
   (SELECT follow_up_days FROM config) AS follow_up_days,
   s.ignored_request_count,
-  s.last_sent_at
+  s.last_sent_at,
+  (SELECT upload_form_url FROM config) AS upload_form_url
 FROM suppression s
 WHERE s.bucket <> 'none'
   AND coalesce(nullif(s.producer_email, ''), nullif(s.contact_email, '')) IS NOT NULL

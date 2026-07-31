@@ -93,6 +93,15 @@ function containsForbidden(text) {
   return /\\b(compliant|verified|covered|approved)\\b/i.test(String(text || ""));
 }
 
+function escapeHtml(value) {
+  return String(value == null ? "" : value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 function formatDate(value) {
   if (!value) return null;
   const date = new Date(value + "T00:00:00Z");
@@ -137,11 +146,23 @@ return $input.all().map((item, index) => {
     body = fallback.body;
   }
 
+  // The upload link is appended after validation rather than asked of the model.
+  // The model must not invent URLs, and the boilerplate line should not count
+  // against the 120-word limit applied to the drafted body.
+  const uploadUrl = String(source.upload_form_url || "").trim();
+  const bodyHtml = escapeHtml(body).replace(/\\n/g, "<br>")
+    + (uploadUrl
+      ? '<br><br>You can send it back as a reply with the PDF attached, or use our <a href="'
+        + escapeHtml(uploadUrl) + '">certificate upload link</a>.'
+      : "");
+
   return {
     json: {
       ...source,
       drafted_subject: subject,
       drafted_body: body,
+      drafted_body_html: bodyHtml,
+      upload_form_url: uploadUrl || null,
       draft_source: invalid ? "fallback_template" : "openai",
     },
   };
@@ -167,6 +188,11 @@ return pendingItems.map((item, index) => {
         "Intended recipient: " + draft.intended_recipient,
         draft.cc_recipient ? "CC: " + draft.cc_recipient : "CC: none",
         "Actual recipient: " + (draft.actual_recipient || "(not configured)"),
+        "",
+        // The approver sees the raw URL on purpose. They are reviewing what is
+        // about to be sent, so the destination must be checkable here even
+        // though the vendor-facing email hides it behind anchor text.
+        "Upload link: " + (draft.upload_form_url || "(not configured)"),
         "",
         "Subject: " + draft.drafted_subject,
         "",
@@ -445,8 +471,8 @@ const dailyWorkflow = {
       operation: "send",
       sendTo: "={{ $json.actual_recipient }}",
       subject: "={{ $json.drafted_subject }}",
-      emailType: "text",
-      message: "={{ $json.drafted_body }}",
+      emailType: "html",
+      message: "={{ $json.drafted_body_html }}",
       options: {
         ccList: "={{ $json.send_mode === 'test_override' ? '' : ($json.cc_recipient || '') }}",
         appendAttribution: false,

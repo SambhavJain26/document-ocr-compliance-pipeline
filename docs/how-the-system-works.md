@@ -119,6 +119,8 @@ Chasing is skipped when a vendor is paused, when a reminder is already awaiting 
 
 For each vendor that needs chasing, the system drafts a short email — under 120 words, naming the vendor, the policy number, and the expiry date, requesting updated paperwork, and making no claims about coverage. Where a producer or agent is on file, the request is addressed to them.
 
+The email closes by offering two ways to respond: reply with the PDF attached, or use a link shown as "certificate upload link" that points at the upload form. The URL itself never appears in the visible text, and it is a setting rather than something the model writes, so the model cannot invent a destination. It currently points at the local machine, which is fine while testing and must be repointed at a public address before real vendors are asked to use it.
+
 Then it stops.
 
 The manager receives an approval email showing the vendor, the reason, the intended recipient, and the exact draft. Two buttons: approve or decline. The request waits up to 24 hours.
@@ -133,7 +135,9 @@ Replies that are not certificates — a plain text response, or a link to an ins
 
 ## The Dashboard
 
-One row per vendor: name, trade, carrier, policy number, general liability limit, expiration date, status, and a link to the source document.
+One row per vendor: name, trade, carrier, policy number, general liability limit, expiration date, status, chase, and a link to the source document.
+
+The chase column answers "has anyone asked for this yet, and when": `Not yet chased`, `Chased 3 days ago (2 requests), follow-up Aug 12`, `follow-up overdue`, or `Chasing paused` once a vendor has ignored enough requests to be handed back to a person.
 
 Status is always phrased as a date fact:
 

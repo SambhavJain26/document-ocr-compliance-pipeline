@@ -42,6 +42,19 @@ Hold back `fixtures/pdfs/f02-expiring-20-days.pdf`. That is the one you upload l
 
 **4. Confirm the board.** Open the dashboard and check those seven rows look right before you record anything.
 
+**5. Verify the two refusals.** These never appear in the demo — refusals do not make good narration — but they are the most important behaviours to confirm before you present, because a silent failure here is worse than a crash. Upload both through the same form:
+
+| File | Expected |
+|---|---|
+| `f11-not-a-certificate.pdf` | **No row changes at all.** Anchor Tile and Flooring LLC stays "No certificate on file". A manager notice is created instead. The system must not invent a certificate from a W-9. |
+| `f18-password-protected.pdf` | Rapid Response Restoration LLC → **Needs review**, without the workflow erroring. |
+
+For `f11`, open the Stage 5 intake workflow's **Executions** tab in n8n and confirm the run finished successfully. A clean finish that creates no certificate is the correct result, not a failure.
+
+`f18` leaves an extra Needs review row on the board. That is harmless — it is a real review case, and Scene 4 has plenty to point at either way.
+
+After the Scene 6 approval, check `outreach_log` in pgweb for a row carrying the vendor, sent timestamp, recipient, and follow-up date. That confirms the send was recorded, not just delivered.
+
 **On resetting:** clearing the register back to 18 blank rows is the one thing that cannot be done from these screens — it needs a script from a terminal. You do not need it. Re-uploading a fixture through the form simply supersedes the earlier copy, so staging works from whatever state the board is currently in.
 
 Tabs to have open, in this order:
@@ -64,7 +77,7 @@ Close everything else. Silence notifications.
 
 Let the rows sit on screen for a beat.
 
-> "The hard part is what happens after the first certificate gets filed. This is a live register of vendor insurance paperwork. Vendor, trade, carrier, policy number, general liability limit, expiration date, status, and a link to the document itself."
+> "The hard part is what happens after the first certificate gets filed. This is a live register of vendor insurance paperwork. Vendor, trade, carrier, policy number, general liability limit, expiration date, status, whether anyone has chased it, and a link to the document itself."
 
 Point at the status column.
 
@@ -187,6 +200,10 @@ Click **Approve**.
 > "I am approving the email. To be precise about what that means — I am approving that a reminder gets sent. I am not approving the vendor for anything."
 
 Show the sent message or the outreach log.
+
+Point at the link at the bottom of the sent message.
+
+> "And the vendor gets two ways to answer: reply with the certificate attached, or use the upload link. Either way it lands in the same place and the register updates itself."
 
 > "Now it sends, from the office's own mailbox, and it is logged. Who was contacted, when, about which certificate, and when to follow up if nothing comes back. If a vendor ignores two requests, it stops chasing and tells the manager instead of emailing them forever."
 
