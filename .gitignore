@@ -23,3 +23,6 @@ tmp/**/*.jpg
 Thumbs.db
 .vscode/
 .idea/
+
+# Rendered carousel PDFs; regenerate with scripts/generate-linkedin-carousel.ps1
+docs/carousels/out/
