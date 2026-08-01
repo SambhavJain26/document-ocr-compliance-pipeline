@@ -12,6 +12,8 @@ This governs every post. The COI system is a **worked example of how I approach 
 
 **The buyer:** US residential property management companies, roughly 150–600 doors. Owners and operations leads.
 
+**The competitive context.** COI tracking is an established software category — myCOI, NetVendor, VendorAccess, BCS, SmartCompliance, ExpiryEdge, Jones, Vertikal RMS, Lula. Property managers researching this problem are already being marketed to heavily, so no post should imply nobody has noticed the problem. Every one of those products is a portal, and the category's own documented failure is that vendors find portals cumbersome and stop cooperating. That is the opening: same problem, no system for anyone to adopt. See `customer-language.md` for the vocabulary, the worn-out category words to avoid, and the terminology rules.
+
 **Where each post leads:** authority first, conversation second, call third. Only two posts carry a real CTA. The rest earn the right to one.
 
 ## The accessibility arc
