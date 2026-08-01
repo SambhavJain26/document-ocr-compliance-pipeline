@@ -7,15 +7,16 @@ must never introduce its own sizes, colors, or spacing. If a post needs
 something the stylesheet cannot express, add a named layout here and to the
 stylesheet so later posts inherit it.
 
+`template-specimen.html` renders every layout on one page with real copy, so
+a new post is a matter of picking layouts rather than designing slides.
 Render with `.\scripts\generate-linkedin-carousel.ps1`. Page size is
 1080x1350 (4:5), the tallest ratio LinkedIn renders predictably in-feed on
 mobile, which is where these get read.
 
 ## Palette
 
-Owner-supplied, 2026-08-02. This replaces the earlier saturated blue/yellow
-set and the Stage 7 dashboard colors. The dashboard palette is a demo UI and
-must not be reused here.
+Owner-supplied, 2026-08-02. This replaces the Stage 7 dashboard colors,
+which belong to a demo UI and must not be reused here.
 
 **Primary** `#3563CA` · **Secondary** `#CA9C35`
 
@@ -38,103 +39,104 @@ carousels draw on different parts of each ramp.
 
 | Value | Role |
 |---|---|
-| `#C9D7F0` | Running copy on dark grounds. Ghost numerals on the light variant |
-| `#96B0E3` | Index rail, eyebrow counts, secondary copy on dark |
-| `#6389D6` | Eyebrow text, list numerals in the grouped layout |
-| `#3563CA` | Hairlines and annotation text on dark. Never a fill behind copy |
-| `#1F4393` | Ghost numerals, radial lift on both grounds |
-| `#0E2455` | Interior slide ground |
-| `#02081F` | Cover and close ground |
-| `#FDF0D6` | Type set on a gold fill |
-| `#F8C043` | The accent. Eyebrow rule, cover mark, active index item, italic emphasis, the one figure that matters |
-| `#CA9C35` | Date-grid strokes and fills on dark |
-| `#A17C28` | Date-grid strokes on light surfaces |
-| `#77581B` | Low grid fill |
-| `#4C390E` | Deepest grid fill on dark |
-| `#251A04` | Reserved: the artifact border, if a deck ever carries a real screenshot |
-| `#EDEFF0` | Headline type on dark. Ground for the light variant |
-| `#C2C9CC` | Hairlines on light surfaces |
-| `#9BA3A8` | Annotations and estimate marks on light |
-| `#7B8285` | Eyebrow text on light |
-| `#595F61` | Running copy on light |
-| `#383B3D` | Secondary headings on light |
-| `#191B1C` | Headline type on light |
+| `#C9D7F0` | Reserved: type on a deep-blue fill |
+| `#96B0E3` | Reserved: muted copy if a deck inverts to a dark ground |
+| `#6389D6` | Reserved: secondary marks on a dark ground |
+| `#3563CA` | The brand blue at full strength. Reserved for a figure that must shout |
+| `#1F4393` | **Headings.** Item labels, figure stacks, matched pairs, page numbers, the italic emphasis word |
+| `#0E2455` | Reserved: dark-ground variant |
+| `#02081F` | Display type on the cover and close. Badge text |
+| `#FDF0D6` | **The ground.** Every slide |
+| `#F8C043` | Brightest gold. Reserved for a grid cell that must read as marked |
+| `#CA9C35` | Badge fill, eyebrow rule, cover mark, date-grid strokes, ghost numerals |
+| `#A17C28` | Step labels, hairlines, footer rules |
+| `#77581B` | Reserved: deeper gold fill |
+| `#4C390E` | Reserved: deepest gold fill |
+| `#251A04` | Reserved: artifact border, if a deck ever carries a real screenshot |
+| `#EDEFF0` | Reserved: cool light ground for a deck that needs to look unlike this one |
+| `#C2C9CC` | Reserved: cool hairline |
+| `#9BA3A8` | Index rail numerals |
+| `#7B8285` | Index rail inactive items, footer deck title |
+| `#595F61` | Reserved: tertiary copy |
+| `#383B3D` | Running detail copy |
+| `#191B1C` | Reserved: maximum-contrast ink |
 
 ### Standing color rules
 
-1. **The deck is dark by default.** `#02081F` for the bookends, `#0E2455`
-   for the interior. `.slide--paper` exists for a deck that needs a light
-   slide for contrast; it is the exception, not the default.
-2. **Gold is the only accent and there is only one.** It never sets body copy
-   and never carries a status word.
+1. **The deck is light and warm.** `#FDF0D6` on every slide. An earlier pass
+   ran the whole deck on the navy ramp; the reversal is deliberate and the
+   dark tokens stay defined for a deck that needs to look different.
+2. **Blue carries type, gold carries structure.** Gold on cream is nearly
+   the same value as cream, so gold set at size goes monochrome and muddy.
+   Headings take `#1F4393`; gold does badges, rules, grid, and ghosts.
 3. **Severity, grouping, and emphasis are carried by scale, rules, and
    space, never by hue.** Post 7 splits twelve items into seven and five
-   without color doing that work — the two group labels differ in rule
-   weight, not color.
+   through rule weight on the group label, not color.
 4. Real screenshots, if any deck ever carries one, keep their own colors and
    are the only place anything outside this table appears.
 
 ## Type
 
-Two families, per current editorial practice. Neo-grotesques have displaced
-geometric sans in professional work, and display serifs are the counterweight
-that keeps a deck from reading as a template.
+Three families. That is one more than the usual two-font ceiling and it is
+deliberate: the mixed-face headline, where one emphasized word inside a
+sentence switches to a contrast serif italic, is the single strongest device
+in the reference decks and it needs a third voice.
 
-| Role | Family | Notes |
+| Role | Family | Source |
 |---|---|---|
-| Display, labels, ghost numerals | **Instrument Serif** | High-contrast editorial serif. Regular only |
-| Detail copy, eyebrows, bylines | **Geist** | Neo-grotesque. 300–600 |
+| Display, labels, figures, list items | **Clash Display** 500/600 | Fontshare |
+| The emphasis word inside a headline, step labels, estimate notes | **Boska** italic | Fontshare |
+| All running copy, eyebrows, index rail, footer | **Satoshi** 400/500/700 | Fontshare |
 
 Deliberately not used: Inter, Roboto, Helvetica, Arial, Open Sans, Poppins,
-Montserrat, and IBM Plex. The first five are the generic-template tells; Plex
-is safe rather than wrong, and safe is what made the first pass boring.
+Montserrat, and IBM Plex. The first several are the generic-template tells;
+Plex is safe rather than wrong, and safe is what made the first pass boring.
 
-Both load from Google Fonts at render time, so the render machine needs
-network access. A failed fetch falls back to a system serif silently rather
-than erroring, so check a rendered slide before publishing.
+All three load from `api.fontshare.com` at render time, so the render machine
+needs network access. A failed fetch falls back to a system face silently
+rather than erroring, so check a rendered slide before publishing.
 
 ## Layouts
 
-Six named layouts cover all four carousels. `template-specimen.html` renders
-every one of them on a single page using real copy, so a new post is a
-matter of picking layouts rather than designing slides.
-
 | Layout | Classes | Used by |
 |---|---|---|
-| Cover | `.display` `.mark` `.sub` | all four |
-| Numbered item | `.ghost` `.label` `.detail` `.index` | post 1, slides 2–7 |
+| Cover | `.badge` `.display` `.mark` `.sub` | all four |
+| Numbered item | `.ghost` `.step` `.label` `.detail` `.index` | post 1, slides 2–7 |
 | Grouped list | `.group__label` `.items` | post 7, slides 2–7 |
 | Figure stack | `.figures` `.figure` `.figure__cap` `.note` | post 4, slides 4–5; post 13, slides 5–7 |
 | Matched pair | `.pair__head` `.pair__body` | post 13, slides 3–4 |
 | Close | `.close-lead` `.close-detail` `.close-ask` `.byline` | all four |
 
+Persistent on every slide: `.eyebrow` top left, and `.footer` carrying the
+deck title and page number above a hairline.
+
 The index rail is the answer to short copy. Slides carry at most 22 words,
-so a numbered item leaves the lower half of the page empty. Listing all six
-items with the current one live fills it with the thing a Value-Stack deck
-most needs to prove — that the cover's count is real and the set is complete
-— and it removes any need for a progress-dot widget.
+so a numbered item leaves the lower field empty. Listing all six items with
+the current one live fills it with the thing a count-based deck most needs to
+prove — that the cover's count is real and the set is complete — and it
+removes any need for a progress-dot widget.
 
 ## Graphic system
 
-No stock photography, no AI imagery, no icon sets. Three devices only, all
-drawn in CSS:
+No stock photography, no AI imagery, no icon sets. Four devices, all drawn
+in CSS:
 
 - **The date grid.** A seven-column field of hairline gold cells with a few
-  filled, bleeding off the page edge. Runs on cover and close slides as the
-  hero graphic. The concept is literal: the work is documents with dates on
-  them.
-- **Ghost numerals.** The item number set enormous in `#C9D7F0`, bled off the
-  right edge behind the content. Interior slides only. Carries the count
-  without a counter widget.
-- **Film grain.** A fixed low-opacity turbulence overlay on every slide,
-  giving the flat PDF a printed feel rather than a screen one.
+  filled, bleeding off the page corner. Bookend slides only. The concept is
+  literal: the work is documents with dates on them.
+- **Ghost numerals.** The item number set at 620px in Clash Display, bled off
+  the right edge in transparent gold. Interior slides only. Carries the count
+  without a counter widget. Fixed width and right-aligned so every digit
+  clips by the same amount — without that a "1" and a "4" look accidental.
+- **The badge.** A solid gold block on the cover carrying the promise.
+- **Film grain.** A turbulence overlay at 5% on every slide, so a flat PDF
+  reads as printed rather than screenshotted.
 
 ## Standing rules
 
-- No slide counter widget, no swipe prompt, no progress dots, no logo.
-  LinkedIn renders its own page badge.
+- No progress dots, no swipe prompt, no logo. LinkedIn renders its own page
+  badge and the footer carries a page number.
 - Nothing is vertically centered. Every slide anchors to the same left edge
-  and the same top baseline so a swipe reads as pages of one document.
-- The detail size is exactly half the label size.
+  so a swipe reads as pages of one document.
 - The document title typed on upload is displayed in the feed. Use the cover
   line, not a filename.

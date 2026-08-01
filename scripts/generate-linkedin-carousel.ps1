@@ -9,9 +9,12 @@
     through headless Chrome at the page size declared in the stylesheet
     (1080 x 1350) and writes the PDF to docs/carousels/out/.
 
-    Fonts are fetched from Google Fonts at render time, so the machine needs
-    network access. -VirtualTimeBudget exists because Chrome will otherwise
-    print before the webfonts land and fall back to Georgia.
+    Fonts are fetched from api.fontshare.com at render time, so the machine
+    needs network access. -VirtualTimeBudget exists because Chrome will
+    otherwise print before the webfonts land and fall back to a system face.
+
+    template-specimen.html is a layout reference, not a post. Render it with
+    -Name when checking the template; it is skipped in a full run.
 
 .EXAMPLE
     .\scripts\generate-linkedin-carousel.ps1
@@ -59,6 +62,10 @@ Write-Host "Renderer: $browser"
 
 $pattern = if ($Name) { "$Name.html" } else { '*.html' }
 $sources = @(Get-ChildItem -Path $carouselDir -Filter $pattern -File)
+
+if (-not $Name) {
+    $sources = @($sources | Where-Object { $_.BaseName -ne 'template-specimen' })
+}
 
 if ($sources.Count -eq 0) {
     throw "No carousel HTML matched '$pattern' in $carouselDir"

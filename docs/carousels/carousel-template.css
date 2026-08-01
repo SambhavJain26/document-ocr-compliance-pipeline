@@ -5,9 +5,9 @@
    Per-post HTML supplies content and picks layout classes; it must not
    introduce sizes, colors, or spacing of its own.
 
-   See docs/carousels/README.md for the palette role table (every one of the
-   21 values has a defined job), the type rationale, and the graphic system.
-   docs/carousels/template-specimen.html renders every layout on one page.
+   See docs/carousels/README.md for the palette role table, the type
+   rationale, and the graphic system. template-specimen.html renders every
+   layout on one page.
 
    Page: 1080 x 1350 (4:5).
 --------------------------------------------------------------------------- */
@@ -22,52 +22,56 @@
   --blue-600: #0E2455;  --gold-600: #4C390E;  --grey-600: #383B3D;
   --blue-700: #02081F;  --gold-700: #251A04;  --grey-700: #191B1C;
 
-  /* --- Semantic roles, dark surfaces (the default deck) ----------------- */
-  --ground-deep:    var(--blue-700);  /* cover and close */
-  --ground-mid:     var(--blue-600);  /* interior slides */
-  --ground-lift:    var(--blue-500);  /* radial lift, ghost numerals */
+  /* --- Semantic roles ---------------------------------------------------
+     Reversed from the navy deck: warm light ground, near-black type, gold
+     carrying the headings and blue carrying the structure. Both brand
+     colors do real work rather than one being decorative. */
+  --paper:        var(--gold-100);
+  --paper-panel:  #FBF7F0;
 
-  --on-dark:        var(--grey-100);  /* headlines */
-  --on-dark-body:   var(--blue-100);  /* running copy */
-  --on-dark-mute:   var(--blue-200);  /* index, secondary */
-  --on-dark-faint:  var(--blue-300);  /* eyebrow */
-  --rule-dark:      rgba(53, 99, 202, 0.34);
+  --ink:          var(--blue-700);   /* display type, reads near-black */
+  --ink-body:     var(--grey-600);   /* running copy */
+  --ink-mute:     var(--grey-400);   /* index rail, inactive */
 
-  /* --- Semantic roles, light surfaces (available, unused by post 1) ----- */
-  --paper:          var(--grey-100);
-  --on-paper:       var(--grey-700);
-  --on-paper-body:  var(--grey-500);
-  --on-paper-mute:  var(--grey-400);
-  --on-paper-faint: var(--grey-300);
-  --rule-paper:     var(--grey-200);
+  /* Headings take the brand blue rather than gold. Gold on cream is the
+     same value as cream and the whole deck goes monochrome beige; blue is
+     the only thing in the palette with enough contrast to carry type at
+     size, and it keeps both brand colors doing real work. */
+  --head:         var(--blue-500);   /* the item heading */
+  --accent:       var(--gold-300);   /* badge fill, rules, grid */
+  --accent-hot:   var(--gold-200);   /* one filled grid cell */
 
-  /* --- Accent ----------------------------------------------------------- */
-  --accent:         var(--gold-200);  /* rules, active index, emphasis */
-  --accent-deep:    var(--gold-300);  /* grid strokes */
-  --accent-pale:    var(--gold-100);  /* type on a gold fill */
-  --accent-fill:    var(--gold-600);  /* filled grid cells on dark */
+  --struct:       var(--gold-400);   /* step labels, page numbers */
+  --ghost:        rgba(202, 156, 53, 0.26);
+  --rule:         rgba(161, 124, 40, 0.42);
 
   /* --- Grid ------------------------------------------------------------- */
-  --page-w:     1080px;
-  --page-h:     1350px;
-  --margin-x:   104px;
-  --measure:    872px;
-  --eyebrow-y:  100px;
+  --page-w:    1080px;
+  --page-h:    1350px;
+  --margin-x:  100px;
+  --measure:   880px;
+  --eyebrow-y: 88px;
 
   /* --- Type scale ------------------------------------------------------- */
-  --size-display: 112px;
-  --size-lead:     88px;
-  --size-detail:   44px;
-  --size-sub:      44px;
-  --size-figure:  108px;
-  --size-item:     42px;
-  --size-eyebrow:  18px;
-  --size-index:    19px;
-  --size-note:     24px;
-  --size-ghost:   700px;
+  --size-display: 94px;
+  --size-lead:    80px;
+  --size-step:    30px;
+  --size-detail:  40px;
+  --size-sub:     40px;
+  --size-item:    40px;
+  --size-figure: 104px;
+  --size-micro:   17px;
+  --size-index:   18px;
+  --size-note:    23px;
+  --size-ghost:  620px;
 
-  --serif: "Instrument Serif", "Times New Roman", serif;
-  --sans:  "Geist", "Segoe UI", system-ui, sans-serif;
+  /* Clash Display for anything large, Boska italic for the emphasis words
+     inside a headline, Satoshi for everything set small. Three families is
+     one more than the usual ceiling and it is deliberate: the mixed-face
+     headline is the whole reference look. */
+  --display: "Clash Display", "Arial Black", sans-serif;
+  --accentf: "Boska", Georgia, serif;
+  --text:    "Satoshi", "Segoe UI", system-ui, sans-serif;
 }
 
 @page { size: 1080px 1350px; margin: 0; }
@@ -76,7 +80,7 @@
 
 html, body {
   width: var(--page-w);
-  background: var(--ground-deep);
+  background: var(--paper);
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
   -webkit-font-smoothing: antialiased;
@@ -85,8 +89,6 @@ html, body {
 
 /* ===========================================================================
    SLIDE SHELL
-   Three grounds. Every deck uses --deep for its bookends and --mid for the
-   body; --paper exists for a deck that needs a light slide for contrast.
    =========================================================================== */
 
 .slide {
@@ -94,30 +96,24 @@ html, body {
   width: var(--page-w);
   height: var(--page-h);
   overflow: hidden;
+  background: var(--paper);
   page-break-after: always;
   break-after: page;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
-  background:
-    radial-gradient(132% 88% at 22% 0%,
-      rgba(31, 67, 147, 0.28) 0%,
-      rgba(31, 67, 147, 0.10) 46%,
-      rgba(2, 8, 31, 0) 76%),
-    var(--ground-mid);
 }
 
 .slide:last-child { page-break-after: auto; break-after: auto; }
 
-.slide--deep {
-  background:
-    radial-gradient(118% 78% at 12% 6%,
-      rgba(31, 67, 147, 0.62) 0%,
-      rgba(14, 36, 85, 0.30) 42%,
-      rgba(2, 8, 31, 0) 72%),
-    var(--ground-deep);
+/* Bookends get a panel inset rather than a different color, so the deck
+   stays one material and the cover still reads as a cover. */
+.slide--deep::before {
+  content: "";
+  position: absolute;
+  inset: 44px;
+  border: 2px solid var(--rule);
+  z-index: 0;
 }
-
-.slide--paper { background: var(--paper); }
 
 /* Film grain, so a flat PDF reads as printed rather than screenshotted. */
 .slide::after {
@@ -125,16 +121,14 @@ html, body {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.075;
-  mix-blend-mode: screen;
+  opacity: 0.05;
+  mix-blend-mode: multiply;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 240px 240px;
 }
 
-.slide--paper::after { mix-blend-mode: multiply; opacity: 0.042; }
-
 /* ===========================================================================
-   PERSISTENT FURNITURE — eyebrow, index rail, byline
+   FURNITURE — eyebrow, footer bar, index rail, byline
    =========================================================================== */
 
 .eyebrow {
@@ -143,127 +137,161 @@ html, body {
   top: var(--eyebrow-y);
   display: flex;
   align-items: center;
-  gap: 22px;
-  font-family: var(--sans);
-  font-weight: 500;
-  font-size: var(--size-eyebrow);
-  letter-spacing: 0.24em;
+  gap: 20px;
+  font-family: var(--text);
+  font-weight: 700;
+  font-size: var(--size-micro);
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--on-dark-faint);
+  color: var(--struct);
   z-index: 4;
 }
 
 .eyebrow::before {
   content: "";
-  width: 46px;
-  height: 2px;
+  width: 42px;
+  height: 3px;
   background: var(--accent);
 }
 
-.eyebrow__count { color: rgba(150, 176, 227, 0.46); }
+.slide--deep .eyebrow { left: 144px; top: 132px; }
 
-.slide--paper .eyebrow { color: var(--on-paper-mute); }
-.slide--paper .eyebrow__count { color: var(--on-paper-faint); }
-
-/* The index rail. Every interior slide lists all six items with the current
-   one live. It fills the lower field with the thing a Value-Stack deck most
-   needs to show — that the cover's count is real and the set is complete —
-   and it removes the need for any progress-dot widget. */
-.index {
+/* Footer bar, straight off the reference decks: the deck title on the left,
+   the page number on the right, a hairline between them and the page. */
+.footer {
   position: absolute;
   left: var(--margin-x);
-  bottom: 148px;
-  width: var(--measure);
-  padding-top: 40px;
-  border-top: 1px solid var(--rule-dark);
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 18px 56px;
-  font-family: var(--sans);
-  font-weight: 400;
-  font-size: var(--size-index);
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: rgba(150, 176, 227, 0.52);
+  right: var(--margin-x);
+  bottom: 78px;
+  padding-top: 22px;
+  border-top: 1px solid var(--rule);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: var(--text);
+  font-weight: 500;
+  font-size: var(--size-micro);
+  letter-spacing: 0.04em;
+  color: var(--ink-mute);
   z-index: 4;
 }
 
-.index b {
-  font-weight: 500;
-  color: rgba(150, 176, 227, 0.34);
-  margin-right: 14px;
+.footer b {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 26px;
+  letter-spacing: 0;
+  color: var(--head);
 }
 
-.index .on        { color: var(--accent); }
-.index .on b      { color: var(--accent); }
+.slide--deep .footer { left: 144px; right: 144px; bottom: 122px; }
 
-.slide--paper .index   { border-top-color: var(--rule-paper); color: var(--on-paper-faint); }
-.slide--paper .index b { color: var(--on-paper-faint); }
+/* The index rail. Slides carry at most 22 words, so a numbered item leaves
+   the lower field empty. Listing all six with the current one live fills it
+   with the thing a count-based deck most needs to prove. */
+.index {
+  position: absolute;
+  left: var(--margin-x);
+  bottom: 186px;
+  width: var(--measure);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 56px;
+  font-family: var(--text);
+  font-weight: 500;
+  font-size: var(--size-index);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  z-index: 4;
+}
+
+.index b { font-weight: 700; color: var(--grey-300); margin-right: 14px; }
+.index .on   { color: var(--ink); }
+.index .on b { color: var(--accent); }
 
 .byline {
   position: absolute;
   left: var(--margin-x);
-  bottom: 100px;
+  bottom: 186px;
   display: flex;
   align-items: center;
-  gap: 22px;
-  font-family: var(--sans);
-  font-weight: 500;
-  font-size: var(--size-eyebrow);
-  letter-spacing: 0.24em;
+  gap: 20px;
+  font-family: var(--text);
+  font-weight: 700;
+  font-size: var(--size-micro);
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--on-dark-mute);
+  color: var(--struct);
   z-index: 4;
 }
 
-.byline::before {
-  content: "";
-  width: 46px;
-  height: 2px;
-  background: var(--accent);
-}
+.byline::before { content: ""; width: 42px; height: 3px; background: var(--accent); }
+.slide--deep .byline { left: 144px; bottom: 218px; }
 
 /* ===========================================================================
    CONTENT BLOCK
-   Bottom-anchored so copy grows upward against the ghost numeral above it.
    =========================================================================== */
 
 .body {
   position: absolute;
   left: var(--margin-x);
-  bottom: 404px;
+  bottom: 320px;
   width: var(--measure);
   z-index: 3;
 }
 
-.body--top    { top: 320px; bottom: auto; }
-.body--nofoot { bottom: 210px; }
+.body--top    { top: 300px; bottom: auto; }
+.body--nofoot { bottom: 220px; }
+.slide--deep .body { left: 144px; width: 792px; top: 296px; bottom: auto; }
 
 /* ===========================================================================
    LAYOUT 1 — COVER
    =========================================================================== */
 
-.display {
-  font-family: var(--serif);
-  font-weight: 400;
-  font-size: var(--size-display);
-  line-height: 1.02;
-  letter-spacing: -0.022em;
-  color: var(--on-dark);
+.badge {
+  display: inline-block;
+  background: var(--accent);
+  color: var(--blue-700);
+  font-family: var(--text);
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 12px 22px 11px;
+  margin-bottom: 44px;
 }
 
-.display em { font-style: italic; color: var(--accent); }
+.display {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: var(--size-display);
+  line-height: 1.0;
+  letter-spacing: -0.028em;
+  color: var(--ink);
+}
 
-.mark { width: 132px; height: 3px; background: var(--accent); margin: 64px 0 56px; }
+/* The emphasis word inside a headline, set in the contrast serif italic.
+   This is the reference decks' single strongest device. */
+.display em,
+.close-lead em {
+  font-family: var(--accentf);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  color: var(--head);
+}
+
+.mark { width: 124px; height: 4px; background: var(--accent); margin: 52px 0 44px; }
 
 .sub {
-  font-family: var(--sans);
-  font-weight: 300;
+  font-family: var(--text);
+  font-weight: 400;
   font-size: var(--size-sub);
-  line-height: 1.32;
-  letter-spacing: -0.008em;
-  color: var(--on-dark-body);
-  max-width: 620px;
+  line-height: 1.34;
+  letter-spacing: -0.012em;
+  color: var(--ink-body);
+  max-width: 560px;
 }
 
 /* ===========================================================================
@@ -275,97 +303,100 @@ html, body {
    deliberate. */
 .ghost {
   position: absolute;
-  top: -76px;
-  right: -34px;
-  width: 620px;
+  top: -58px;
+  right: -30px;
+  width: 560px;
   text-align: right;
-  font-family: var(--serif);
-  font-weight: 400;
+  font-family: var(--display);
+  font-weight: 600;
   font-size: var(--size-ghost);
   line-height: 1;
-  color: var(--ground-lift);
+  color: var(--ghost);
   z-index: 1;
   user-select: none;
 }
 
-.slide--paper .ghost { color: var(--blue-100); }
+.step {
+  font-family: var(--accentf);
+  font-style: italic;
+  font-weight: 400;
+  font-size: var(--size-step);
+  letter-spacing: 0.01em;
+  color: var(--struct);
+  margin-bottom: 18px;
+}
 
 .label {
-  font-family: var(--serif);
-  font-weight: 400;
+  font-family: var(--display);
+  font-weight: 600;
   font-size: var(--size-lead);
-  line-height: 1.06;
-  letter-spacing: -0.02em;
-  color: var(--on-dark);
-  max-width: 820px;
+  line-height: 1.04;
+  letter-spacing: -0.026em;
+  color: var(--head);
+  max-width: 840px;
 }
 
 .detail {
-  font-family: var(--sans);
-  font-weight: 300;
+  font-family: var(--text);
+  font-weight: 400;
   font-size: var(--size-detail);
-  line-height: 1.44;
-  letter-spacing: -0.011em;
-  color: var(--on-dark-body);
-  max-width: 848px;
-  margin-top: 46px;
+  line-height: 1.45;
+  letter-spacing: -0.012em;
+  color: var(--ink-body);
+  max-width: 856px;
+  margin-top: 38px;
 }
-
-.slide--paper .label  { color: var(--on-paper); }
-.slide--paper .detail { color: var(--on-paper-body); }
 
 /* ===========================================================================
    LAYOUT 3 — GROUPED LIST  (post 7, twelve flags in two severity groups)
-   Groups read apart through the rule, the group label and the numeral
+   Groups read apart through rule weight, the group label and numeral
    alignment. Color never carries the severity split.
    =========================================================================== */
 
 .group__label {
-  font-family: var(--sans);
-  font-weight: 500;
-  font-size: var(--size-eyebrow);
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: var(--accent);
-  padding-top: 30px;
-  border-top: 2px solid var(--accent);
   display: inline-block;
-  margin-bottom: 62px;
+  font-family: var(--text);
+  font-weight: 700;
+  font-size: var(--size-micro);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink);
+  padding-top: 26px;
+  border-top: 4px solid var(--accent);
+  margin-bottom: 54px;
 }
 
-.group__label--soft { color: var(--on-dark-mute); border-top-color: var(--rule-dark); }
+.group__label--soft { border-top-width: 1px; color: var(--ink-mute); }
 
 .items { list-style: none; }
 
 .items li {
   display: flex;
-  gap: 34px;
-  font-family: var(--serif);
-  font-weight: 400;
+  gap: 30px;
+  font-family: var(--display);
+  font-weight: 500;
   font-size: var(--size-item);
-  line-height: 1.24;
-  letter-spacing: -0.012em;
-  color: var(--on-dark);
-  padding: 26px 0;
-  border-bottom: 1px solid var(--rule-dark);
+  line-height: 1.22;
+  letter-spacing: -0.018em;
+  color: var(--ink);
+  padding: 24px 0;
+  border-bottom: 1px solid var(--rule);
 }
 
-.items li:first-child { border-top: 1px solid var(--rule-dark); }
+.items li:first-child { border-top: 1px solid var(--rule); }
 
 .items span {
-  flex: 0 0 74px;
-  font-family: var(--sans);
-  font-weight: 500;
+  flex: 0 0 66px;
+  font-family: var(--text);
+  font-weight: 700;
   font-size: var(--size-index);
-  letter-spacing: 0.1em;
-  color: var(--blue-300);
-  padding-top: 12px;
+  letter-spacing: 0.08em;
+  color: var(--struct);
+  padding-top: 10px;
 }
 
 /* ===========================================================================
    LAYOUT 4 — FIGURE STACK  (post 4, the arithmetic)
-   One figure per line with air around each, annotations set small and cool
-   so an owned uncertainty reads as candor rather than hedging.
    =========================================================================== */
 
 .figures { list-style: none; }
@@ -374,63 +405,64 @@ html, body {
   display: flex;
   align-items: baseline;
   flex-wrap: wrap;
-  gap: 0 30px;
-  margin-bottom: 46px;
+  gap: 0 26px;
+  margin-bottom: 40px;
 }
 
 .figures li:last-child { margin-bottom: 0; }
 
 .figure {
-  font-family: var(--serif);
-  font-weight: 400;
+  font-family: var(--display);
+  font-weight: 600;
   font-size: var(--size-figure);
   line-height: 1.06;
-  letter-spacing: -0.03em;
-  color: var(--on-dark);
+  letter-spacing: -0.036em;
+  color: var(--ink);
 }
 
-.figure--accent { color: var(--accent); }
+.figure--accent { color: var(--head); }
 
 .figure__cap {
-  font-family: var(--sans);
-  font-weight: 300;
+  font-family: var(--text);
+  font-weight: 400;
   font-size: var(--size-detail);
   line-height: 1.36;
-  letter-spacing: -0.008em;
-  color: var(--on-dark-body);
+  letter-spacing: -0.012em;
+  color: var(--ink-body);
 }
 
 .note {
-  font-family: var(--sans);
-  font-weight: 400;
+  font-family: var(--accentf);
+  font-style: italic;
   font-size: var(--size-note);
-  letter-spacing: 0.02em;
-  color: var(--blue-300);
+  color: var(--struct);
 }
 
 /* ===========================================================================
    LAYOUT 5 — MATCHED PAIR  (post 13, can / cannot)
-   Identical geometry both sides. If the "can" side ever looks heavier than
-   the "cannot" side the argument tilts, so nothing here varies but the words.
+   Identical geometry both sides. If the "can" side ever looks heavier the
+   argument tilts, so nothing here varies but the words.
    =========================================================================== */
 
 .pair__head {
-  font-family: var(--sans);
-  font-weight: 500;
-  font-size: var(--size-eyebrow);
-  letter-spacing: 0.24em;
+  font-family: var(--text);
+  font-weight: 700;
+  font-size: var(--size-micro);
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 46px;
+  color: var(--struct);
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 44px;
 }
 
 .pair__body {
-  font-family: var(--serif);
-  font-weight: 400;
+  font-family: var(--display);
+  font-weight: 600;
   font-size: var(--size-lead);
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-  color: var(--on-dark);
+  line-height: 1.08;
+  letter-spacing: -0.026em;
+  color: var(--ink);
 }
 
 /* ===========================================================================
@@ -438,33 +470,34 @@ html, body {
    =========================================================================== */
 
 .close-lead {
-  font-family: var(--serif);
-  font-weight: 400;
+  font-family: var(--display);
+  font-weight: 600;
   font-size: var(--size-display);
-  line-height: 1.02;
-  letter-spacing: -0.022em;
-  color: var(--on-dark);
+  line-height: 1.0;
+  letter-spacing: -0.028em;
+  color: var(--ink);
 }
 
 .close-detail {
-  font-family: var(--sans);
-  font-weight: 300;
+  font-family: var(--text);
+  font-weight: 400;
   font-size: var(--size-sub);
-  line-height: 1.34;
-  letter-spacing: -0.008em;
-  color: var(--on-dark-body);
-  max-width: 800px;
-  margin-top: 56px;
+  line-height: 1.36;
+  letter-spacing: -0.012em;
+  color: var(--ink-body);
+  max-width: 760px;
+  margin-top: 44px;
 }
 
 .close-ask {
-  font-family: var(--serif);
+  font-family: var(--accentf);
   font-style: italic;
-  font-size: 60px;
-  line-height: 1.16;
-  letter-spacing: -0.015em;
-  color: var(--accent);
-  margin-top: 84px;
+  font-weight: 400;
+  font-size: 56px;
+  line-height: 1.18;
+  letter-spacing: -0.012em;
+  color: var(--head);
+  margin-top: 64px;
 }
 
 /* ===========================================================================
@@ -477,23 +510,19 @@ html, body {
 .grid {
   position: absolute;
   display: grid;
-  grid-template-columns: repeat(7, 96px);
-  grid-auto-rows: 96px;
+  grid-template-columns: repeat(7, 88px);
+  grid-auto-rows: 88px;
   z-index: 1;
 }
 
-.grid--cover { right: -290px; bottom: -140px; }
-.grid--close { right: -290px; bottom: -140px; transform: rotate(180deg); }
+.grid--cover { right: -252px; bottom: -128px; }
+.grid--close { right: -252px; bottom: -128px; transform: rotate(180deg); }
 
 .grid i {
   display: block;
-  border: 1px solid rgba(202, 156, 53, 0.42);
+  border: 1px solid rgba(161, 124, 40, 0.48);
   margin: -1px 0 0 -1px;
 }
 
-.grid i.on  { background: rgba(202, 156, 53, 0.20); }
-.grid i.hot { background: rgba(248, 192, 67, 0.58); }
-
-.slide--paper .grid i     { border-color: rgba(161, 124, 40, 0.34); }
-.slide--paper .grid i.on  { background: rgba(202, 156, 53, 0.16); }
-.slide--paper .grid i.hot { background: rgba(248, 192, 67, 0.42); }
+.grid i.on  { background: rgba(202, 156, 53, 0.34); }
+.grid i.hot { background: rgba(31, 67, 147, 0.82); }
