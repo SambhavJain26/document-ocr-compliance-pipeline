@@ -2,53 +2,50 @@
    LinkedIn document carousel — fixed template.
 
    One stylesheet for every carousel in docs/linkedin-post-scripts.md.
-   Per-post HTML supplies only content and picks layout classes; it must not
-   introduce sizes, colors, or spacing of its own. See docs/carousels/README.md
-   for the palette rules, the type rationale, and the graphic system.
+   Per-post HTML supplies content and picks layout classes; it must not
+   introduce sizes, colors, or spacing of its own.
+
+   See docs/carousels/README.md for the palette role table (every one of the
+   21 values has a defined job), the type rationale, and the graphic system.
+   docs/carousels/template-specimen.html renders every layout on one page.
 
    Page: 1080 x 1350 (4:5).
 --------------------------------------------------------------------------- */
 
 :root {
   /* --- Palette (owner-supplied 2026-08-02) ------------------------------ */
-  --blue-100: #C9D7F0;
-  --blue-200: #96B0E3;
-  --blue-300: #6389D6;
-  --blue-400: #3563CA;
-  --blue-500: #1F4393;
-  --blue-600: #0E2455;
-  --blue-700: #02081F;
+  --blue-100: #C9D7F0;  --gold-100: #FDF0D6;  --grey-100: #EDEFF0;
+  --blue-200: #96B0E3;  --gold-200: #F8C043;  --grey-200: #C2C9CC;
+  --blue-300: #6389D6;  --gold-300: #CA9C35;  --grey-300: #9BA3A8;
+  --blue-400: #3563CA;  --gold-400: #A17C28;  --grey-400: #7B8285;
+  --blue-500: #1F4393;  --gold-500: #77581B;  --grey-500: #595F61;
+  --blue-600: #0E2455;  --gold-600: #4C390E;  --grey-600: #383B3D;
+  --blue-700: #02081F;  --gold-700: #251A04;  --grey-700: #191B1C;
 
-  --gold-100: #FDF0D6;
-  --gold-200: #F8C043;
-  --gold-300: #CA9C35;
-  --gold-400: #A17C28;
-  --gold-500: #77581B;
+  /* --- Semantic roles, dark surfaces (the default deck) ----------------- */
+  --ground-deep:    var(--blue-700);  /* cover and close */
+  --ground-mid:     var(--blue-600);  /* interior slides */
+  --ground-lift:    var(--blue-500);  /* radial lift, ghost numerals */
 
-  --grey-100: #EDEFF0;
-  --grey-200: #C2C9CC;
-  --grey-300: #9BA3A8;
-  --grey-500: #595F61;
-  --grey-600: #383B3D;
-  --grey-700: #191B1C;
+  --on-dark:        var(--grey-100);  /* headlines */
+  --on-dark-body:   var(--blue-100);  /* running copy */
+  --on-dark-mute:   var(--blue-200);  /* index, secondary */
+  --on-dark-faint:  var(--blue-300);  /* eyebrow */
+  --rule-dark:      rgba(53, 99, 202, 0.34);
 
-  /* --- Semantic roles --------------------------------------------------- */
+  /* --- Semantic roles, light surfaces (available, unused by post 1) ----- */
   --paper:          var(--grey-100);
-  --ground:         var(--blue-700);
-  --ground-lift:    var(--blue-500);
+  --on-paper:       var(--grey-700);
+  --on-paper-body:  var(--grey-500);
+  --on-paper-mute:  var(--grey-400);
+  --on-paper-faint: var(--grey-300);
+  --rule-paper:     var(--grey-200);
 
-  --ink:            var(--blue-600);
-  --ink-detail:     var(--grey-500);
-  --ink-eyebrow:    var(--grey-500);
-
-  --accent:         var(--gold-300);
-  --accent-bright:  var(--gold-200);
-  --ghost:          rgba(150, 176, 227, 0.52);
-
-  --on-ground:      #F7F9FC;
-  --on-ground-mute: var(--blue-100);
-  --rule:           var(--grey-200);
-  --rule-ground:    rgba(150, 176, 227, 0.28);
+  /* --- Accent ----------------------------------------------------------- */
+  --accent:         var(--gold-200);  /* rules, active index, emphasis */
+  --accent-deep:    var(--gold-300);  /* grid strokes */
+  --accent-pale:    var(--gold-100);  /* type on a gold fill */
+  --accent-fill:    var(--gold-600);  /* filled grid cells on dark */
 
   /* --- Grid ------------------------------------------------------------- */
   --page-w:     1080px;
@@ -56,15 +53,17 @@
   --margin-x:   104px;
   --measure:    872px;
   --eyebrow-y:  100px;
-  --anchor-y:   545px;
-  --footer-y:   1176px;
 
   /* --- Type scale ------------------------------------------------------- */
   --size-display: 112px;
-  --size-lead:     96px;
-  --size-detail:   48px;  /* exactly half of --size-lead */
+  --size-lead:     88px;
+  --size-detail:   44px;
   --size-sub:      44px;
+  --size-figure:  108px;
+  --size-item:     42px;
   --size-eyebrow:  18px;
+  --size-index:    19px;
+  --size-note:     24px;
   --size-ghost:   700px;
 
   --serif: "Instrument Serif", "Times New Roman", serif;
@@ -77,58 +76,66 @@
 
 html, body {
   width: var(--page-w);
-  background: var(--paper);
+  background: var(--ground-deep);
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
   -webkit-font-smoothing: antialiased;
   text-rendering: geometricPrecision;
 }
 
-/* --- Slide shell --------------------------------------------------------- */
+/* ===========================================================================
+   SLIDE SHELL
+   Three grounds. Every deck uses --deep for its bookends and --mid for the
+   body; --paper exists for a deck that needs a light slide for contrast.
+   =========================================================================== */
 
 .slide {
   position: relative;
   width: var(--page-w);
   height: var(--page-h);
   overflow: hidden;
-  background: var(--paper);
   page-break-after: always;
   break-after: page;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
+  background:
+    radial-gradient(132% 88% at 22% 0%,
+      rgba(31, 67, 147, 0.28) 0%,
+      rgba(31, 67, 147, 0.10) 46%,
+      rgba(2, 8, 31, 0) 76%),
+    var(--ground-mid);
 }
 
 .slide:last-child { page-break-after: auto; break-after: auto; }
 
-/* Dark ground for the two bookend slides. The radial lift stops the navy
-   reading as a flat fill, which is what made the first pass look printed
-   rather than designed. */
-.slide--ground {
+.slide--deep {
   background:
-    radial-gradient(115% 78% at 12% 6%,
+    radial-gradient(118% 78% at 12% 6%,
       rgba(31, 67, 147, 0.62) 0%,
       rgba(14, 36, 85, 0.30) 42%,
       rgba(2, 8, 31, 0) 72%),
-    var(--ground);
+    var(--ground-deep);
 }
 
-/* Film grain. Fixed turbulence over every slide so the flat PDF reads as
-   something printed. Kept under 0.05 opacity — visible as texture, never as
-   noise. */
+.slide--paper { background: var(--paper); }
+
+/* Film grain, so a flat PDF reads as printed rather than screenshotted. */
 .slide::after {
   content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.042;
+  opacity: 0.075;
+  mix-blend-mode: screen;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 240px 240px;
-  mix-blend-mode: multiply;
 }
 
-.slide--ground::after { mix-blend-mode: screen; opacity: 0.075; }
+.slide--paper::after { mix-blend-mode: multiply; opacity: 0.042; }
 
-/* --- Eyebrow ------------------------------------------------------------- */
+/* ===========================================================================
+   PERSISTENT FURNITURE — eyebrow, index rail, byline
+   =========================================================================== */
 
 .eyebrow {
   position: absolute;
@@ -136,14 +143,14 @@ html, body {
   top: var(--eyebrow-y);
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 22px;
   font-family: var(--sans);
   font-weight: 500;
   font-size: var(--size-eyebrow);
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: var(--ink-eyebrow);
-  z-index: 3;
+  color: var(--on-dark-faint);
+  z-index: 4;
 }
 
 .eyebrow::before {
@@ -153,31 +160,88 @@ html, body {
   background: var(--accent);
 }
 
-.slide--ground .eyebrow { color: var(--on-ground-mute); }
-.slide--ground .eyebrow::before { background: var(--accent-bright); }
+.eyebrow__count { color: rgba(150, 176, 227, 0.46); }
 
-.eyebrow__count { color: var(--grey-300); }
-.slide--ground .eyebrow__count { color: rgba(201, 215, 240, 0.55); }
+.slide--paper .eyebrow { color: var(--on-paper-mute); }
+.slide--paper .eyebrow__count { color: var(--on-paper-faint); }
 
-/* --- Content block ------------------------------------------------------- */
+/* The index rail. Every interior slide lists all six items with the current
+   one live. It fills the lower field with the thing a Value-Stack deck most
+   needs to show — that the cover's count is real and the set is complete —
+   and it removes the need for any progress-dot widget. */
+.index {
+  position: absolute;
+  left: var(--margin-x);
+  bottom: 148px;
+  width: var(--measure);
+  padding-top: 40px;
+  border-top: 1px solid var(--rule-dark);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 56px;
+  font-family: var(--sans);
+  font-weight: 400;
+  font-size: var(--size-index);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(150, 176, 227, 0.52);
+  z-index: 4;
+}
+
+.index b {
+  font-weight: 500;
+  color: rgba(150, 176, 227, 0.34);
+  margin-right: 14px;
+}
+
+.index .on        { color: var(--accent); }
+.index .on b      { color: var(--accent); }
+
+.slide--paper .index   { border-top-color: var(--rule-paper); color: var(--on-paper-faint); }
+.slide--paper .index b { color: var(--on-paper-faint); }
+
+.byline {
+  position: absolute;
+  left: var(--margin-x);
+  bottom: 100px;
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: var(--size-eyebrow);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--on-dark-mute);
+  z-index: 4;
+}
+
+.byline::before {
+  content: "";
+  width: 46px;
+  height: 2px;
+  background: var(--accent);
+}
+
+/* ===========================================================================
+   CONTENT BLOCK
+   Bottom-anchored so copy grows upward against the ghost numeral above it.
+   =========================================================================== */
 
 .body {
   position: absolute;
   left: var(--margin-x);
-  top: var(--anchor-y);
+  bottom: 404px;
   width: var(--measure);
-  z-index: 2;
+  z-index: 3;
 }
 
-/* Cover and close run taller, so they start higher and use the full field. */
-.slide--ground .body { top: 320px; }
+.body--top    { top: 320px; bottom: auto; }
+.body--nofoot { bottom: 210px; }
 
-/* Interior slides bottom-anchor instead. The ghost numeral owns the upper
-   field and the copy sits low against it, which is the tension the earlier
-   top-anchored version was missing. */
-.slide:not(.slide--ground) .body { top: auto; bottom: 196px; }
-
-/* --- Cover --------------------------------------------------------------- */
+/* ===========================================================================
+   LAYOUT 1 — COVER
+   =========================================================================== */
 
 .display {
   font-family: var(--serif);
@@ -185,20 +249,12 @@ html, body {
   font-size: var(--size-display);
   line-height: 1.02;
   letter-spacing: -0.022em;
-  color: var(--on-ground);
+  color: var(--on-dark);
 }
 
-.display em {
-  font-style: italic;
-  color: var(--accent-bright);
-}
+.display em { font-style: italic; color: var(--accent); }
 
-.mark {
-  width: 132px;
-  height: 3px;
-  background: var(--accent-bright);
-  margin: 64px 0 56px;
-}
+.mark { width: 132px; height: 3px; background: var(--accent); margin: 64px 0 56px; }
 
 .sub {
   font-family: var(--sans);
@@ -206,18 +262,17 @@ html, body {
   font-size: var(--size-sub);
   line-height: 1.32;
   letter-spacing: -0.008em;
-  color: var(--on-ground-mute);
-  max-width: 600px;
+  color: var(--on-dark-body);
+  max-width: 620px;
 }
 
-/* --- Numbered item ------------------------------------------------------- */
+/* ===========================================================================
+   LAYOUT 2 — NUMBERED ITEM  (post 1, slides 2-7)
+   =========================================================================== */
 
-/* The item number, set enormous and bled off the right edge. It carries the
-   count without a counter widget and gives every interior slide a second
-   element, which is what the all-type version was missing. */
-/* Fixed width plus right alignment so every digit bleeds off the edge by the
-   same amount. Without it a "1" and a "4" clip differently and the set stops
-   looking deliberate. */
+/* Fixed width plus right alignment so every digit bleeds by the same amount.
+   Without it a "1" and a "4" clip differently and the set stops looking
+   deliberate. */
 .ghost {
   position: absolute;
   top: -76px;
@@ -228,18 +283,20 @@ html, body {
   font-weight: 400;
   font-size: var(--size-ghost);
   line-height: 1;
-  color: var(--ghost);
+  color: var(--ground-lift);
   z-index: 1;
   user-select: none;
 }
+
+.slide--paper .ghost { color: var(--blue-100); }
 
 .label {
   font-family: var(--serif);
   font-weight: 400;
   font-size: var(--size-lead);
-  line-height: 1.04;
+  line-height: 1.06;
   letter-spacing: -0.02em;
-  color: var(--ink);
+  color: var(--on-dark);
   max-width: 820px;
 }
 
@@ -247,14 +304,138 @@ html, body {
   font-family: var(--sans);
   font-weight: 300;
   font-size: var(--size-detail);
-  line-height: 1.42;
+  line-height: 1.44;
   letter-spacing: -0.011em;
-  color: var(--ink-detail);
+  color: var(--on-dark-body);
   max-width: 848px;
-  margin-top: 56px;
+  margin-top: 46px;
 }
 
-/* --- Close --------------------------------------------------------------- */
+.slide--paper .label  { color: var(--on-paper); }
+.slide--paper .detail { color: var(--on-paper-body); }
+
+/* ===========================================================================
+   LAYOUT 3 — GROUPED LIST  (post 7, twelve flags in two severity groups)
+   Groups read apart through the rule, the group label and the numeral
+   alignment. Color never carries the severity split.
+   =========================================================================== */
+
+.group__label {
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: var(--size-eyebrow);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--accent);
+  padding-top: 30px;
+  border-top: 2px solid var(--accent);
+  display: inline-block;
+  margin-bottom: 62px;
+}
+
+.group__label--soft { color: var(--on-dark-mute); border-top-color: var(--rule-dark); }
+
+.items { list-style: none; }
+
+.items li {
+  display: flex;
+  gap: 34px;
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: var(--size-item);
+  line-height: 1.24;
+  letter-spacing: -0.012em;
+  color: var(--on-dark);
+  padding: 26px 0;
+  border-bottom: 1px solid var(--rule-dark);
+}
+
+.items li:first-child { border-top: 1px solid var(--rule-dark); }
+
+.items span {
+  flex: 0 0 74px;
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: var(--size-index);
+  letter-spacing: 0.1em;
+  color: var(--blue-300);
+  padding-top: 12px;
+}
+
+/* ===========================================================================
+   LAYOUT 4 — FIGURE STACK  (post 4, the arithmetic)
+   One figure per line with air around each, annotations set small and cool
+   so an owned uncertainty reads as candor rather than hedging.
+   =========================================================================== */
+
+.figures { list-style: none; }
+
+.figures li {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0 30px;
+  margin-bottom: 46px;
+}
+
+.figures li:last-child { margin-bottom: 0; }
+
+.figure {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: var(--size-figure);
+  line-height: 1.06;
+  letter-spacing: -0.03em;
+  color: var(--on-dark);
+}
+
+.figure--accent { color: var(--accent); }
+
+.figure__cap {
+  font-family: var(--sans);
+  font-weight: 300;
+  font-size: var(--size-detail);
+  line-height: 1.36;
+  letter-spacing: -0.008em;
+  color: var(--on-dark-body);
+}
+
+.note {
+  font-family: var(--sans);
+  font-weight: 400;
+  font-size: var(--size-note);
+  letter-spacing: 0.02em;
+  color: var(--blue-300);
+}
+
+/* ===========================================================================
+   LAYOUT 5 — MATCHED PAIR  (post 13, can / cannot)
+   Identical geometry both sides. If the "can" side ever looks heavier than
+   the "cannot" side the argument tilts, so nothing here varies but the words.
+   =========================================================================== */
+
+.pair__head {
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: var(--size-eyebrow);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 46px;
+}
+
+.pair__body {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: var(--size-lead);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--on-dark);
+}
+
+/* ===========================================================================
+   LAYOUT 6 — CLOSE
+   =========================================================================== */
 
 .close-lead {
   font-family: var(--serif);
@@ -262,7 +443,7 @@ html, body {
   font-size: var(--size-display);
   line-height: 1.02;
   letter-spacing: -0.022em;
-  color: var(--on-ground);
+  color: var(--on-dark);
 }
 
 .close-detail {
@@ -271,9 +452,9 @@ html, body {
   font-size: var(--size-sub);
   line-height: 1.34;
   letter-spacing: -0.008em;
-  color: var(--on-ground-mute);
+  color: var(--on-dark-body);
   max-width: 800px;
-  margin-top: 60px;
+  margin-top: 56px;
 }
 
 .close-ask {
@@ -282,63 +463,37 @@ html, body {
   font-size: 60px;
   line-height: 1.16;
   letter-spacing: -0.015em;
-  color: var(--accent-bright);
-  margin-top: 92px;
+  color: var(--accent);
+  margin-top: 84px;
 }
 
-/* --- Byline -------------------------------------------------------------- */
+/* ===========================================================================
+   GRAPHIC — THE DATE GRID
+   Seven columns of hairline cells with a few filled, bleeding off the page
+   edge. The concept is literal: the work is documents with dates on them.
+   Bookend slides only.
+   =========================================================================== */
 
-.byline {
-  position: absolute;
-  left: var(--margin-x);
-  top: var(--footer-y);
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  font-family: var(--sans);
-  font-weight: 500;
-  font-size: var(--size-eyebrow);
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: var(--on-ground-mute);
-  z-index: 3;
-}
-
-.byline::before {
-  content: "";
-  width: 46px;
-  height: 2px;
-  background: var(--accent-bright);
-}
-
-/* --- Date grid ----------------------------------------------------------- */
-
-/* Seven columns of hairline cells, bleeding off the page edge, with a few
-   filled. The concept is literal: the work is documents with dates on them.
-   Runs on the bookend slides only. */
 .grid {
   position: absolute;
   display: grid;
   grid-template-columns: repeat(7, 96px);
   grid-auto-rows: 96px;
-  gap: 0;
   z-index: 1;
 }
 
-.grid--cover  { right: -290px; bottom: -140px; }
-.grid--close  { right: -290px; bottom: -140px; transform: rotate(180deg); }
+.grid--cover { right: -290px; bottom: -140px; }
+.grid--close { right: -290px; bottom: -140px; transform: rotate(180deg); }
 
 .grid i {
   display: block;
-  border: 1px solid rgba(202, 156, 53, 0.30);
+  border: 1px solid rgba(202, 156, 53, 0.42);
   margin: -1px 0 0 -1px;
 }
 
-.grid i.on   { background: rgba(202, 156, 53, 0.16); }
-.grid i.hot  { background: rgba(248, 192, 67, 0.42); }
-.grid i.void { border-color: transparent; }
+.grid i.on  { background: rgba(202, 156, 53, 0.20); }
+.grid i.hot { background: rgba(248, 192, 67, 0.58); }
 
-/* Gold needs more weight against the navy or the lattice turns to mud. */
-.slide--ground .grid i      { border-color: rgba(202, 156, 53, 0.44); }
-.slide--ground .grid i.on   { background: rgba(202, 156, 53, 0.22); }
-.slide--ground .grid i.hot  { background: rgba(248, 192, 67, 0.62); }
+.slide--paper .grid i     { border-color: rgba(161, 124, 40, 0.34); }
+.slide--paper .grid i.on  { background: rgba(202, 156, 53, 0.16); }
+.slide--paper .grid i.hot { background: rgba(248, 192, 67, 0.42); }

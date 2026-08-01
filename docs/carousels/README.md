@@ -29,22 +29,50 @@ must not be reused here.
 | `#0E2455` | `#4C390E` | `#383B3D` |
 | `#02081F` | `#251A04` | `#191B1C` |
 
-### Where each color is allowed
+### Every value has a job
 
-1. **`#02081F` is the ground** for cover and close slides only. Interior
-   slides are `#EDEFF0` paper. Two dark slides per deck, no more.
-2. **Gold is the accent and there is only one accent.** It appears on the
-   eyebrow rule, the cover mark, and hairline motif strokes. It never sets
-   body copy and never carries a status word.
-3. **Blue is structural, not decorative.** `#0E2455` sets headings on paper;
-   `#C9D7F0` sets the ghost numerals; `#1F4393` is the radial lift on dark
-   grounds. Bright `#3563CA` is used sparingly and never as a fill behind
-   text.
-4. **Severity, grouping, and emphasis are carried by scale, rules, and
+A palette is a range to select from, not a checklist — twenty-one colors
+inside one eight-slide deck would look worse, not better. But every value
+carries a defined role across the system, so different layouts and different
+carousels draw on different parts of each ramp.
+
+| Value | Role |
+|---|---|
+| `#C9D7F0` | Running copy on dark grounds. Ghost numerals on the light variant |
+| `#96B0E3` | Index rail, eyebrow counts, secondary copy on dark |
+| `#6389D6` | Eyebrow text, list numerals in the grouped layout |
+| `#3563CA` | Hairlines and annotation text on dark. Never a fill behind copy |
+| `#1F4393` | Ghost numerals, radial lift on both grounds |
+| `#0E2455` | Interior slide ground |
+| `#02081F` | Cover and close ground |
+| `#FDF0D6` | Type set on a gold fill |
+| `#F8C043` | The accent. Eyebrow rule, cover mark, active index item, italic emphasis, the one figure that matters |
+| `#CA9C35` | Date-grid strokes and fills on dark |
+| `#A17C28` | Date-grid strokes on light surfaces |
+| `#77581B` | Low grid fill |
+| `#4C390E` | Deepest grid fill on dark |
+| `#251A04` | Reserved: the artifact border, if a deck ever carries a real screenshot |
+| `#EDEFF0` | Headline type on dark. Ground for the light variant |
+| `#C2C9CC` | Hairlines on light surfaces |
+| `#9BA3A8` | Annotations and estimate marks on light |
+| `#7B8285` | Eyebrow text on light |
+| `#595F61` | Running copy on light |
+| `#383B3D` | Secondary headings on light |
+| `#191B1C` | Headline type on light |
+
+### Standing color rules
+
+1. **The deck is dark by default.** `#02081F` for the bookends, `#0E2455`
+   for the interior. `.slide--paper` exists for a deck that needs a light
+   slide for contrast; it is the exception, not the default.
+2. **Gold is the only accent and there is only one.** It never sets body copy
+   and never carries a status word.
+3. **Severity, grouping, and emphasis are carried by scale, rules, and
    space, never by hue.** Post 7 splits twelve items into seven and five
-   without color doing that work.
-5. Real screenshots, if any deck ever carries one, keep their own colors and
-   are the only place other colors appear.
+   without color doing that work — the two group labels differ in rule
+   weight, not color.
+4. Real screenshots, if any deck ever carries one, keep their own colors and
+   are the only place anything outside this table appears.
 
 ## Type
 
@@ -64,6 +92,27 @@ is safe rather than wrong, and safe is what made the first pass boring.
 Both load from Google Fonts at render time, so the render machine needs
 network access. A failed fetch falls back to a system serif silently rather
 than erroring, so check a rendered slide before publishing.
+
+## Layouts
+
+Six named layouts cover all four carousels. `template-specimen.html` renders
+every one of them on a single page using real copy, so a new post is a
+matter of picking layouts rather than designing slides.
+
+| Layout | Classes | Used by |
+|---|---|---|
+| Cover | `.display` `.mark` `.sub` | all four |
+| Numbered item | `.ghost` `.label` `.detail` `.index` | post 1, slides 2–7 |
+| Grouped list | `.group__label` `.items` | post 7, slides 2–7 |
+| Figure stack | `.figures` `.figure` `.figure__cap` `.note` | post 4, slides 4–5; post 13, slides 5–7 |
+| Matched pair | `.pair__head` `.pair__body` | post 13, slides 3–4 |
+| Close | `.close-lead` `.close-detail` `.close-ask` `.byline` | all four |
+
+The index rail is the answer to short copy. Slides carry at most 22 words,
+so a numbered item leaves the lower half of the page empty. Listing all six
+items with the current one live fills it with the thing a Value-Stack deck
+most needs to prove — that the cover's count is real and the set is complete
+— and it removes any need for a progress-dot widget.
 
 ## Graphic system
 
