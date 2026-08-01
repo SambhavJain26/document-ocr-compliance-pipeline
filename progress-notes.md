@@ -205,6 +205,15 @@ The staged plan in `build-plan.md` follows the later `coi-demo-build-plan.md` wh
 - Found 17 of 18 vendors carrying `chase_paused = true` from earlier escalation testing, which would have made the Stage 6 watch find almost nothing actionable during a demo. `reset-demo.ps1` clears it. This was invisible before the dashboard chase column existed.
 - Added `docs/how-the-system-works.md` as the plain-language reference for the full system behaviour: intake paths, storage-before-reading ordering, text versus vision reading, the hard/soft/note flag vocabulary with severities, filing outcomes, manual cancelled/non-renewed statuses, watch buckets and cadence, the approval gate and escalation, dashboard status wording, storage locations, refusals, real limits, and a troubleshooting map.
 
+2026-08-01:
+
+- Added `.agents/product-marketing.md` as the shared positioning/voice context that marketing and writing skills read before acting, drafted from `docs/customer-language.md`, `docs/how-the-system-works.md`, `docs/demo-script.md`, and `01-vendor-coi-chase.md`. Recorded `.agents/` in the project structure section of `CLAUDE.md` and `AGENTS.md`.
+- Added `docs/linkedin-post-scripts.md` with finished copy for all 15 posts briefed in `docs/linkedin-content-plan.md`. Content work only; no build behaviour changed.
+- Two documentation gaps found while sourcing claims for that copy, both still open:
+  1. The 2010 ACORD revision claim at `coi-demo-build-plan.md:575`, that cancellation notice moved to the policy terms and away from the certificate holder, carries no external citation. Every neighbouring claim does. It was excluded from published copy until it can be sourced, and it should either gain a citation or be softened in the build plan.
+  2. `docs/stage-9-data-processing-retention.md` covers retention for paying clients only, defaulting source PDFs to 24 months. It says nothing about the free ten-certificate diagnostic used as the sales entry point, where the intended commitment is deletion on delivery. Needs a short diagnostic-handling section so that commitment is not held only in marketing copy.
+- Confirmed while writing: git history for this build runs 2026-07-31 to 2026-08-01, so no duration claim longer than that is supportable from the repo.
+
 ## Open Behaviour Findings
 
 Recorded 2026-07-31 from a read-only review of Stage 6 and Stage 7 behaviour prompted by demo-rehearsal questions. Items 1 and 2 were implemented and verified later the same day; item 3 remains blocked. Status is marked on each.

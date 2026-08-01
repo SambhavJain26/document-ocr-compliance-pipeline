@@ -24,7 +24,8 @@ Implementation directories:
 - `db/postgres/`: schema, migrations, seed SQL, and reset SQL.
 - `scripts/`: local setup, import, reset, validation, and fixture helpers.
 - `fixtures/`: synthetic COI PDFs, email payloads, and expected outputs.
-- `docs/`: runbooks, prompt schemas, demo notes, and production caveats.
+- `docs/`: runbooks, prompt schemas, demo notes, marketing content plans and scripts, and production caveats.
+- `.agents/`: shared context that marketing and writing skills read before acting. `product-marketing.md` holds positioning, audience, banned vocabulary, and voice; update it there rather than restating positioning per task.
 
 Use lowercase hyphenated filenames. Use `snake_case` for database columns and JSON fields unless an external API requires otherwise.
 
