@@ -1,0 +1,241 @@
+/* ---------------------------------------------------------------------------
+   LinkedIn document carousel — fixed template.
+
+   One stylesheet for every carousel in docs/linkedin-post-scripts.md.
+   Per-post HTML supplies only content and picks layout classes; it must not
+   introduce sizes, colors, or spacing of its own. If a post needs something
+   this file cannot express, add it here as a named layout so the next post
+   inherits it.
+
+   Page: 1080 x 1350 (4:5), the tallest ratio LinkedIn renders predictably
+   in-feed on mobile, which is where these get read.
+--------------------------------------------------------------------------- */
+
+:root {
+  /* Palette. Supplied by the owner; see docs/carousels/README.md for the
+     rules governing where each value is allowed to appear. */
+  --paper:          #F4F7FE;
+  --ground:         #01175A;
+
+  --ink:            #01175A;  /* headlines and labels on paper */
+  --ink-detail:     #383B3D;  /* running detail copy */
+  --ink-mute:       #595F61;  /* masthead, annotations */
+
+  --rule:           #BBD0FB;  /* hairlines on paper */
+  --accent:         #0D4CF2;  /* numerals only */
+  --mark:           #F2B30D;  /* the single rule on cover and close */
+
+  --on-ground:      #F4F7FE;  /* type on the navy ground */
+  --on-ground-mute: #BBD0FB;
+  --rule-ground:    #0530A3;
+
+  /* Grid. Every slide anchors to the same left edge and the same top
+     baseline so a swipe reads as pages of one document, not as separate
+     cards. Nothing is vertically centered. */
+  --page-w:         1080px;
+  --page-h:         1350px;
+  --margin-x:       110px;
+  --measure:        860px;
+  --masthead-y:     104px;
+  --anchor-y:       420px;
+  --baseline-y:     1146px;
+  --footer-y:       1192px;
+
+  /* Type scale. Four sizes, one weight each. The detail size is exactly
+     half the label size, per the production note on post 1. */
+  --size-display:   92px;
+  --size-lead:      76px;
+  --size-detail:    38px;
+  --size-sub:       40px;
+  --size-numeral:   156px;
+  --size-micro:     19px;
+
+  --serif: "IBM Plex Serif", Georgia, "Times New Roman", serif;
+  --mono:  "IBM Plex Mono", "Consolas", "Courier New", monospace;
+}
+
+@page {
+  size: 1080px 1350px;
+  margin: 0;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: var(--page-w);
+  background: var(--paper);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --- Slide shell --------------------------------------------------------- */
+
+.slide {
+  position: relative;
+  width: var(--page-w);
+  height: var(--page-h);
+  overflow: hidden;
+  background: var(--paper);
+  page-break-after: always;
+  break-after: page;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.slide:last-child {
+  page-break-after: auto;
+  break-after: auto;
+}
+
+/* The bookend treatment: cover and close sit on the navy ground, the six
+   interior slides on paper. Two dark slides out of eight, no more. */
+.slide--ground { background: var(--ground); }
+
+/* --- Masthead ------------------------------------------------------------ */
+
+.masthead {
+  position: absolute;
+  left: var(--margin-x);
+  top: var(--masthead-y);
+  width: var(--measure);
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: var(--size-micro);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+
+.slide--ground .masthead {
+  border-bottom-color: var(--rule-ground);
+  color: var(--on-ground-mute);
+}
+
+/* Closing hairline. Paired with the masthead rule it turns the empty lower
+   half of a short slide into page, which is what it is. Without it the
+   content floats and the slide reads as unfinished. */
+.baseline {
+  position: absolute;
+  left: var(--margin-x);
+  top: var(--baseline-y);
+  width: var(--measure);
+  border-top: 1px solid var(--rule);
+}
+
+.slide--ground .baseline { border-top-color: var(--rule-ground); }
+
+/* --- Content block ------------------------------------------------------- */
+
+.body {
+  position: absolute;
+  left: var(--margin-x);
+  top: var(--anchor-y);
+  width: var(--measure);
+}
+
+/* --- Layout: cover ------------------------------------------------------- */
+
+.display {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: var(--size-display);
+  line-height: 1.13;
+  letter-spacing: -0.015em;
+  color: var(--on-ground);
+}
+
+.mark {
+  width: 118px;
+  height: 8px;
+  background: var(--mark);
+  margin: 60px 0;
+}
+
+.sub {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: var(--size-sub);
+  line-height: 1.36;
+  color: var(--on-ground-mute);
+  max-width: 720px;
+}
+
+/* --- Layout: numbered item ----------------------------------------------- */
+
+.numeral {
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: var(--size-numeral);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--accent);
+}
+
+.label {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: var(--size-lead);
+  line-height: 1.14;
+  letter-spacing: -0.012em;
+  color: var(--ink);
+  margin-top: 40px;
+}
+
+.detail {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: var(--size-detail);
+  line-height: 1.5;
+  color: var(--ink-detail);
+  max-width: 820px;
+  margin-top: 44px;
+}
+
+/* --- Layout: close ------------------------------------------------------- */
+
+.close-lead {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: var(--size-lead);
+  line-height: 1.16;
+  letter-spacing: -0.012em;
+  color: var(--on-ground);
+}
+
+.close-detail {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: var(--size-detail);
+  line-height: 1.5;
+  color: var(--on-ground-mute);
+  max-width: 820px;
+  margin-top: 48px;
+}
+
+.close-ask {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: var(--size-sub);
+  line-height: 1.34;
+  color: var(--on-ground);
+  margin-top: 88px;
+}
+
+/* --- Footer -------------------------------------------------------------- */
+
+.byline {
+  position: absolute;
+  left: var(--margin-x);
+  top: var(--footer-y);
+  width: var(--measure);
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: var(--size-micro);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--on-ground-mute);
+}
