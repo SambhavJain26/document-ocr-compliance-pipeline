@@ -15,7 +15,7 @@ mobile, which is where these get read.
 
 The deck looks like a page somebody has been over with a highlighter and a
 pen. Marker swipes, circled words, an underline, a strike-through, and one
-brace hung in the margin beside the line it comments on.
+word boxed like an object picked up in a design tool.
 
 This is not decoration. The subject of this work is documents that a person
 reads and annotates, so the annotation layer *is* the argument, and it is
@@ -24,8 +24,8 @@ second element without needing photography, icons, or illustration.
 
 **Nothing is a clean rectangle.** The marker swipe has uneven top and bottom
 edges, the circles are drawn as open loops that overshoot, the underline is
-two strokes at different opacities, and the brace is drawn freehand. If a mark
-looks machine-made it has failed.
+two strokes at different opacities. If a mark looks machine-made it has
+failed.
 
 **The page is ruled, horizontally and vertically.** Faint horizontal lines
 every 72px plus one vertical margin rule at 56px, the way a notebook page is
@@ -57,10 +57,10 @@ One rule, and it removes every "is this intentional" question:
 > type, or as the page number.**
 
 Every word on every slide is `#02081F` or `#383B3D`. Nothing else. Color
-enters only as a marker swipe or a pen stroke — that is, only as something a
-person added on top of a finished page. Page furniture (the horizontal ruling
-and the vertical margin rule) is an ink tint, because it is printed rather
-than added.
+enters only as a marker swipe, a pen stroke, or the selection box — that is,
+only as something a person added on top of a finished page. Page furniture —
+the horizontal ruling and the vertical margin rule — is an ink tint, because
+it is printed rather than added by hand.
 
 | Value | Role |
 |---|---|
@@ -69,8 +69,8 @@ than added.
 | `#383B3D` | Running detail copy |
 | `#7B8285` | Eyebrow, footer deck title |
 | `#F8C043` | The highlighter swipe. Byline rule |
-| `#3563CA` | The pen. Circles, underlines, strikes, page number, the second-voice note |
-| `#1F4393` | Reserved |
+| `#3563CA` | The pen. Circles, underlines, strikes, the selection handles, page number |
+| `#1F4393` | The selection box fill. Once per deck, on the cover |
 | Everything else | Reserved. Defined in the stylesheet for a deck that needs to look unlike this one |
 
 ## Type
@@ -80,7 +80,7 @@ Two families.
 | Role | Family | Weights |
 |---|---|---|
 | Everything | **Switzer** | 900 display · 800 lead · 600 turn/checks · 400 detail · 700 micro |
-| The second voice: the payoff word, the annotation note | **Zodiak** italic | 700/800 |
+| The second voice: the payoff word, and nothing else | **Zodiak** italic | 800 |
 
 Both from Fontshare, loaded at render time, so the render machine needs
 network access. A failed fetch falls back to a system face silently rather
@@ -96,22 +96,24 @@ Open Sans, Poppins, Montserrat — the generic-template tells.
 
 | Layout | Classes |
 |---|---|
-| Cover | `.display` + `<em>` second voice, `.kicker` |
+| Cover | `.display` `.kicker` |
 | Statement | `.lead` `.divider` `.turn` |
 | Field list | `.lead` `.tags` `.divider` `.turn` |
 | Check list | `.head` `.checks` |
 | Payoff | `.head` `.pay` `.margin-note` |
 | Close | `.close-lead` `.divider` `.turn` `.byline` |
 
-Annotation classes, usable inside any of them: `.hl` (marker), `.pen--circle`
-/ `--under` / `--strike` (inline pen marks), `.margin-mark` (a brace hung in
-the right margin, one per deck), and `<em>` inside `.display` for the second
-voice.
+Annotation classes, usable inside any of them: `.hl` (marker),
+`.pen--circle` / `--under` / `--strike` (inline pen marks), and `.sel` (a word
+boxed with corner handles, once per deck on the cover).
 
-The selection box (`.sel`, a word boxed with corner handles) was cut. It
-appeared exactly once, introduced a fill colour used nowhere else, and needed
-two override rules to survive an inverted slide. One instance is an exception,
-not a system.
+**Every mark sits on a word.** A brace hung in the right margin was tried and
+cut: at the sizes this deck runs, a mark floating outside the text block reads
+as debris rather than as annotation.
+
+**Zodiak sets exactly one word in the deck** — the payoff on slide 6. The note
+underneath it takes the same treatment as the second line on every other
+slide, so the second voice speaks once and means something.
 
 **Content centers in a bounded band** between the eyebrow and the footer.
 Slide copy runs from 8 words to 24, so a fixed top anchor strands short
@@ -157,10 +159,11 @@ that makes the page read as constructed rather than decorated.
 that is slide 6, the payoff. Used more often it stops being a spike and
 becomes a pattern, which reads quieter, not louder.
 
-The cover was briefly inverted too, to establish the dark ground as part of
-the language before slide 6 used it. That was reverted: the two-voice cover
-and the margin rule carry enough weight on their own, and a light cover keeps
-the dark slide as the single loudest frame in the deck.
+The cover was briefly inverted too, to establish the dark ground before slide
+6 used it. That was reverted: a light cover keeps the dark slide as the single
+loudest frame in the deck. If slide 6 ever starts reading as a mistake rather
+than as the payoff, the fix is to make slides 5 and 6 an obviously matched
+pair, not to invert the cover again.
 
 On an inverted slide the colour rule still holds: every word is one value
 (`--paper`), and only annotations carry colour. Highlighted words go dark so
