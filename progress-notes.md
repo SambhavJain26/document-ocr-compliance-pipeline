@@ -214,6 +214,15 @@ The staged plan in `build-plan.md` follows the later `coi-demo-build-plan.md` wh
   2. `docs/stage-9-data-processing-retention.md` covers retention for paying clients only, defaulting source PDFs to 24 months. It says nothing about the free ten-certificate diagnostic used as the sales entry point, where the intended commitment is deletion on delivery. Needs a short diagnostic-handling section so that commitment is not held only in marketing copy.
 - Confirmed while writing: git history for this build runs 2026-07-31 to 2026-08-01, so no duration claim longer than that is supportable from the repo.
 
+2026-08-02:
+
+- Audited the 15 LinkedIn posts against "would a property manager learn something and keep this." Seven failed. Root cause was the pillar-to-format allocation: four of five pillars were seller-centric, and the only teaching pillar had been assigned almost entirely to text, so proof-of-work occupied carousels and video while teaching sat in the cheapest format.
+- Rewrote `docs/linkedin-content-plan.md` around five new pillars: AI buying literacy (new, 4 posts), insurance domain literacy (5), failure lessons anyone can apply (3), proof and operating model (2), the ask (1). Format split is unchanged. Replaced the accessibility standard "a property manager should feel described", since recognition is not value.
+- Rebuilt seven posts in `docs/linkedin-post-scripts.md`. Posts 1, 4 and 9 replaced outright; posts 8, 12, 13 and 14 kept their evidence and changed subject from what the build does to what the reader can check. Posts 2, 3, 5, 6, 7, 10, 11 and 15 unchanged, spliced programmatically to prevent drift.
+- Corrected framework labels that did not match the slides. Posts 1 and 4 were labelled Problem-Proof without a numbered claim or a receipt artifact; relabelled rather than inventing both to satisfy the label.
+- Ran the Seven Sweeps over the rebuilt seven. Four findings fixed: the word "tokens" was jargon for this buyer and appeared three times in post 4; post 1 promised more than its slides delivered; post 1 said "rates how sure it is" where the system returns high/medium/low; posts 1 and 13 closed on an identical construction, fixed by restoring post 13's approval-email receipt slide. Heightened Emotion was declined deliberately, as its techniques break the incident-report register.
+- Updated `.agents/product-marketing.md` to v2 with a Content principles section, and dropped the uncited 2010 ACORD revision from its proof table. The uncited claim at `coi-demo-build-plan.md:575` remains open.
+
 ## Open Behaviour Findings
 
 Recorded 2026-07-31 from a read-only review of Stage 6 and Stage 7 behaviour prompted by demo-rehearsal questions. Items 1 and 2 were implemented and verified later the same day; item 3 remains blocked. Status is marked on each.

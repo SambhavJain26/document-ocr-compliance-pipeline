@@ -1,7 +1,7 @@
 # Product Marketing Context
 
-**Document version:** v1
-**Last updated:** 2026-08-01
+**Document version:** v2
+**Last updated:** 2026-08-02
 
 Drafted from `docs/customer-language.md`, `docs/linkedin-content-plan.md`, `docs/how-the-system-works.md`, `docs/demo-script.md`, and `progress-notes.md`. Owner to correct.
 
@@ -140,7 +140,20 @@ Drafted from `docs/customer-language.md`, `docs/linkedin-content-plan.md`, `docs
 | Nothing sends unsupervised | Approval gate in the Stage 6 workflow; requests expire at 24 hours rather than sending |
 | Problems get found and fixed in the open | Issue-key defect and fix, commit `0fcd62d`, `db/postgres/004-stage-6-watch-chase.sql` |
 | Silent failure is the real risk | 17 of 18 vendors silently paused, found only after adding a dashboard column, `progress-notes.md` |
-| Domain literacy | 2010 ACORD revision, NY DFS ACORD 25 filing, Texas DOI certificate FAQ, cited in `docs/demo-script.md` |
+| Domain literacy | NY DFS certificate filing and Texas DOI certificate FAQ, cited in `docs/demo-script.md`; risk-transfer detail in `foundation-1-vendor-insurance.md` |
+| AI buying literacy | The model transcribes and fixed rules decide (`docs/how-the-system-works.md`); extraction costs ~$0.002 per certificate (`01-vendor-coi-chase.md`); the approval gate and its 24-hour expiry |
+
+## Content principles
+
+Two rules learned the hard way on 2026-08-02, after an audit found seven of fifteen planned posts failed them.
+
+**Recognition is not value.** A post whose payoff is that a property manager recognizes their own week teaches them nothing they don't already live. Describing the buyer's job back to them reads as proof that I understand it, which serves me rather than them. Every piece has to leave the reader holding something they didn't have.
+
+**Teaching belongs in the high-effort formats.** Carousels and video get saved, referred and shared, so they carry the teaching. Positioning, proof of work and operating-model material go in text, where low reach costs nothing. The first content plan had this backwards.
+
+**A corollary on audience.** Comments drive distribution and *who* comments decides who sees a post next. With a network of engineers, optimizing for engagement volume makes the audience problem worse. Six comments from property managers beat sixty from developers.
+
+**The strongest available angle** is not "I know property management," which is unprovable and unearned. It is "I build AI systems, and these buyers are being pitched AI by everyone with no way to evaluate any of it." That asymmetry is real, current, and mine to teach into honestly.
 
 **Testimonials:** None. Do not imply any.
 
@@ -154,4 +167,5 @@ Drafted from `docs/customer-language.md`, `docs/linkedin-content-plan.md`, `docs
 
 ## Changelog
 
+- v2 (2026-08-02) — Added a Content principles section and an AI buying literacy value theme after a content audit found that seller-centric material had been placed in the highest-reach formats. Removed the uncited 2010 ACORD revision from the domain-literacy proof row.
 - v1 (2026-08-01) — Initial context, drafted from repo docs for the LinkedIn content work.

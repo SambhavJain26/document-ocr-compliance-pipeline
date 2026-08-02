@@ -1,8 +1,22 @@
 # LinkedIn Content Plan
 
 Created: 2026-08-01
+Revised: 2026-08-02
 
-Fifteen posts: one demo video, fourteen supporting. Briefs only — no copy written yet. Each brief carries the elements a script needs, so turning one into a draft is a writing job, not a thinking job.
+Fifteen posts: one demo video, fourteen supporting. Each brief carries the elements a script needs, so turning one into a draft is a writing job, not a thinking job. Finished copy lives in `linkedin-post-scripts.md`.
+
+## What changed in the 2026-08-02 revision, and why
+
+The first version allocated pillars to formats backwards. Four of the five pillars were seller-centric (build in public, operating model, honest limitation, teardown). Only industry literacy produced something a property manager could learn from, and it was assigned almost entirely to **text** posts.
+
+That put proof-of-work in carousels and video, which are the formats that get saved, referred and shared, and put the teaching in the cheapest format. Seven posts failed the test "would a property manager learn something and keep this." Posts 1 and 4 were the worst: both were me demonstrating that I understand their job, in the highest-effort format available.
+
+Two corrections:
+
+1. **Teaching goes in carousels and video. Positioning and proof go in text**, where low reach costs nothing.
+2. **A new pillar: AI buying literacy.** These buyers are being pitched AI by everyone right now and have no way to evaluate any of it. That asymmetry is real, current, and mine to teach into honestly. It also positions without being about me, which is the thing the seller-centric pillars could never do.
+
+A note on what content is for here. Engagement and outcomes are different machines. Comments drive distribution, and *who* comments decides who sees the post next, so a post pulling engineer comments makes the audience problem worse. Six comments from property managers beats sixty from developers. Nothing in this plan is optimized for engagement volume.
 
 ## What is being sold
 
@@ -18,7 +32,9 @@ This governs every post. The COI system is a **worked example of how I approach 
 
 ## The accessibility arc
 
-Posts 1–5 are written so that someone with no property management knowledge — a friend, a former colleague, a general connection — understands within one line what world this is about and who it's for. No jargon before it's earned. A property manager reading them should feel described; everyone else should feel let in.
+Posts 1–5 are written so that someone with no property management knowledge — a friend, a former colleague, a general connection — understands within one line what world this is about and who it's for. No jargon before it's earned. A property manager reading them should learn something; everyone else should feel let in.
+
+**"Feel described" was the old standard and it was wrong.** A post whose payoff is that a property manager recognizes their own week teaches them nothing they don't already live. Recognition is not value. The gateway posts now use vendor insurance paperwork as the worked example while teaching something transferable, so an outsider still follows and an insider still gains.
 
 This matters because early on, the people seeing these posts are the wrong audience by default. The gateway posts still work on them: they explain the domain rather than assuming it, and they make the target reader unmistakable. That means these five can keep running while commenting and connection work slowly brings actual property managers into the room.
 
@@ -39,17 +55,19 @@ Carousels carry the explaining — they are the best format for making an unfami
 
 ## Pillars
 
-| Pillar | Count | Job |
-|---|---|---|
-| Build in public | 4 | Proof the work is real |
-| Operating model | 3 | How an engagement actually works — the pillar a services business needs and a product business doesn't |
-| Honest limitation | 3 | What I refuse to build. The clearest signal I'm not a spam vendor |
-| Industry literacy | 3 | Domain knowledge a generic automation freelancer would never have |
-| Teardown | 2 | Where the time and money actually go |
+| Pillar | Count | Posts | Job |
+|---|---|---|---|
+| AI buying literacy | 4 | 1, 3, 4, 13 | How to evaluate and buy automation, from the person who builds it. Nobody else in their feed can write these honestly |
+| Insurance domain literacy | 5 | 6, 7, 9, 10, 11 | What a certificate does and does not prove. Unfakeable, and genuinely useful to someone never trained in insurance |
+| Failure lessons anyone can apply | 3 | 8, 12, 14 | Things I got wrong that generalize to any system they own. The lesson is theirs, the story is mine |
+| Proof and operating model | 2 | 2, 5 | The work is real, and this is a service rather than a product |
+| The ask | 1 | 15 | The only real CTA |
 
-**Operating model is new** and exists because of the services reframe. Posts about how the work happens — what I need before building, what an automation is allowed to do alone, why it runs on your infrastructure — are impossible for a product seller to write and are the posts that most directly produce calls.
+**AI buying literacy is the load-bearing pillar** and it did not exist in the first version. It teaches, it is referenceable, and it positions me without being about me. It also answers the question these buyers actually have right now, which is not "what is a COI" but "how do I tell whether any of this AI stuff is real."
 
-No standalone question post. Engagement questions are folded into the closing line of posts 1 and 4 instead of spending a slot.
+**The failure-lessons pillar replaces build-in-public.** Same source material, inverted framing. "My reminder logic double-fired" is a bug report about my software. "Anything that chases people has a definition of *I already asked*, and yours is probably wrong" is something a property manager can check on Monday. The finding is identical. Only the subject of the sentence changed.
+
+No standalone question post. Engagement questions are folded into the closing lines of posts 1 and 13.
 
 ## Process and frameworks
 
@@ -89,29 +107,31 @@ Every post below has the same six fields, matching the structure the scripts wil
 
 Accessible to anyone. Unmistakably aimed at property managers.
 
-## 1. What a property manager actually does all day
+## 1. What AI should do with your paperwork, and what it must never touch
 
-**Format:** carousel, 8 slides · **Framework:** Value-Stack · **Pillar:** teardown · **CTA:** soft — invite the industry to correct or add
+**Format:** carousel, 8 slides · **Framework:** principle, then mechanism, then application · **Pillar:** AI buying literacy · **CTA:** soft — invite the question about their own systems
 
-**Why Value-Stack:** the cover states an exact count and completeness is the promise. LinkedIn shows a "N pages" badge on document posts, which makes exact-count covers land harder.
+**Why not Problem-Proof:** it was labelled that at first and it does not fit. Problem-Proof needs a numbered claim on slide 1 and a real artifact as the receipt on the last, and this post has neither. Adding a fake number and an invented screenshot to satisfy a label is exactly the templated move the plan rejects hook libraries for.
 
-**Hook angle:** Open on the gap between what people assume the job is (showing apartments, collecting rent) and what it actually is. No automation mentioned anywhere in this post.
+**Replaces "What a property manager actually does all day," cut 2026-08-02.** That post's payoff was a property manager recognizing their own week, which is recognition rather than value, and it spent the highest-effort format proving I understand their job.
 
-**The turn:** Almost none of the job is property. It's paperwork with deadlines attached — vendor documents, maintenance requests, renewals, owner questions, move-out timelines — and every one of them has a date that matters and a person who has to chase it.
+**Hook angle:** Open on the distinction almost nobody selling AI makes: reading a document and deciding what to do about it are two different jobs, and only one of them should ever go to a model.
 
-**Evidence:** The operational areas from the problem inventory: vendor documents, maintenance triage, leasing paperwork, renewals, delinquency follow-up, owner reporting, move in/out, notice timing. One slide per cluster, phrased as the task not the category.
+**The turn:** A model that reads wrong is checkable, because the document is sitting right there. A model that decides wrong is invisible, because there is nothing to check it against. So the reading can be automated and the deciding cannot, and any system that blurs the two has hidden its most dangerous part.
 
-**Takeaway:** For a general reader — oh, that's what the job is. For a property manager — someone finally described my week correctly.
+**Evidence:** How it is split in my own build. The model transcribes what the document says and rates its own confidence. Fixed rules, identical every run, decide what happens next: date order, expiry plausibility, whether a general liability line exists, whether the holder matches an accepted legal name, whether limits meet the minimum for that trade. The model is never asked whether a certificate is acceptable. Low confidence routes to a person rather than producing a number. Source: `docs/how-the-system-works.md`, "Why The Reading And The Checking Are Separate," and `scripts/lib/coi-stage-4-validator.js`.
 
-**Legibility:** Zero domain knowledge required. Explains the world from scratch. This is the post that makes every later post make sense.
+**Takeaway:** The test to apply to any AI vendor: ask what the model decides. If the answer is anything other than "nothing," ask how you would ever find out it was wrong.
 
-**Why first:** It establishes the audience without an origin story. Nobody has to wonder who these posts are for after reading it.
+**Legibility:** Zero domain knowledge required. Vendor insurance paperwork is the worked example, so a property manager sees their own documents while a general reader follows the principle.
+
+**Why first:** It establishes the audience and demonstrates judgment in the same post, which is what the old post 1 could not do. It also arms the reader for every AI pitch they receive this year, which is the definition of value they will keep.
 
 ---
 
 ## 2. The demo — a certificate arrives and the register updates itself
 
-**Format:** native video, 2–3 minutes · **Framework:** scene structure from `demo-script.md` · **Pillar:** build in public · **CTA:** soft — offer to walk through it
+**Format:** native video, 2–3 minutes · **Framework:** scene structure from `demo-script.md` · **Pillar:** proof and operating model · **CTA:** soft — offer to walk through it
 
 **Why not the short-form template:** at 2–3 minutes this sits outside short-form video, where the 0–3 second hook rules apply. The demo script already has a scene structure built for this length.
 
@@ -131,7 +151,7 @@ Accessible to anyone. Unmistakably aimed at property managers.
 
 ## 3. Five things I would refuse to automate in a property management business
 
-**Format:** text, 250–300 words · **Skeleton:** List Post, closer cut · **Pillar:** honest limitation · **CTA:** none
+**Format:** text, 250–300 words · **Skeleton:** List Post, closer cut · **Pillar:** AI buying literacy · **CTA:** none
 
 **Hook angle:** State plainly that there are things in this business I would turn down work on, and that I'd turn them down even though the money spends the same.
 
@@ -145,27 +165,31 @@ Accessible to anyone. Unmistakably aimed at property managers.
 
 ---
 
-## 4. The four-minute problem
+## 4. What it actually costs to have AI read a document
 
-**Format:** carousel, 7 slides · **Framework:** Problem-Proof · **Pillar:** teardown · **CTA:** soft — ask which four-minute task they'd hand over
+**Format:** carousel, 7 slides · **Framework:** Problem-Proof through slide 3, then a reframe close · **Pillar:** AI buying literacy · **CTA:** none
 
-**Why Problem-Proof:** slide 1 opens on a claim with a number, the middle slides carry the arithmetic as the mechanism, and the last slide closes the loop with the total. The open loop is what drives the swipe.
+**Replaces "The four-minute problem," cut 2026-08-02.** That post did arithmetic on how long chasing a certificate takes, which the reader already knows better than I do, and the arithmetic was a business case for hiring me wearing a teardown costume.
 
-**Hook angle:** Open on a single unremarkable task that takes four minutes. Nobody would ever automate a four-minute task.
+**Why Problem-Proof:** slide 1 opens on a number nobody expects, the middle slides show the mechanism that produces it, and the close turns the number into a question the reader can ask a vendor.
 
-**The turn:** It doesn't happen once. It happens forty times a month, spread across three people, and it never appears on anyone's list because each instance is too small to count. Work that disappears is never the big stuff.
+**Hook angle:** Open on the unit cost. Having a model read a vendor insurance certificate and pull out every date, limit, carrier and policy number costs about two tenths of a cent.
 
-**Evidence:** The arithmetic, done honestly: chasing one vendor certificate is four minutes; a 300-door manager does it repeatedly across dozens of vendors; the second and third follow-up are the invisible part because they feel like nothing. Land on the monthly total without inflating it.
+**The turn:** So when someone quotes a monthly fee for AI document reading, almost none of it is the AI. That is not an accusation, because hosting, support and product work are real costs. It is a question: if the reading is the cheap part, what is the rest of the price buying, and is that the part you are actually being sold?
 
-**Takeaway:** The tasks worth automating are the ones too small to notice, not the ones big enough to complain about.
+**Evidence:** A certificate is one page of mostly tabular text, roughly 800 to 1,200 tokens, against a 40-page lease at 20,000 or more. Extraction runs about $0.002 per certificate. At 30 certificates a month the model cost is under ten cents. Source: `01-vendor-coi-chase.md`, "Why the document is easy" and "Cost to run."
 
-**Legibility:** Universal. Anyone who has a job recognizes this immediately, and it frames why custom automation exists without pitching anything.
+**Takeaway:** You are not paying for tokens. You are paying for the decisions about what the system does with what it read, and for someone deciding what it must refuse to do. Price the judgment, not the reading.
+
+**Discipline:** Never quote my own pricing or margin in this post. The moment it becomes a comparison to what I charge, it stops being a buyer tool and becomes an undercut, and undercutting on price contradicts the entire positioning.
+
+**Legibility:** Universal. Anyone who has been quoted for software understands it immediately.
 
 ---
 
 ## 5. I don't sell software
 
-**Format:** text, 200–250 words · **Skeleton:** Contrarian Take, closer cut · **Pillar:** operating model · **CTA:** none
+**Format:** text, 200–250 words · **Skeleton:** Contrarian Take, closer cut · **Pillar:** proof and operating model · **CTA:** none
 
 **Hook angle:** State the negative first. There's nothing to log into, no seats, no monthly fee for a dashboard nobody opens.
 
@@ -185,7 +209,7 @@ Assume the reader knows what a certificate of insurance is. Publish once industr
 
 ## 6. Nobody has to tell you when a policy is cancelled
 
-**Format:** text, 200–250 words · **Structure:** false belief → the fact → what it changes · **Pillar:** industry literacy · **CTA:** soft — offer the longer write-up
+**Format:** text, 200–250 words · **Structure:** false belief → the fact → what it changes · **Pillar:** insurance domain literacy · **CTA:** soft — offer the longer write-up
 
 **Hook angle:** Open on the false sense of security: a certificate in the file showing twelve months of coverage.
 
@@ -201,7 +225,7 @@ Assume the reader knows what a certificate of insurance is. Publish once industr
 
 ## 7. Twelve things that can be wrong with a certificate
 
-**Format:** carousel, 10 slides · **Framework:** Value-Stack · **Pillar:** honest limitation · **CTA:** none
+**Format:** carousel, 10 slides · **Framework:** Value-Stack · **Pillar:** insurance domain literacy · **CTA:** none
 
 **Hook angle:** Cover states the exact count and the split. Completeness is the promise.
 
@@ -217,11 +241,15 @@ Assume the reader knows what a certificate of insurance is. Publish once industr
 
 ## 8. The reminder that fired twice in two days
 
-**Format:** text, 250–300 words · **Skeleton:** Story Post, closer cut · **Pillar:** build in public · **CTA:** none
+**Format:** text, 250–300 words · **Skeleton:** Story Post, closer cut · **Pillar:** failure lessons anyone can apply · **CTA:** none
 
-**Hook angle:** Open on the scene — a vendor got two near-identical reminders a day apart — and immediately say nothing was broken.
+**Reframed 2026-08-02.** The old version opened on my software double-firing, which is a bug report. It now opens on the general rule and uses my defect as the worked example, so the reader leaves with something to check in their own reminders, notices and follow-ups.
 
-**The turn:** Every rule fired exactly as written. The flaw was in how I'd defined "the same problem." Buckets were part of the definition, so a certificate crossing from fifteen days out to fourteen became a brand new problem, and the seven-day wait didn't apply.
+**Hook angle:** Open on the rule, not the incident. Anything that chases people has a definition of "I already asked about this," it is almost never written down, and it is usually wrong.
+
+**The turn:** Mine was wrong and I could not see it, because every rule fired exactly as written. The flaw was in how I'd defined "the same problem." Buckets were part of the definition, so a certificate crossing from fifteen days out to fourteen became a brand new problem, and the seven-day wait didn't apply.
+
+**Close on their systems, not mine:** the reader should finish holding a question about their own renewal reminders and delinquency notices, not an impression that my software had a bug.
 
 **Evidence:** The bucket boundaries and the seven-day interval from `db/postgres/004-stage-6-watch-chase.sql`. The key composition and the one-field fix in `stage_6_vendor_issue_key`, commit `0fcd62d`. The quieter consequence: the two-strike stop-chasing rule also counted per problem, so bucket changes reset it and a vendor could ignore six requests without tripping it.
 
@@ -231,25 +259,29 @@ Assume the reader knows what a certificate of insurance is. Publish once industr
 
 ---
 
-## 9. The locked PDF that disappears
+## 9. The boxes on a certificate that matter, and the one that misleads everyone
 
-**Format:** native video, 75 seconds · **Framework:** Hook / Body / Close, 0–3s hook · **Pillar:** build in public · **CTA:** none
+**Format:** native video, 75 seconds · **Framework:** Hook / Body / Close, 0–3s hook · **Pillar:** insurance domain literacy · **CTA:** none
 
-**Hook angle:** Show the password prompt in the first two seconds. State that you don't have the password.
+**Replaces "The locked PDF that disappears," cut 2026-08-02.** That video showed my system's behavior with an unopenable file. A property manager learned nothing they could apply anywhere else.
 
-**The turn:** This is where it quietly goes wrong in most offices. Someone can't open it, means to come back, doesn't. The vendor believes they sent it. The office believes it's handled.
+**Hook angle:** A certificate on screen in the first second, cursor already moving to a box. State that most of this page does not matter and one box on it gets misread constantly.
 
-**Evidence:** Upload `fixtures/pdfs/f18-password-protected.pdf` through the form. It doesn't crash, doesn't skip, doesn't guess — the row appears against Rapid Response Restoration LLC marked needs review, with the file attached. Routing behavior: `Route Password Protected PDF` in `n8n-workflows/stage-5-intake-workflow.json`.
+**The turn:** The coverages table is the part that carries facts: effective and expiration dates, limits, policy numbers, per line. The Description of Operations box is free text, and free text is where the misreading happens. Wording in that box saying a company is additional insured does not make it so. Only a carrier-issued endorsement does that.
 
-**Takeaway:** The question isn't whether your process can open a locked file. It's whether you'd ever find out that it couldn't.
+**Evidence:** Walk a synthetic fixture on screen. The form's fixed structure and the free-text box, from `01-vendor-coi-chase.md`, "Why the document is easy." The endorsement point from `foundation-1-vendor-insurance.md`: a certificate describes, an endorsement grants, and the standard forms are ISO CG 20 10 and CG 20 37. Texas DOI guidance that additional-insured and cancellation-notice wording depend on policy or endorsement terms.
 
-**Capture note:** Record in the same session as the demo — the board is staged either way.
+**Takeaway:** The dates are facts you can act on. The description box is a claim someone typed. Treat them differently.
+
+**Discipline:** This is the video with the highest accuracy bar in the set, because it teaches insurance rather than automation. Every claim must trace to a cited source, and the framing stays "here is what I had to learn to build this correctly" rather than advice. Do not use the ACORD name in the video or the post copy, per `coi-demo-build-plan.md` section 1.5.
+
+**Capture note:** Record in the same session as the demo. Use a fixture PDF, never a real certificate, and say on screen that it is synthetic.
 
 ---
 
 ## 10. The checkbox that proves someone ticked a checkbox
 
-**Format:** text, 200 words · **Structure:** false belief → the fact → what it changes · **Pillar:** industry literacy · **CTA:** none
+**Format:** text, 200 words · **Structure:** false belief → the fact → what it changes · **Pillar:** insurance domain literacy · **CTA:** none
 
 **Hook angle:** Open on the thing everyone treats as confirmation: the additional insured box, ticked.
 
@@ -263,7 +295,7 @@ Assume the reader knows what a certificate of insurance is. Publish once industr
 
 ## 11. The gap between two valid certificates
 
-**Format:** single image — one timeline · **Structure:** image carries the claim, 100–150 words explain what it means · **Pillar:** industry literacy · **CTA:** none
+**Format:** single image — one timeline · **Structure:** image carries the claim, 100–150 words explain what it means · **Pillar:** insurance domain literacy · **CTA:** none
 
 **Hook angle:** The image does the work. Old policy ends. New policy starts two weeks later. Both certificates look perfectly fine.
 
@@ -279,21 +311,29 @@ Assume the reader knows what a certificate of insurance is. Publish once industr
 
 ## 12. Seventeen vendors nobody was chasing
 
-**Format:** native video, 60 seconds · **Framework:** Hook / Body / Close, 0–3s hook · **Pillar:** build in public · **CTA:** none
+**Format:** native video, 60 seconds · **Framework:** Hook / Body / Close, 0–3s hook · **Pillar:** failure lessons anyone can apply · **CTA:** none
 
-**Hook angle:** Two boards side by side. The old one looks completely normal.
+**Reframed 2026-08-02.** The old version was an engineering war story about a dashboard column. The finding is real and generalizes to anything they have running, so the lesson leads and my build illustrates it.
 
-**The turn:** It had been sending reminders for weeks and the main screen showed no trace of who'd been contacted. Adding one column revealed that seventeen of eighteen vendors had been silently flagged stop-chasing during earlier testing — behaving correctly, doing almost nothing, saying so nowhere.
+**Hook angle:** A screen with nothing wrong with it. State that this is the failure mode that actually costs people money, and it never announces itself.
 
-**Evidence:** Logged in `progress-notes.md` under Open Behaviour Findings. The chase column now shows last contacted, follow-up due, request count, and paused state.
+**The turn:** Software that breaks tells you. Software that quietly stops doing something does not, and the screen keeps looking healthy. The only defense is that the screen has to show the thing that could stop, which means whatever is missing from a dashboard is exactly what nobody is watching.
 
-**Takeaway:** The dangerous failure isn't the one that throws an error. It's the one where something stops and the screen still looks fine. Whatever's missing from a dashboard is what nobody is watching.
+**Evidence:** Seventeen of eighteen vendors carrying `chase_paused = true` from earlier escalation testing, invisible until a chase column existed. Logged in `progress-notes.md` under Open Behaviour Findings. The column now shows last contacted, follow-up due, request count, and paused state.
+
+**Takeaway, aimed at them:** Pick anything running unattended in your business, automated reminders, payment retries, screening, and ask what it looks like on screen when it stops. If the answer is "the same as when it's working," that is the problem, not the software.
+
+**Honesty note:** The paused state came from my own escalation testing, not from real vendors ignoring real emails. Say so in the video and the post copy.
 
 ---
 
-## 13. What an automation is allowed to do without asking
+## 13. The questions to ask anyone selling you automation
 
-**Format:** carousel, 8 slides · **Framework:** Problem-Proof · **Pillar:** operating model · **CTA:** soft — invite the question about their own systems
+**Format:** carousel, 8 slides · **Framework:** Problem-Proof, question hook in place of the numbered claim · **Pillar:** AI buying literacy · **CTA:** soft — invite the question about their own systems
+
+**The receipt slide is required.** Slide 8 is a real screenshot of the approval email. It was cut in the 2026-08-02 reframe and restored after a voice sweep: without it the post closed on the same construction as post 1's final slide, and two carousels ending on an identical shape is what makes a set read as templated.
+
+**Reframed 2026-08-02.** The material was right and the subject was wrong. It was written as my operating model, which makes the reader a spectator. It is now a purchasing tool written for them, and my build is the worked answer rather than the topic.
 
 **Why Problem-Proof over Rant Callout:** the rant framework superficially fits an opinion post, but it is polarizing by design, and conviction-as-content is the wrong register for someone with no clients yet. Problem-Proof opens on a claim with a number — zero messages have left without a person clicking approve — and closes on the approval email as the receipt.
 
@@ -309,13 +349,15 @@ Assume the reader knows what a certificate of insurance is. Publish once industr
 
 ---
 
-## 14. The check that fails the build if it says "compliant"
+## 14. Four words that should make you suspicious of any vendor
 
-**Format:** single image — screenshot · **Structure:** image carries the claim, 100–150 words explain what it means · **Pillar:** honest limitation · **CTA:** none
+**Format:** single image — screenshot · **Structure:** image carries the claim, 100–150 words explain what it means · **Pillar:** failure lessons anyone can apply · **CTA:** none
 
-**Hook angle:** The screenshot is the post. A failing check, and the four words that cause it.
+**Reframed 2026-08-02.** The old version was about my discipline, which is a virtue post. It is now a detector the reader can use on any demo they sit through this year, and my build check is the evidence that I hold myself to it.
 
-**The turn:** Four words are banned from anything this system renders: compliant, verified, covered, approved. If any appears, it doesn't ship. Software that tells you a vendor is compliant is claiming something it cannot possibly know.
+**Hook angle:** The screenshot is the post. A check that fails a build, and the four words that trip it.
+
+**The turn:** Four words are banned from anything this system renders: compliant, verified, covered, approved. If any appears, it doesn't ship. Any software that tells you a vendor is compliant is claiming something it cannot possibly know, so the words are a reliable signal about the seller rather than the vendor.
 
 **Evidence:** The check in `scripts/verify-stage-7-dashboard.ps1`, plus the runtime guard in the dashboard node that throws rather than render a blocked term. Status is always a date fact instead: current until a date, expires in n days, expired n days ago, no certificate on file, needs review.
 
@@ -327,7 +369,7 @@ Assume the reader knows what a certificate of insurance is. Publish once industr
 
 ## 15. What I need from you before I build anything
 
-**Format:** text, 250 words · **Structure:** `offers` skill — what they get, what it costs them, what makes it safe to say yes · **Pillar:** operating model · **CTA:** real — the call
+**Format:** text, 250 words · **Structure:** `offers` skill — what they get, what it costs them, what makes it safe to say yes · **Pillar:** the ask · **CTA:** real — the call
 
 **Hook angle:** Open on what I don't need: access to your property management system, a project plan, or a budget conversation.
 

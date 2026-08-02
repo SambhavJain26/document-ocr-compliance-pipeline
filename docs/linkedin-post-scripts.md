@@ -1,6 +1,10 @@
 # LinkedIn Post Scripts
 
-Finished copy for the 15 posts briefed in `docs/linkedin-content-plan.md`. Appended in batches.
+Finished copy for the 15 posts briefed in `docs/linkedin-content-plan.md`.
+
+**Revised 2026-08-02.** Seven posts were rebuilt after an audit against the question "would a property manager learn something and keep this." Posts 1, 4 and 9 were replaced outright, because they taught the reader nothing they did not already know. Posts 8, 12, 13 and 14 kept their evidence and changed their subject, from what my build does to what the reader can check in their own business. The plan's pillar and format allocation was rewritten at the same time, and the reasoning is recorded at the top of `linkedin-content-plan.md`. Posts 2, 3, 5, 6, 7, 10, 11 and 15 are unchanged.
+
+The batch headings below record the order things were written, not the publishing order. Publish in numerical order.
 
 Register: incident report. Short declaratives, real numbers, understated conclusions, first person singular, US spelling.
 
@@ -16,92 +20,98 @@ Every post below has been checked for: zero banned words (compliant, verified, c
 
 ---
 
-## Post 1. What a property manager actually does all day
+## Post 1. What AI should do with your paperwork, and what it must never touch
 
-**Format:** document carousel, 8 slides. **Framework:** Value-Stack. **Pillar:** teardown. **CTA:** soft.
+**Format:** document carousel, 8 slides. **Framework:** principle, then mechanism, then application. **Pillar:** AI buying literacy. **CTA:** soft.
+
+**Rebuilt 2026-08-02.** Replaces "What a property manager actually does all day," which taught a property manager nothing they don't already live.
+
+**On the framework.** The plan originally labelled this Problem-Proof. It isn't. Problem-Proof needs a numbered claim on slide 1 and a real artifact as the receipt on the last slide, and this post has neither. Relabelled honestly rather than bolting on a fake number and a screenshot that would have to be invented. The framework files say to adapt the structures, not to satisfy their labels.
 
 ### The post copy that sits above the document
 
-> Ask most people what a property manager does and you get two answers. Shows apartments. Collects rent. Both are real. Neither is where the week goes.
+> Every AI pitch you sit through this year will blur two different jobs: reading a document, and deciding what to do about it.
 >
-> The week goes on documents with dates attached to them. A vendor's insurance certificate that runs out in March. A lease that renews itself unless somebody sends a letter first. An owner who wants to know why maintenance cost what it cost last month. None of it is hard. All of it has a deadline, and every deadline has a person whose actual job is to remember it.
+> Only one of those should ever go to a model.
 >
-> I put six of them on slides. This is a description of the work, not a complaint about it.
+> A model that reads wrong is checkable. The document is right there and you can look at it. A model that decides wrong is invisible, because there is nothing to hold the decision against. It produces an answer, and the answer looks exactly like every other answer.
 >
-> If you run a property management office, or work in one: what did I get wrong, and what belongs on this list that isn't?
+> So in the vendor paperwork system I built, the model has one job. It transcribes what the certificate says and rates its own confidence high, medium or low. Every decision after that is fixed logic that runs identically every time. Is the expiration after the effective date. Is there a general liability line. Does the holder match one of your legal names. The model is never asked whether a certificate is acceptable, because that is a decision.
+>
+> Eight slides on where that line sits in the thing I built.
+>
+> If someone is selling you AI right now: what does the model decide? If the answer is anything other than nothing, ask how you would ever find out it was wrong.
 
-*Word count: 141. Em dashes: 0. First 210 characters land on "Neither is where the week goes," which is the turn, so the fold does real work.*
+*Word count: 216. Em dashes: 0. First 210 characters end on "A model that reads wrong is che", with the two-jobs distinction fully made and the reason withheld.*
 
 ### Slides
 
 **Slide 1 (cover)**
 
-> What a property manager actually does all day.
+> Reading a document and deciding what to do about it are two different jobs.
 >
-> Six jobs. Almost none of it is property.
+> Only one of them should go to AI.
 
 **Slide 2**
 
-> 1. Vendor paperwork.
+> A model that reads wrong is checkable. The document is right there.
 >
-> Insurance certificates, W-9s, trade licenses. Each one expires. Each one has to be asked for again.
+> A model that decides wrong is invisible.
 
 **Slide 3**
 
-> 2. Maintenance triage.
->
-> What is an emergency, what waits until Monday, who gets sent, and who calls the resident back.
+> So the model gets one job: transcribe what the page says. Vendor, carrier, policy number, limits, dates. And rate its own confidence.
 
 **Slide 4**
 
-> 3. Leasing and move-outs.
+> Every decision after that is fixed logic. Same inputs, same answer, every single time.
 >
-> Applications, signatures, keys, deposits, inspection photos, and the deposit accounting that has to go out on time.
+> No judgment. No drift. No bad day.
 
 **Slide 5**
 
-> 4. Renewals and notices.
->
-> Which leases end when. Who is renewing, who isn't, and what has to be sent before which date.
+> What the rules decide: is the expiration after the effective date. Is there a general liability line. Does the holder match your legal name.
 
 **Slide 6**
 
-> 5. Rent that didn't arrive.
+> What the model decides: nothing.
 >
-> Reminders, payment plans, ledgers, and the follow-up nobody enjoys and everybody still has to do.
+> It is never asked whether a certificate is acceptable. That question never reaches it.
 
 **Slide 7**
 
-> 6. Owner questions.
+> When the model says it isn't sure, the row goes to a person.
 >
-> Statements, invoices, spend sign-offs over the limit, and the answer to "why did this cost that."
+> "Unsure" is an answer. Guessing is not.
 
 **Slide 8 (close)**
 
-> Almost none of this is property.
+> Ask any AI vendor what the model decides.
 >
-> It's documents with dates on them, and every date needs a person holding it.
->
-> What's missing from this list?
+> If the answer isn't "nothing," ask how you'd ever find out it was wrong.
 
-*Longest slide: 22 words. Cover promises six, slides deliver exactly six, no filler.*
+*Longest slide: 24 words. Slide 1 states the split, slide 6 delivers the payoff, slide 8 converts it into something the reader can use on somebody else.*
 
 ### Alternative cover lines
 
-- "Six jobs that fill a property manager's week. Showing apartments isn't one of them."
-- "The property management job, described accurately. Six parts, and almost no property."
-- "Nobody applies for this job expecting it to be six kinds of paperwork."
+- "There are two jobs inside every AI document pitch, and they get deliberately blurred."
+- "AI should read your paperwork. It should never decide anything about it. Here's the difference."
+- "The question that cuts through any AI demo: what does the model actually decide?"
 
 ### Production note
 
-One template across slides 2 to 7: the number large, the label on its own line, the detail beneath it at half the size. No icons, no stock photography, no accent gradients. The design should look like something typed rather than something designed, which is also the register of the writing.
+Slides 5 and 6 are the pair the whole carousel turns on, and slide 6 is the shortest by design. Give it the most white space in the deck. Same template as the other three carousels, no icons, no accent color doing emotional work.
 
-### Flagged as my invention, not sourced practitioner voice
+### Facts traced
 
-- **"documents with dates attached to them."** This is my framing of the job, not a phrase harvested from property managers. It carries both the post copy and slide 8, so it is worth checking against a real group before this runs.
-- **The six clusters** come from `docs/customer-language.md`, which built them from job descriptions (Velvet Jobs) and vendor marketing, not from practitioners talking to each other. The duties are right. The grouping is mine.
-- **"the follow-up nobody enjoys and everybody still has to do"** (slide 6) is my characterization of delinquency work. Plausible, unverified.
-- **"why did this cost that"** (slide 7) is written to sound like a quoted owner. It is not a real quote. If it doesn't ring true to someone in the industry, cut the quotation marks.
+- **The split is real and is the system's central design decision.** `docs/how-the-system-works.md`, "Why The Reading And The Checking Are Separate": the AI reads, the rules decide, and the model is never asked whether a certificate is good enough.
+- **What the rules check**, verbatim in behavior from `scripts/lib/coi-stage-4-validator.js`: date order, expiry plausibility, presence of a general liability line, holder match against accepted legal names, limits against the per-trade minimum.
+- **The confidence route.** `LOW_CONFIDENCE` is a hard flag, so a model that says it is unsure sends the row to review rather than producing a number.
+
+### Notes
+
+- This post now carries the gateway job that the old post 1 carried, and it does it better, because it establishes the audience and demonstrates judgment in the same breath rather than just describing their week back to them.
+- Publish first, as before. Posts 2 and 3 assume the reader has met this argument.
 
 ---
 
@@ -243,93 +253,92 @@ Timings are cumulative. Read at an unhurried pace, roughly 130 words per minute.
 
 ---
 
-## Post 4. The four-minute problem
+## Post 4. What it actually costs to have AI read a document
 
-**Format:** document carousel, 7 slides. **Framework:** Problem-Proof. **Pillar:** teardown. **CTA:** soft.
+**Format:** document carousel, 7 slides. **Framework:** Problem-Proof through slide 3, then a reframe close. **Pillar:** AI buying literacy. **CTA:** none.
 
-**One decision worth stating before the copy.** The brief asked for the arithmetic done honestly. Done honestly, the total comes out small: about six hours a year. That is a weaker number than the post wants and a much better post than the inflated version, because the smallness is the actual mechanism. Nobody fixes a six-hour-a-year problem. I have built the post around that rather than around a bigger number I would have had to invent.
+**Rebuilt 2026-08-02.** Replaces "The four-minute problem," which did arithmetic on something the reader already knows better than I do, and was a business case for hiring me wearing a teardown costume.
 
 ### The post copy that sits above the document
 
-> Somebody in a property management office spends about four minutes chasing one vendor's insurance certificate. Nobody would automate a four-minute job. Nobody ever has, and nobody ever will.
+> Having AI read a vendor insurance certificate, and pull out every date, limit, carrier and policy number, costs about two tenths of a cent.
 >
-> I ran the arithmetic on it properly and the number came out smaller than I wanted. Roughly six hours a year. That is the entire problem, and it is exactly why the job never gets fixed. Six hours a year is not a business case. It does not justify a hire, a subscription, or a meeting. It never reaches a list.
+> Not two dollars. Not twenty cents. About $0.002.
 >
-> So it gets skipped. The skipped version is not free. It is deferred, and it gets paid later at a worse rate, usually in the same week something else is on fire.
+> A certificate is one page of mostly tabular text. A forty-page lease is twenty times the material. At thirty certificates a month, the model cost is under a dime.
 >
-> Seven slides of arithmetic, including the part where my own number argues against me. Two of the three inputs are my estimates rather than measurements, and they are marked as such on the slides.
+> That is not an accusation aimed at anyone. Hosting is real, support is real, product work is real, and any one of those can justify a monthly fee on its own.
 >
-> What is the four-minute job in your week that has never once been counted?
+> It is a question worth asking, though. If the reading is the cheap part, what is the rest of the price buying? Because that is the part you are actually being sold, and it is the part nobody puts on a pricing page.
+>
+> Seven slides on where the money in an automation really goes.
 
-*Word count: 168. Em dashes: 0. First 210 characters end on "Nobody ever has, and nobody ever will," which is a complete argument and a provocation to expand.*
+*Word count: 163. Em dashes: 0. First 210 characters end on "Not two dollars. Not twenty cents. About $0.002," which is the whole hook and a number nobody expects.*
 
 ### Slides
 
 **Slide 1 (cover)**
 
-> Chasing one vendor's insurance certificate takes about four minutes.
+> Having AI read a vendor insurance certificate costs about two tenths of a cent.
 >
-> Nobody automates a four-minute job.
+> Not two dollars. $0.002.
 
 **Slide 2**
 
-> The real problem:
+> A certificate is one page of mostly tabular text.
 >
-> it was never one four-minute job. It's the same four minutes, over and over, and nobody has ever counted them.
+> A forty-page lease is twenty times the reading.
 
 **Slide 3**
 
-> Send the request. Silence. Follow up. Silence. Try the insurance agent instead. A PDF arrives. Open it, read four dates, type them somewhere.
+> Thirty certificates a month.
+>
+> The model cost is under a dime.
 
 **Slide 4**
 
-> 25 regular vendors.
->
-> One renewal each per year.
->
-> Three or four touches per renewal.
->
-> About 90 four-minute jobs.
+> That isn't an accusation. Hosting is real. Support is real. Product work is real. Any of them can justify a fee.
 
 **Slide 5**
 
-> Six hours a year.
->
-> That's the honest total, and it's the whole problem.
+> But if the reading is the cheap part, what is the rest of the price buying?
 
 **Slide 6**
 
-> Nobody hires for six hours a year. Nobody buys software for it. So it gets skipped, and skipped isn't free. It's deferred.
+> You're paying for what happens after the reading. Which decisions are automatic, which stop for a person, and what the thing refuses to do.
 
 **Slide 7 (close)**
 
-> The work worth handing over is the work too small to notice.
+> Price the judgment, not the reading.
 >
-> Not the work big enough to complain about.
+> The reading was never the expensive part.
 
-*Longest slide: 23 words. The open loop runs from the four minutes on slide 1 to the six hours on slide 5, then slide 6 turns the total against itself.*
+*Longest slide: 23 words. Slide 1 opens the loop with the number, slide 3 lands the total, slide 5 turns it into the reader's question.*
 
 ### Alternative cover lines
 
-- "Four minutes. That's how long it takes to chase one insurance certificate. It is also why nobody has ever fixed it."
-- "The tasks that never get automated are the ones that are too small to be worth automating. Here's the arithmetic on one."
-- "I did the math on a four-minute job and the answer argued against me."
+- "Two tenths of a cent. That's what it costs to have AI read a vendor certificate."
+- "The AI is almost never the expensive part of an AI product. Here's the arithmetic."
+- "Before you accept a quote for AI document processing, here's what the AI part costs."
 
 ### Production note
 
-Slides 4 and 5 carry the whole post, so set them as a stack of single figures with a lot of air around each line. Under the two estimated inputs on slide 4, set the word "(estimate)" small and in a lighter weight. Marking your own uncertainty on the slide is not a weakness here, it is the register the rest of the set is written in.
+Slides 1 and 3 are pure numerals and should be set as such: the figure at display size, the sentence beneath it small. Slide 5 is a question on an otherwise empty slide. That pacing, three number slides then a question, is what makes the swipe work.
 
-### Where the numbers come from, and which ones are mine
+### Facts traced
 
-This post is arithmetic, so the provenance matters more than usual.
+- **$0.002 per certificate** for LLM extraction, and **under $0.10 a month at 30 certificates**. `01-vendor-coi-chase.md`, "Cost to run."
+- **800 to 1,200 tokens per certificate against a 40-page lease at 20,000+.** `01-vendor-coi-chase.md`, "Why the document is easy," which explains it: the form is one page of mostly tabular text with the same boxes in the same places.
 
-- **25 regular vendors.** The midpoint of the 12 to 40 range in `01-vendor-coi-chase.md`, which also uses 18 vendors at 280 doors in its worked example. Defensible for a 300-door operation. **Sourced.**
-- **One renewal per vendor per year.** Annual policies are the norm and the same file states it directly: "Multiply by 25 vendors, once a year, on 25 different dates." **Sourced.**
-- **Four minutes per touch.** **My estimate.** The sequence it covers is real and comes from `01-vendor-coi-chase.md`: emailing the vendor, waiting, emailing the agent, waiting, receiving a PDF, opening it, reading four date fields, typing them somewhere. The duration is not measured.
-- **Three or four touches per renewal.** **My estimate.** This is the load-bearing assumption. If a property manager tells you it is usually two, the total drops to about four hours and the post still works. If they say six, it doubles and the post gets weaker, because the problem stops being invisible.
-- **Six hours a year.** Follows from the above. 25 × 3.5 × 4 minutes = 350 minutes. I round up to six hours rather than down.
+### Discipline, and this one is important
 
-I deliberately did not use the "three full days of catch-up" figure from `01-vendor-coi-chase.md`. That sits inside an illustrative scenario in that document, not a real client, and putting it in a post would read as a case study I do not have.
+**Never put my own pricing or margin in this post**, and do not answer comments that fish for it. `01-vendor-coi-chase.md` contains both a price range and a margin figure. The moment this post becomes a comparison to what I charge, it stops being a buyer tool and becomes an undercut, and competing on price contradicts the entire positioning.
+
+The honest, defensible position if someone pushes in the comments: the model cost is a rounding error, which is exactly why the price of any automation reflects the decisions built into it rather than the compute. That answer is true, it is on-message, and it does not disclose anything.
+
+### Flagged as my invention
+
+- **"nobody puts on a pricing page"** in the post copy is my characterization, not something sourced. It is fair and easily defended, but it is an assertion about other vendors, so be ready to stand behind it.
 
 ---
 
@@ -442,106 +451,102 @@ The workers' comp exemption on slide 6 is real: the flag is suppressed for vendo
 
 ---
 
-## Post 13. What an automation is allowed to do without asking
+## Post 13. The questions to ask anyone selling you automation
 
-**Format:** document carousel, 8 slides. **Framework:** Problem-Proof. **Pillar:** operating model. **CTA:** soft.
+**Format:** document carousel, 8 slides. **Framework:** Problem-Proof, with a question hook in place of the numbered claim. **Pillar:** AI buying literacy. **CTA:** soft.
+
+**Reframed 2026-08-02.** The material was right and the subject was wrong. Written as my operating model it made the reader a spectator. It is now a purchasing tool, and my build is the worked answer rather than the topic.
 
 ### The post copy that sits above the document
 
 > Most people ask an automation vendor how accurate it is. It's the wrong question, or at least the second one.
 >
-> Accuracy is a spectrum, and every honest answer to that question is a number below 100. The question that actually decides your exposure is what the thing can do without a person seeing it first. That isn't a spectrum. It's a line somebody drew on purpose, and you can ask to see exactly where.
+> Accuracy is a spectrum and every honest answer is a number below 100. It tells you how often the thing will be wrong. It tells you nothing at all about what happens when it is.
 >
-> Here's where I draw it. On its own, an automation can read, pull facts out of a document, sort, flag, draft, and tell a person something happened. It cannot contact anyone outside the company, set a status that implies a judgment, or decide anything a person would have to answer for later.
+> The question that decides your exposure is what it can do without a person seeing it first. That isn't a spectrum. It's a line somebody drew on purpose, and you can ask to see exactly where it sits.
 >
-> Eight slides on how that plays out in the vendor paperwork build, including the setting that makes it impossible to email a real vendor by accident while the thing is still being put together.
+> Eight slides of questions to take into your next demo, with the answers from my own build so you can hear what a specific answer sounds like. A vague one is the finding.
 >
-> If you already have automations running: can you say in one sentence what yours are allowed to do without asking you? Somebody should be able to.
+> The one that matters most: what can it send, change, or decide without you? If nobody can answer that in a sentence, the line hasn't been drawn.
 
-*Word count: 196. Em dashes: 0. The fold lands on "or at least the second one," which sets up an argument the reader has to open the post to get.*
+*Word count: 178. Em dashes: 0. First 210 characters end on "It tells you how often", holding back the half of the sentence that carries the argument.*
 
 ### Slides
 
 **Slide 1 (cover)**
 
-> The question to ask an automation vendor isn't "how accurate is it."
+> "How accurate is it" is the wrong question to ask an automation vendor.
 >
-> It's "what can it do without me seeing it first?"
+> Here's the one that decides your exposure.
 
 **Slide 2**
 
-> Accuracy is a spectrum.
+> Accuracy tells you how often it will be wrong.
 >
-> Permission is a line somebody drew. That line decides whether a bad day is annoying or serious.
+> It tells you nothing about what happens when it is.
 
 **Slide 3**
 
-> What it does on its own:
+> Ask instead: what can it send, change, or decide without a person seeing it first?
 >
-> reads the document, pulls out the facts, sorts, flags, drafts, and tells a person.
+> That's not a spectrum. It's a line somebody drew.
 
 **Slide 4**
 
-> What it cannot do on its own:
+> My answer, so you know what specific sounds like.
 >
-> contact anyone outside the company, set a status that implies judgment, decide anything a person answers for.
+> On its own it reads, extracts, sorts, flags, drafts, and tells a person.
 
 **Slide 5**
 
-> Every outbound email waits for a person to click approve.
->
-> No click within 24 hours and the request expires. It doesn't send.
+> On its own it cannot contact anyone outside the company, set a status that implies judgment, or decide anything a person answers for.
 
 **Slide 6**
 
-> While it's being built, outbound is redirected to a test address.
+> Every outbound email waits for a person to click approve.
 >
-> A real vendor cannot be emailed by accident.
+> No click within 24 hours and it expires unsent.
 
 **Slide 7**
 
-> Two statuses can only be set by a person: cancelled and non-renewed.
+> While it's being built, outbound redirects to a test address.
 >
-> The system can't detect either, so it doesn't pretend to.
+> A real vendor cannot be emailed by accident.
 
 **Slide 8 (close, the receipt)**
 
+*A real screenshot of the approval email, with the caption beneath it.*
+
 > Vendor. Reason. Recipient. The exact message. Two buttons.
 >
-> Ask where your line is drawn. If nobody can say, it wasn't.
+> This is what a drawn line looks like.
 
-*Longest slide: 23 words. Slide 1 poses the question, slide 8 answers it with the artifact, and slides 5 to 7 are the three specifics that make the claim checkable.*
+*Longest slide: 24 words. Slides 4 and 5 are a matched pair and must use identical layout, so the only difference between them is the words.*
 
 ### Alternative cover lines
 
 - "There's a better question than 'how accurate is it,' and almost nobody asks it."
+- "What can it do without you seeing it first? Take that into your next demo."
 - "Accuracy is a spectrum. Permission is a decision. Only one of them is written down anywhere."
-- "What is your automation allowed to do without asking you? If nobody can answer, that's the answer."
 
 ### Production note
 
-**Slide 8 is a real screenshot, not typed copy.** It is the receipt the whole carousel is built toward, and a mocked-up version undoes the post. Capture the actual approval email: the vendor name, the reason, the intended recipient, the drafted message, and both buttons visible in one frame. Redact the mailbox address. Crop tight enough that it reads at thumbnail size and set the closing line beneath the image rather than over it.
+**Slide 8 is a real screenshot, not typed copy.** It is the receipt the carousel is built toward, and a mocked-up version undoes the post. Capture the actual approval email: vendor name, reason, intended recipient, drafted message, both buttons, all in one frame. Redact the mailbox address. Crop tight enough to read at thumbnail size and set the caption beneath the image rather than over it.
 
-Slides 3 and 4 are a matched pair and must use the identical layout, so the difference between them is only the words. If the "can" slide looks visually heavier than the "cannot" slide, the argument tilts the wrong way.
+I removed this slide in the 2026-08-02 reframe and put it back after a voice sweep. Two reasons. It is the element that makes the framework work, and without it slide 8 closed on "ask where the line is drawn, if nobody can say it in one sentence it hasn't been," which is the same construction as post 1's closing slide. Two carousels ending on an identical shape is what makes a set read as templated. The artifact also serves the buyer-tool framing perfectly well: this is what a specific answer looks like when someone actually has one.
 
 ### Facts traced
 
 All from `docs/how-the-system-works.md` and `progress-notes.md`:
 
-- **Approval gate and the 24-hour expiry.** The request waits up to 24 hours, and no response expires it rather than sending. Default behavior, not a configuration someone has to remember.
-- **Outbound redirected during setup.** `stage_6_outbound_test_mode` defaults to true, so sends are redirected to a test recipient instead of the vendor or producer address (`progress-notes.md`, Open Behaviour Findings). The slide says "while it's being built" deliberately, because the same note flags that this has to be switched off before real use. Do not let the slide imply it stays on forever.
-- **Cancelled and non-renewed are human-only.** The system cannot detect either from a certificate, so a person sets them with a note and their name attached.
-- **What it does unattended.** Read, extract, sort, flag, draft, notify. All confined to transcription and deterministic rules, with the model never deciding an outcome.
+- **Approval gate and 24-hour expiry.** The request waits up to 24 hours and expires rather than sending. Default behavior, not a setting someone has to remember.
+- **Outbound redirected during setup.** `stage_6_outbound_test_mode` defaults to true, so sends are redirected to a test recipient (`progress-notes.md`, Open Behaviour Findings). Slide 7 says "while it's being built" deliberately, because the same note flags that it must be switched off before real use. Do not let the slide imply it stays on forever.
+- **What it does unattended.** Read, extract, sort, flag, draft, notify. All confined to transcription and deterministic rules.
 
 ### Notes
 
-- If you want "approve" gone entirely, slide 5 becomes "Every outbound email waits for a person to release it." The word does real work here, because the click is the noun of the whole post, and it is never used about a vendor.
-- No hard CTA. The closing question in the post copy invites the reader to check their own setup, which is the soft version the brief asks for. Post 15 is where the ask lives.
-
-### Flagged as my invention
-
-- **"every honest answer to that question is a number below 100"** is a rhetorical claim, not a cited one. It holds up under any reading, but it is mine.
-- **"whether a bad day is annoying or serious"** on slide 2 is my framing of the stakes, not language harvested from property managers.
+- If you want "approve" gone entirely, slide 6 becomes "waits for a person to release it." The word does real work here and is never used about a vendor.
+- The closing question in the post copy is the soft CTA. Post 15 carries the only real ask.
 
 ---
 
@@ -646,39 +651,43 @@ Two options. Cut the last line and the post still works as pure industry literac
 
 ---
 
-## Post 8. The reminder that fired twice in two days
+## Post 8. What your reminders think "I already asked" means
 
-**Format:** text. **Skeleton:** Story Post, closer cut. **Pillar:** build in public. **CTA:** none.
+**Format:** text. **Skeleton:** Story Post, closer cut. **Pillar:** failure lessons anyone can apply. **CTA:** none.
+
+**Reframed 2026-08-02.** The old version opened on my software double-firing, which is a bug report. The finding is unchanged. The lesson now leads and my defect is the worked example.
 
 ### The post
 
-> Two near-identical reminder emails, a day apart, to the same vendor. That is what my chase logic would have done, and every rule in it was firing exactly as written.
+> Anything in your business that chases people has a definition of "I already asked about this."
 >
-> The system waits seven days before following up on the same problem. It also stops after two ignored requests and hands the vendor back to a person. Both rules worked. What was wrong was my definition of "the same problem."
+> It is almost never written down, nobody has read it, and it is usually wrong. Mine was.
 >
-> I had built the identifier for a problem out of four things: the vendor, the certificate, the expiration date, and the bucket it fell into. Buckets are how the daily check sorts work. Sixty days out, thirty days out, fourteen days out, expired.
+> My reminder logic waits seven days before following up on the same problem, and stops after two ignored requests. Both rules worked exactly as written. What was broken was the definition underneath them.
 >
-> A certificate expiring in fifteen days sits in the thirty-day bucket. It gets chased. The next morning it is fourteen days out, which is a different bucket, which made it a different identifier, which made it a brand new problem. The seven-day wait had nothing to apply itself to. Second email.
+> I had built the identifier for a problem out of four things: the vendor, the certificate, the expiration date, and the bucket it fell into. Buckets are how the daily check sorts work. Sixty days out, thirty days out, fourteen days out, lapsed.
 >
-> The quieter half is worse. The two-strike stop-chasing rule counted per problem as well, so every bucket crossing reset the count. A vendor could ignore request after request without ever tripping the rule that exists specifically to stop me emailing them forever. It would have looked restrained in the logs and felt relentless in the inbox.
+> A certificate fourteen days from lapsing sits in the thirty-day bucket one morning and the fourteen-day bucket the next. Different bucket, different identifier, brand new problem. The seven-day wait had nothing to apply itself to. Two near-identical emails, a day apart, to the same vendor.
 >
-> The fix was deleting one field from the identifier. A vendor's lapsing certificate is now one continuous problem from sixty days out until somebody resolves it.
+> The quieter half is worse. The two-strike stop rule counted per problem as well, so every bucket crossing reset the count. A vendor could be chased request after request without ever tripping the rule that exists to stop it.
 >
-> Anything that chases people has a definition of "I already asked about this." Worth knowing what yours is. Mine was wrong from the day I wrote it, and it looked fine from the outside the whole time.
+> The fix was deleting one field from the identifier.
+>
+> Go and look at whatever chases people for you. Renewal reminders, late rent notices, document requests, anything on a timer. Ask what it treats as the same request, and what quietly turns one into a new one. If nobody can answer, nobody has checked.
 
-*Word count: 279. Em dashes: 0. First 210 characters land on "every rule in it was firing exactly as written," which is the contradiction the post exists to resolve.*
+*Word count: 262. Em dashes: 0. First 210 characters end on "It is almost never written down, nobody has read it, and it is usually wrong. Mine was," which states the lesson and promises the story.*
 
 ### Alternative opening lines
 
-- "Nothing was broken and it would still have emailed the same vendor twice in two days."
-- "I spent a while looking for the bug before working out that the bug was a definition."
-- "Every rule fired correctly. The vendor would still have been chased twice in forty-eight hours."
+- "Every automated reminder in your business has an opinion about what counts as the same request. Yours is probably wrong."
+- "There's a definition buried in anything that chases people, and almost nobody has read theirs."
+- "Both my rules fired correctly and the vendor would still have been emailed twice in two days."
 
 ### Notes
 
-- **The opening is conditional on purpose, and it must stay that way.** No vendor received these emails. There are no vendors. This was found by reading the code during a review of chase cadence, not observed in the wild, and the brief's version of the scene ("a vendor got two near-identical reminders") would be a fabricated incident. "That is what my chase logic would have done" keeps the whole story true and costs the hook almost nothing.
-- **I did not use the "six requests" figure** from the brief. I cannot derive six from the four buckets and the `>= 2` threshold, and it is the kind of number a reader could check. "Request after request" carries the same weight without asserting an arithmetic I would have to defend.
-- No CTA. The post is the proof.
+- **The conditional framing is preserved.** No vendor received these emails. This was found by reading code during a cadence review, not observed in the wild. "Two near-identical emails, a day apart, to the same vendor" describes what the logic would produce, and the surrounding sentences keep it in that frame. Do not let an edit turn it into an incident that happened.
+- The closing paragraph is the reframe. It hands the reader something to check in their own systems, which the old ending did not.
+- No CTA.
 
 ### Facts traced
 
@@ -686,11 +695,10 @@ All from `db/postgres/004-stage-6-watch-chase.sql` and `progress-notes.md`, Open
 
 - `stage_6_follow_up_days` is `'7'` (line 26).
 - The escalation threshold is `HAVING count(*) >= 2` in `stage_6_escalate_overdue` (line 403).
-- `stage_6_vendor_issue_key` previously composed vendor, certificate, bucket, and expiration date. The bucket is now excluded, with a comment in the file at lines 75 to 80 recording exactly why: "Including the bucket made every boundary crossing a new" issue. `bucket_value` stays in the signature for existing callers.
+- `stage_6_vendor_issue_key` previously composed vendor, certificate, bucket, and expiration date. The bucket is now excluded, with the reason recorded in the file at lines 75 to 80.
 - Buckets are 60d, 30d, 14d, expired, plus never-received and re-attestation (`docs/how-the-system-works.md`).
-- Fixed in commit `0fcd62d`. All 16 `verify-stage-6-watch.ps1` checks still pass after the change.
-
-The fifteen-day worked example is taken verbatim from the finding, which states a certificate expiring in fifteen days chases on day 0 in the 30d bucket and again on day 1 in the 14d bucket. It is the file's own illustration, not mine.
+- Fixed in commit `0fcd62d`. All 16 `verify-stage-6-watch.ps1` checks still pass.
+- The fourteen-day worked example is the finding's own illustration, not mine.
 
 ---
 
@@ -745,138 +753,158 @@ Both are screen recordings, no face, no music, no intro card. Both use Hook / Bo
 
 ---
 
-## Post 9. The locked PDF that disappears
+## Post 9. The boxes on a certificate that matter, and the one that misleads everyone
 
-**Format:** native video, 75 seconds. **Pillar:** build in public. **CTA:** none.
+**Format:** native video, 75 seconds. **Pillar:** insurance domain literacy. **CTA:** none.
+
+**Rebuilt 2026-08-02.** Replaces "The locked PDF that disappears," which showed my system's behavior with an unopenable file and taught a property manager nothing they could use elsewhere.
 
 ### The post copy
 
-> A vendor sends their certificate. The file is password protected. Nobody in the office has the password.
+> Most of a COI does not matter. Four parts do, and one of them gets misread constantly.
 >
-> That is the entire failure. Nothing crashes, nobody gets an error, no alarm goes off anywhere. Someone tries to open it, can't, means to come back to it, and the day carries on. The vendor believes they sent it. The office believes it's handled. Both of them are right, and the certificate is nowhere.
+> Seventy-five seconds walking an actual certificate, pointing at the boxes.
 >
-> Seventy-five seconds of what mine does with it instead. The part worth watching isn't that it handles the locked file. It's that three wrong answers were available, and all three would have looked completely fine from the outside.
+> The short version. The coverages table carries facts: effective date, expiration date, limits, one row per line of insurance. Printed, structured, safe to act on.
 >
-> Synthetic vendor and policy. This one is from the fixture set.
+> The Description of Operations box is free text. Somebody typed it. Wording in there saying your company is an additional insured does not make your company an additional insured. That takes an endorsement issued by the carrier, which is a separate document, and it is not the one you were sent.
+>
+> I am not an insurance professional. This is what I had to learn in order to build something that reads these correctly, and it is the part I wish somebody had told me first.
+>
+> Synthetic certificate. Fictional carrier, fictional vendor.
 
-*Word count: 129. Em dashes: 0. First 210 characters end on "no alarm goes off anywhere," which states the problem and the reason nobody catches it before the fold.*
+*Word count: 155. Em dashes: 0. First 210 characters end just inside "The short version," with the promise made and the misread box still unnamed.*
 
 ### Shot list and voiceover
 
-Total 171 words across 75 seconds, inside the 150 to 200 range.
+Total 156 words across 75 seconds, inside the 150 to 200 range.
 
 **Shot 1. The hook. 0:00 to 0:06**
 
-*Screen: the password dialog, filling the frame, nothing else visible. It is on screen before the first word.*
+*Screen: a fixture certificate, full page, cursor already moving toward the coverages table before the first word.*
 
-> "This is a vendor's insurance certificate. It's password protected, and I don't have the password."
+> "Most of this page doesn't matter. Four parts do. And one of them gets misread constantly."
 
-**Shot 2. Where it actually goes. 0:06 to 0:24**
+**Shot 2. Where the facts are. 0:06 to 0:24**
 
-*Screen: hold on the dialog for two beats. Cancel it. The file sits in the folder, unopened. Do not cut away quickly. The dead air is the point.*
+*Screen: zoom into the coverages table. Move down the rows as they are named.*
 
-> "Here's where this goes wrong in a real office, and it's never dramatic. Someone tries to open it, can't, means to come back to it, and doesn't. The vendor believes they sent it. The office believes it's handled. Both are right, and the certificate is nowhere."
+> "This block is where the facts are. One row per line of insurance. General liability, auto, umbrella, workers' comp. Each row carries a policy number, an effective date, an expiration date, and limits. Printed, structured, and safe to act on."
 
-**Shot 3. Put it through anyway. 0:24 to 0:40**
+**Shot 3. The checkboxes. 0:24 to 0:38**
 
-*Screen: the upload form. Drag `fixtures/pdfs/f18-password-protected.pdf` on. Submit.*
+*Screen: zoom to the two narrow checkbox columns beside the coverage rows.*
 
-> "So I put it through anyway. Watch what happens, because there are three wrong answers available here. Crash. Skip it silently. Or open it up and guess."
+> "These two columns are checkboxes. They record that somebody made a mark. That is all a checkbox can tell you."
 
-**Shot 4. What it does. 0:40 to 1:00**
+**Shot 4. The one that misleads. 0:38 to 1:02**
 
-*Screen: dashboard. The row appears against Rapid Response Restoration LLC, marked Needs review. Hover the source link so it is clear the file is attached to the row.*
+*Screen: zoom to the Description of Operations box. Hold here longer than any other shot.*
 
-> "It does none of them. The row goes up marked needs review, against the right vendor, with the locked file attached so a person can go and ask for the password. The run finished clean. Nothing errored, and nothing got invented."
+> "And this is the one. Description of Operations. Free text, typed by whoever issued the certificate. Wording in here saying your company is an additional insured does not make it so. That takes an endorsement issued by the carrier, which is a separate document, and it is not the one you were sent."
 
-**Shot 5. Close. 1:00 to 1:15**
+**Shot 5. Close. 1:02 to 1:15**
 
-*Screen: static on that one row. No cursor movement.*
+*Screen: pan to the certificate holder box, then pull back to the full page and hold still.*
 
-> "The question was never whether your process can open a locked file. Nothing can open it. It's whether you'd ever find out that it couldn't."
+> "Last one. Certificate holder should be your exact legal name, not a close approximation. The dates are facts. The description box is a claim. Treat them differently."
 
 ### Burned-in caption notes
 
-- Captions throughout. Shot 2 is entirely voiceover over a still screen, so a muted viewer gets nothing without them.
-- **Shot 3 wants the three wrong answers as on-screen text**, stacked and appearing one at a time as they are spoken: `crash` / `skip it silently` / `guess`. Then all three struck through in shot 4 as the row appears. This is the only visual flourish in the video and it earns its place, because the argument is about what did not happen, which is hard to film.
-- Corner label for the first ten seconds: "Synthetic vendor data."
-- End card, held two seconds on black: **"Whether you'd find out that it couldn't."** Repeating the last clause as text is the only thing standing in for a CTA.
+- Captions throughout. This video is dense with terms auto-transcription mangles: **COI**, **additional insured**, **endorsement**, **workers' comp**, **umbrella**.
+- **Every zoom needs a label burned in**, naming the box being shown. A muted viewer watching a document zoom without labels learns nothing.
+- Corner label for the whole video, not just ten seconds: **"Synthetic certificate."** This is the one video where a viewer might otherwise think they are looking at a real vendor's paperwork.
+- End card, held two seconds: **"The dates are facts. The description box is a claim."**
 
 ### Alternative opening lines for the post copy
 
-- "The most expensive certificate is the one nobody could open and nobody remembered."
-- "Password-protected PDFs are not a technical problem. They are a forgetting problem."
-- "Nothing errors when a file can't be opened. That is precisely what makes it dangerous."
+- "Four parts of a COI matter. One of them is where nearly everyone gets it wrong."
+- "The box people trust most on a certificate is the only one that is just free text."
+- "Somebody typing 'additional insured' into a certificate does not make anyone an additional insured."
+
+### Accuracy discipline, higher here than anywhere else in the set
+
+This is the only piece that teaches insurance rather than automation, so it carries the highest risk of being wrong in public.
+
+- **Do not use the ACORD name** in the video, the captions, or the post copy. `coi-demo-build-plan.md` section 1.5 says to write "standard certificate of liability insurance forms" in written marketing and never to imply affiliation.
+- **Keep the "I am not an insurance professional" line.** It is not hedging. It sets the frame that makes the whole video defensible: this is what I had to learn to build correctly, not advice.
+- **Do not name the endorsement form numbers on camera.** CG 20 10 and CG 20 37 are correct and sourced, but saying them makes a 75-second video sound like a broker wrote it, and invites a technical argument in the comments you are not positioned to win.
+- Before publishing, confirm the box names against a real certificate. The layout is documented in `01-vendor-coi-chase.md` but I have not had one in front of me.
 
 ### Facts traced
 
-- `f18-password-protected.pdf` lands as **Rapid Response Restoration LLC, Needs review**, without the workflow erroring. Stated in the pre-recording checks in `docs/demo-script.md`, which also notes the run finishing successfully is the correct result rather than a failure.
-- The routing exists as a named node, **`Route Password Protected PDF`**, at line 422 of `n8n-workflows/stage-5-intake-workflow.json`. It sets `pdf_error: "PDF_PASSWORD_PROTECTED"` and sends the document around extraction to a structured review result, because `Extract From File` would otherwise abort the run before any validation could happen.
-- `PDF_PASSWORD_PROTECTED` is a hard flag, so the certificate can never quietly become filed paperwork (`scripts/lib/coi-stage-4-validator.js`).
+- **The form's fixed structure**, box by box: producer, insured, insurers, coverages table with policy number and effective/expiration dates and limits, the assertion checkbox columns, Description of Operations as free text, certificate holder, authorized representative. `01-vendor-coi-chase.md`, "Why the document is easy."
+- **The four coverage lines**: commercial general liability, automobile liability, umbrella/excess, workers' compensation and employers' liability. `foundation-1-vendor-insurance.md`, "The four coverage types you'll see."
+- **A certificate describes, an endorsement grants**, and description-box wording does not create additional insured status. `foundation-1-vendor-insurance.md`, "The three documents people confuse constantly" and "The four tools of risk transfer."
+- **Additional insured and cancellation notice wording depend on policy or endorsement terms.** Texas Department of Insurance certificate FAQ, cited at the foot of `docs/demo-script.md`.
+- **Certificate holder should be the management company's exact legal name.** `01-vendor-coi-chase.md`, same section, and it is why `HOLDER_MISMATCH` exists as a flag.
 
-### Notes
+### Capture note
 
-- "Nothing can open it" in shot 5 is literally true of the file without the password, and it is the line that stops this reading as a product claim. Keep it.
-- Do not say the word "guess" anywhere except shot 3. It lands harder as one occurrence.
+Record in the same session as the demo. Use a fixture PDF from `fixtures/pdfs/`, never a real certificate. The fixtures carry a visible synthetic-document watermark, which works in your favor on camera.
 
 ---
 
-## Post 12. Seventeen vendors nobody was chasing
+## Post 12. The failure that doesn't throw an error
 
-**Format:** native video, 60 seconds. **Pillar:** build in public. **CTA:** none.
+**Format:** native video, 60 seconds. **Pillar:** failure lessons anyone can apply. **CTA:** none.
+
+**Reframed 2026-08-02.** The old version was an engineering war story about a dashboard column. The finding is unchanged. It now opens on the general rule and closes on something the viewer can check in their own business.
 
 ### The post copy
 
-> I added one column to a dashboard and found out that seventeen of eighteen vendors had quietly stopped being chased.
+> The failures that cost you money don't throw errors. They stop, and the screen keeps looking healthy.
 >
-> Nothing had errored. No run had failed. Every number on the screen was accurate. The system was doing exactly what I built it to do, which is stop chasing a vendor who has ignored enough requests and hand them back to a person. It had just done it seventeen times, and it had nowhere to say so.
+> Sixty seconds on one I found in my own build. Seventeen of eighteen vendors had quietly stopped being chased. Nothing errored, no run failed, every number on the dashboard was accurate. The system was doing exactly what I built it to do, which is stop chasing a vendor who has ignored enough requests and hand them back to a person. It had done that seventeen times and had nowhere to say so.
 >
-> Sixty seconds on the finding. The lesson is the one I keep relearning: the failures that hurt are not the ones that throw errors. They are the ones where something stops working and the screen still looks healthy.
+> Here is the part worth taking away. Pick anything running unattended in your business. Automated rent reminders, payment retries, screening, document requests. Ask one question: what does it look like on screen when it stops?
 >
-> Synthetic vendors. The paused state came from my own escalation testing, not from anybody's real paperwork.
+> If the answer is "the same as when it's working," that is the problem, and it is not a software problem.
+>
+> Synthetic vendors. The paused state came from my own testing, not from anybody's real paperwork.
 
-*Word count: 138. Em dashes: 0. First 210 characters end inside "The system was doing exactly what I built it", holding back the reason.*
+*Word count: 168. Em dashes: 0. First 210 characters end inside "Seventeen of eighteen vendors had quietly stopped", which states the rule and opens the example.*
 
 ### Shot list and voiceover
 
-Total 149 words across 60 seconds, inside the 120 to 160 range for this length.
+Total 122 words across 60 seconds, inside the 120 to 160 range for this length.
 
-**Shot 1. The hook. 0:00 to 0:05**
+**Shot 1. The hook. 0:00 to 0:06**
 
-*Screen: the dashboard as it was before the chase column existed. Static. See the capture note below, this shot needs preparation.*
+*Screen: the dashboard as it was before the chase column existed. Static. See the capture note.*
 
-> "There is nothing wrong with this screen. That was the problem."
+> "There's nothing wrong with this screen. No error, no alert, nothing red. That's exactly what makes it the dangerous kind of failure."
 
-**Shot 2. The board that looked fine. 0:05 to 0:18**
+**Shot 2. The board that looked fine. 0:06 to 0:18**
 
-*Screen: slow scroll down the rows. Do not rush it. The viewer needs to believe the screen is healthy.*
+*Screen: slow scroll down the rows. Do not rush. The viewer needs to believe the screen is healthy.*
 
-> "Vendor, trade, carrier, policy number, expiration date, status. Every fact on it is accurate. This is the screen I'd been working from."
+> "Vendor, trade, carrier, expiration date, status. Every fact on it accurate. Nothing errored. Nothing failed."
 
 **Shot 3. The column. 0:18 to 0:30**
 
 *Screen: cut to the current dashboard, chase column present. Land the cut on the column itself.*
 
-> "Here it is with one column added. Has anyone asked this vendor for their paperwork, when, and how many times."
+> "Same screen with one column added. Has anyone asked this vendor for their paperwork, when, and how many times."
 
-**Shot 4. Seventeen. 0:30 to 0:48**
+**Shot 4. Seventeen. 0:30 to 0:46**
 
-*Screen: scroll down the chase column, "Chasing paused" repeating on row after row. Let it run long enough to feel repetitive.*
+*Screen: scroll the chase column with "Chasing paused" repeating. Let it run long enough to feel repetitive.*
 
-> "Seventeen of the eighteen vendors were flagged stop chasing. They tripped the two strike rule during my own escalation testing and stayed there. The system was behaving correctly. It stops when a vendor ignores enough requests and hands them back to a person."
+> "Seventeen of eighteen had quietly stopped being chased. They tripped a stop rule during my own testing and stayed there. The system was behaving correctly. It just had nowhere to say so."
 
-**Shot 5. Close. 0:48 to 1:00**
+**Shot 5. Close, aimed at them. 0:46 to 1:00**
 
 *Screen: static on the paused column.*
 
-> "It just had no way to tell me. Nothing errored. The screen looked healthy. The dangerous failure isn't the one that throws an error. It's the one where something stops and the screen still looks fine."
+> "So go and pick something running unattended in your business. Rent reminders, payment retries, document requests. Ask what it looks like on screen when it stops. If that looks the same as working, that's the problem."
 
 ### Burned-in caption notes
 
 - Captions throughout.
 - **Shot 4 wants a running count** burned in as the scroll passes each paused row, incrementing to 17. It turns a repetitive scroll into something that builds, and it is the only way a muted viewer feels the number rather than hearing it.
 - Corner label for the first ten seconds: "Synthetic vendors, local test data."
-- End card, held two seconds: **"Whatever's missing from your dashboard is what nobody's watching."** This is the takeaway from the brief. It reads better as text than spoken, and cutting it from the voiceover is what brings the word count into range.
+- End card, held two seconds: **"What does it look like when it stops?"** The question is the takeaway, and it works better as text than spoken.
 
 ### Capture note, and it needs doing before you record
 
@@ -888,27 +916,26 @@ The previous version is one commit back. The chase column was added in `0fcd62d`
 git show efad6d0:db/postgres/005-stage-7-dashboard.sql > tmp/dashboard-before.sql
 ```
 
-Apply that file to the running Postgres, load the dashboard, record shots 1 and 2, then restore the current version by running `.\scripts\apply-stage-7.ps1` and confirm the Chase column is back before you record shots 3 to 5. Run `.\scripts\verify-stage-7-dashboard.ps1` afterwards, since it explicitly checks for the Chase column header and will catch it if the restore did not take.
+Apply that to the running Postgres, load the dashboard, record shots 1 and 2, then restore with `.\scripts\apply-stage-7.ps1` and confirm the Chase column is back before recording shots 3 to 5. Run `.\scripts\verify-stage-7-dashboard.ps1` afterwards, since it checks for the Chase column header and will catch a restore that did not take.
 
-If that is more surgery than you want on a recording day, the fallback is to record shots 3 to 5 only and open on the current board with the voiceover changed to "I added one column to this screen and it told me something I did not want to know." Weaker hook, zero risk, and the post still works.
+If that is more surgery than you want on a recording day, record shots 3 to 5 only and open on the current board with the voiceover changed to "I added one column to this screen and it told me something I didn't want to know." Weaker hook, zero risk.
 
 ### Alternative opening lines for the post copy
 
-- "Seventeen of my eighteen vendors had silently stopped being chased and the dashboard showed no sign of it."
-- "The bug wasn't in the code. The code was right. The bug was that the screen had no way to mention it."
-- "Everything on this dashboard was accurate, which is not the same as the dashboard being honest."
+- "Software that breaks tells you. Software that quietly stops doesn't, and that's the expensive one."
+- "Seventeen of my eighteen vendors had stopped being chased and every number on the screen was correct."
+- "The worst automation failures look exactly like everything working."
 
 ### Facts traced
 
-- **17 of 18 vendors carrying `chase_paused = true`** from earlier escalation testing, which would have made the Stage 6 watch find almost nothing actionable during a demo. `progress-notes.md`, 2026-07-31: "This was invisible before the dashboard chase column existed." `reset-demo.ps1` clears it.
-- **The two-strike rule** is `HAVING count(*) >= 2` in `stage_6_escalate_overdue`, `db/postgres/004-stage-6-watch-chase.sql:403`.
-- **The chase column** carries `last_chased_at`, `chase_follow_up_due`, `chase_count`, `chase_paused`, and a rendered `display_chase` string, added to `stage_7_dashboard_rows` in commit `0fcd62d`.
-- **The paused wording** on the dashboard is "Chasing paused." It deliberately avoids the word approved, which is blocked from that page.
+- **17 of 18 vendors carrying `chase_paused = true`** from earlier escalation testing. `progress-notes.md`, 2026-07-31: "This was invisible before the dashboard chase column existed." `reset-demo.ps1` clears it.
+- **The stop rule** is `HAVING count(*) >= 2` in `stage_6_escalate_overdue`, `db/postgres/004-stage-6-watch-chase.sql:403`.
+- **The chase column** carries `last_chased_at`, `chase_follow_up_due`, `chase_count`, `chase_paused`, and a rendered `display_chase` string, added in commit `0fcd62d`.
 
-### Notes on honesty, because this one could drift
+### Honesty notes, because this one could drift
 
-- **The brief says it "had been sending reminders for weeks."** It had not. This is a local build with outbound test mode on, and the paused state came from my own escalation testing rather than from real vendors ignoring real emails. The voiceover in shot 4 says so out loud, and the post copy repeats it in the last line. Do not let either drop out in editing, because without them this becomes a story about a client's vendors, and there are no clients.
-- I also avoided any duration claim. The git history for this build runs 2026-07-31 to 2026-08-01, so "for weeks" is not supportable from anything in the repo. Shot 2 says "the screen I'd been working from," which is true and needs no clock.
+- **It had not "been sending reminders for weeks."** This is a local build with outbound test mode on, and the paused state came from my own escalation testing rather than real vendors ignoring real emails. Shot 4 says so and the post copy repeats it. Neither can be cut for pace.
+- **No duration claims.** Git history for this build runs 2026-07-31 to 2026-08-01, so nothing longer is supportable.
 
 ---
 
@@ -969,25 +996,27 @@ Note that `f13` supersedes the expired Circuit Square Electric row, so uploading
 
 ---
 
-## Post 14. The check that fails the build if it says "compliant"
+## Post 14. Four words that should make you suspicious of any vendor
 
-**Format:** single image, screenshot. **Pillar:** honest limitation. **CTA:** none.
+**Format:** single image, screenshot. **Pillar:** failure lessons anyone can apply. **CTA:** none.
 
-**This is the one post where the four banned words appear on purpose.** They appear as a list of things that are forbidden, which is the opposite of a claiming sense, and the post does not work without naming them. Every other post in the set has zero.
+**Reframed 2026-08-02.** The old version was about my own discipline, which is a virtue post. It is now a detector the reader can use on any demo they sit through this year, and my build check is the evidence that I hold myself to it.
+
+**This is the one post where the four banned words appear on purpose.** They appear as a list of things that are forbidden, which is the opposite of a claiming sense. Every other post in the set has zero.
 
 ### The commentary
 
-> Four words are banned from anything this system puts on screen. Compliant. Verified. Covered. Approved. If one of them makes it into the rendered page, the check fails and it does not ship.
+> Compliant. Verified. Covered. Approved.
 >
-> There is a second guard inside the workflow that throws instead of rendering a blocked term, so it fails once at build time and again at run time.
+> If a piece of software puts any of those words next to a contractor's name, ask what it actually checked. It read a PDF. It cannot tell you whether the policy is still in force, whether the endorsement exists, or whether the document is genuine. The word is doing work the software cannot back.
 >
-> The reason is not style. Software that tells you a vendor is compliant is claiming something it has no way to know. It read a PDF. It cannot tell you whether the policy is still in force, whether the endorsement exists, or whether the document is genuine.
+> Those four are banned from anything my own system renders. This screenshot is the check that enforces it. If one appears in the page, the build fails and it does not ship. There is a second guard inside the workflow that throws rather than render one.
 >
-> So the status is always a date fact instead. Current until a date. Expires in a number of days. Expired a number of days ago. No certificate on file. Needs review.
+> The replacement is always a date fact. Current until a date. Expires in a number of days. Lapsed a number of days ago. No certificate on file. Needs review.
 >
 > It was easier to make the claim impossible to ship than to keep remembering not to make it.
 
-*Word count: 152. Em dashes: 0. First 210 characters carry all four words and the consequence, which is the entire hook, and the fold lands right after "it does not ship."*
+*Word count: 158. Em dashes: 0. First 210 characters carry all four words and the instruction, which is the entire hook.*
 
 ### What to capture, and how
 
@@ -999,36 +1028,36 @@ foreach ($blocked in @("compliant", "verified", "covered", "approved")) {
 }
 ```
 
-Capture it from the editor, dark theme, syntax highlighting on, cropped tight to those lines with a little air above and below. No terminal chrome, no file tree, no tab bar full of other filenames. The four words and their consequence sit in one frame, which is why this reads at thumbnail size and a wider screenshot would not.
+Capture from the editor, dark theme, syntax highlighting on, cropped tight with a little air above and below. No terminal chrome, no file tree, no tab bar. The four words and their consequence sit in one frame, which is why it reads at thumbnail size.
 
-**Stronger option, if you want a genuinely failing check.** The brief asks for a failing check, and a real red failure is better evidence than the code that would produce one. To get it, add the word `compliant` to a string the dashboard renders, then run:
+**Stronger option, if you want a genuinely failing check.** Add the word `compliant` to a string the dashboard renders, then run:
 
 ```bash
 .\scripts\verify-stage-7-dashboard.ps1
 ```
 
-Two cautions before you do that. First, the runtime guard in `n8n-workflows/stage-7-dashboard-demo-view.json` throws `"Dashboard HTML contained a blocked term."` during rendering, so depending on where you put the word you may capture the workflow error rather than the verifier assertion. Either is a true image, but they tell slightly different stories, and the verifier line is the one the commentary describes. Second, revert the change and rerun the verifier to a clean pass before you do anything else with the demo. Do not leave a deliberately broken dashboard sitting in n8n.
+Two cautions. The runtime guard in `n8n-workflows/stage-7-dashboard-demo-view.json` throws `"Dashboard HTML contained a blocked term."` during rendering, so depending on where the word goes you may capture the workflow error rather than the verifier assertion. Both are true images, but the verifier line is the one the commentary describes. And revert to a clean verifier pass before touching the demo again.
 
-I would ship the code screenshot. It is zero risk, it is the actual artifact, and it puts all four words in the reader's eye in one line.
+I would ship the code screenshot. Zero risk, it is the actual artifact, and it puts all four words in the reader's eye at once.
+
+### Alternative opening lines
+
+- "Four words that tell you more about the vendor than about the contractor they're describing."
+- "If their dashboard says a vendor is compliant, ask what it checked. It read a PDF."
+- "I banned four words from my own software and wrote a test that fails if I forget."
 
 ### Facts traced
 
 - **The build check.** `scripts/verify-stage-7-dashboard.ps1:240`, exactly as quoted, including the assertion message.
 - **The runtime guard.** `n8n-workflows/stage-7-dashboard-demo-view.json` throws `new Error("Dashboard HTML contained a blocked term.")` rather than render one.
-- **The replacement vocabulary.** Current until a date, expires in n days, expired n days ago, no certificate on file, needs review. From `docs/how-the-system-works.md`, which also records that this is enforced rather than merely intended.
-- **The same four words** are blocked in fixture generation as well, alongside ACORD, per `docs/stage-3-fixtures-runbook.md:45`. Worth knowing if someone asks how far the rule goes, though it does not belong in the post.
-
-### Alternative opening lines
-
-- "There are four words my own build will not let me ship, and the check that stops me is two lines long."
-- "I banned four words from a piece of software I wrote, then wrote a test that fails if I forget."
-- "Compliant, verified, covered, approved. Four words, and any one of them fails the build."
+- **The replacement vocabulary.** Current until a date, expires in n days, lapsed n days ago, no certificate on file, needs review. `docs/how-the-system-works.md`, which records that this is enforced rather than merely intended.
+- **The same four words** are blocked in fixture generation, alongside ACORD. `docs/stage-3-fixtures-runbook.md:45`.
 
 ### Notes
 
-- The last line is the post. Resist adding anything after it.
-- No CTA, per the brief. This post's whole value is that it is not selling.
-- If a comment asks the obvious question, the honest answer is ready in `docs/how-the-system-works.md`: the system cannot confirm a policy is active with the carrier, cannot detect mid-term cancellation, cannot interpret endorsements, and cannot spot a forged certificate. That answer is worth giving in full rather than deflecting, and it is the same answer post 3 and post 6 already gave.
+- The reframe is one sentence: the old opening was "four words are banned from anything this system puts on screen," which is about me. The new opening is the four words themselves, followed by an instruction to the reader. Same evidence, different subject.
+- The last line is the post. Nothing goes after it.
+- If a comment asks the obvious follow-up, the full answer is in `docs/how-the-system-works.md`: the system cannot confirm a policy is active with the carrier, cannot detect mid-term cancellation, cannot interpret endorsements, and cannot spot a forged certificate. Give it in full rather than deflecting.
 
 ---
 
