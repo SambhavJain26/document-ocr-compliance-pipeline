@@ -53,7 +53,7 @@
 
   /* --- Type scale ------------------------------------------------------- */
   --size-display: 112px;
-  --size-lead:     94px;
+  --size-lead:     88px;
   --size-turn:     62px;
   --size-check:    54px;
   --size-detail:   40px;
@@ -89,11 +89,11 @@ body.theme-flip {
 body.loud {
   --margin-x:      78px;
   --size-display: 124px;
-  --size-lead:    100px;
+  --size-lead:    104px;
   --size-turn:     66px;
   --size-check:    58px;
   --size-detail:   42px;
-  --size-pay:     196px;
+  --size-pay:     192px;
   --size-tag:      33px;
   --w-line:         3px;
   --w-mark:         5px;
@@ -109,6 +109,15 @@ body.loud .lead        { letter-spacing: -0.04em; }
 body.loud .checks li   { font-weight: 700; }
 body.loud .tags li     { font-weight: 700; }
 body.loud .margin-note { font-size: 44px; }
+
+/* Leading stays on the baseline unit at the larger sizes. */
+body.loud .display,
+body.loud .close-lead  { line-height: 144px; }
+body.loud .lead        { line-height: 120px; }
+body.loud .turn        { line-height: 72px; }
+body.loud .checks li   { line-height: 72px; }
+body.loud .detail,
+body.loud .margin-note { line-height: 48px; }
 
 @page { size: 1080px 1350px; margin: 0; }
 
@@ -164,6 +173,27 @@ html, body {
 .slide--invert .margin-note { color: var(--marker); }
 .slide--invert .pen > svg   { stroke: var(--marker); }
 
+/* Type flips to paper. The whole colour rule still holds — every word is one
+   value, and only the annotations carry colour. */
+.slide--invert .display,
+.slide--invert .kicker,
+.slide--invert .lead,
+.slide--invert .turn,
+.slide--invert .close-lead,
+.slide--invert .checks li  { color: var(--paper); }
+
+.slide--invert .divider    { background: rgba(253, 240, 214, 0.22); }
+.slide--invert .checks li  { border-color: rgba(253, 240, 214, 0.22); }
+.slide--invert .tags li    { color: var(--paper); border-color: var(--paper); }
+
+/* A highlighted word sits on gold, so it has to go dark or it disappears. */
+.slide--invert .hl         { color: var(--ink); }
+
+/* The selection box inverts with everything else: paper fill, dark word,
+   handles filled with the ground and ringed in marker. */
+.slide--invert .sel        { background: var(--paper); color: var(--ink); }
+.slide--invert .sel i      { background: var(--ink); border-color: var(--marker); }
+
 .slide--invert .footer {
   color: rgba(253, 240, 214, 0.55);
   background: var(--ink);
@@ -207,7 +237,7 @@ html, body {
 .eyebrow {
   position: absolute;
   left: var(--margin-x);
-  top: 84px;
+  top: 96px;
   display: flex;
   align-items: center;
   gap: 18px;
@@ -228,8 +258,8 @@ html, body {
   position: absolute;
   left: var(--margin-x);
   right: var(--margin-x);
-  bottom: 74px;
-  padding-top: 20px;
+  bottom: 72px;
+  padding-top: 24px;
   border-top: var(--w-hair) solid var(--rule);
   display: flex;
   justify-content: space-between;
@@ -273,15 +303,15 @@ html, body {
   position: absolute;
   left: var(--margin-x);
   right: var(--margin-x);
-  top: 226px;
-  bottom: 190px;
+  top: 240px;
+  bottom: 192px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   z-index: 6;
 }
 
-.body--close { bottom: 250px; }
+.body--close { bottom: 264px; }
 
 /* ===========================================================================
    ANNOTATION LAYER — the marker, the pen, the selection
@@ -384,11 +414,11 @@ html, body {
   font-style: italic;
   font-weight: 700;
   font-size: 40px;
-  line-height: 1.3;
+  line-height: 48px;
   letter-spacing: -0.014em;
   color: var(--pen);
   max-width: 740px;
-  margin-top: 68px;
+  margin-top: 72px;
 }
 
 /* ===========================================================================
@@ -399,7 +429,7 @@ html, body {
 .display {
   font-weight: 900;
   font-size: var(--size-display);
-  line-height: 1.02;
+  line-height: 120px;
   letter-spacing: -0.038em;
   color: var(--ink);
 }
@@ -407,17 +437,17 @@ html, body {
 .kicker {
   font-weight: 600;
   font-size: var(--size-turn);
-  line-height: 1.16;
+  line-height: 72px;
   letter-spacing: -0.026em;
   color: var(--ink);
-  margin-top: 56px;
+  margin-top: 48px;
 }
 
 /* Statement: a lead, a divider, and the turn ----------------------------- */
 .lead {
   font-weight: 800;
   font-size: var(--size-lead);
-  line-height: 1.08;
+  line-height: 96px;
   letter-spacing: -0.032em;
   color: var(--ink);
 }
@@ -426,13 +456,13 @@ html, body {
   width: 100%;
   height: var(--w-hair);
   background: var(--rule);
-  margin: 54px 0;
+  margin: 48px 0;
 }
 
 .turn {
   font-weight: 600;
   font-size: var(--size-turn);
-  line-height: 1.18;
+  line-height: 72px;
   letter-spacing: -0.024em;
   color: var(--ink);
 }
@@ -440,7 +470,7 @@ html, body {
 .detail {
   font-weight: 400;
   font-size: var(--size-detail);
-  line-height: 1.46;
+  line-height: 48px;
   letter-spacing: -0.012em;
   color: var(--ink-soft);
   margin-top: 34px;
@@ -453,10 +483,10 @@ html, body {
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--ink-micro);
-  padding-bottom: 20px;
+  padding-bottom: 24px;
   border-bottom: var(--w-mark) solid var(--ink);
   display: inline-block;
-  margin-bottom: 52px;
+  margin-bottom: 48px;
 }
 
 /* Checks: the fixed-logic list ------------------------------------------- */
@@ -469,10 +499,10 @@ html, body {
   position: relative;
   font-weight: 600;
   font-size: var(--size-check);
-  line-height: 1.2;
+  line-height: 72px;
   letter-spacing: -0.024em;
   color: var(--ink);
-  padding: 28px 0 28px 74px;
+  padding: 24px 0 24px 74px;
   border-bottom: var(--w-hair) solid var(--rule);
 }
 
@@ -480,7 +510,7 @@ html, body {
 .checks li b {
   position: absolute;
   left: 0;
-  top: 28px;
+  top: 24px;
   font-weight: 800;
   color: var(--pen);
 }
@@ -490,7 +520,7 @@ html, body {
   display: flex;
   flex-wrap: wrap;
   gap: 14px;
-  margin-top: 44px;
+  margin-top: 48px;
   list-style: none;
 }
 
@@ -520,7 +550,7 @@ html, body {
 .close-lead {
   font-weight: 900;
   font-size: var(--size-display);
-  line-height: 1.02;
+  line-height: 120px;
   letter-spacing: -0.038em;
   color: var(--ink);
 }

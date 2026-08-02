@@ -10,8 +10,9 @@
 </head>
 <body class="theme-flip">
 
-<!-- 1. Cover ------------------------------------------------------------- -->
-<section class="slide">
+<!-- 1. Cover. Inverted, so the dark ground is established as part of the
+     language before any later slide uses it, and so the thumbnail carries. -->
+<section class="slide slide--invert">
   <div class="eyebrow"><span>Vendor paperwork &middot; property management</span></div>
   <div class="body">
     <h1 class="display">Reading a document and <span class="pen pen--circle">deciding<svg viewBox="0 0 300 100" preserveAspectRatio="none"><path d="M22,52 C20,22 84,8 156,9 C232,10 282,26 280,53 C278,80 214,94 142,93 C72,92 24,79 21,50 C19,34 34,22 58,14"/></svg></span> what to do about it are two different jobs.</h1>
@@ -103,6 +104,35 @@
   <div class="byline">Sambhav Jain</div>
   <div class="footer"><span>What AI should do with your paperwork</span><b>08</b></div>
 </section>
+
+<!-- Baseline snap. Every leading and vertical margin in the stylesheet is a
+     multiple of the 24px baseline unit, and the ruled lines are drawn every
+     third unit. That keeps the rhythm regular, but the content block is
+     vertically centred, so the block itself lands at an arbitrary offset.
+     This measures each slide's first baseline and nudges the block onto the
+     nearest unit. Runs before Chrome prints. -->
+<script>
+(function () {
+  var UNIT = 24, PHASE = 71.5;
+  document.querySelectorAll('.slide').forEach(function (slide) {
+    var body = slide.querySelector('.body');
+    if (!body) { return; }
+    var host = body.querySelector('.display, .lead, .head, .close-lead, .pay');
+    if (!host) { host = body.firstElementChild; }
+    if (!host) { return; }
+
+    // A zero-size inline-block sits with its bottom edge on the baseline.
+    var probe = document.createElement('span');
+    probe.style.cssText = 'display:inline-block;width:0;height:0;overflow:hidden';
+    host.insertBefore(probe, host.firstChild);
+    var baseline = probe.getBoundingClientRect().bottom - slide.getBoundingClientRect().top;
+    probe.remove();
+
+    var delta = Math.round((baseline - PHASE) / UNIT) * UNIT + PHASE - baseline;
+    body.style.transform = 'translateY(' + delta.toFixed(2) + 'px)';
+  });
+})();
+</script>
 
 </body>
 </html>

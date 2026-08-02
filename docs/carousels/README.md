@@ -115,6 +115,46 @@ picks classes. They compose: `class="loud theme-flip"` is valid.
   on the payoff slide. One inverted page per deck; used twice it stops being
   a spike and becomes a pattern, which is quieter, not louder.
 
+## The baseline grid
+
+The ruled lines are drawn every 72px. The **baseline unit is 24px** — every
+third unit is a drawn rule.
+
+- **Every leading is set in px and is a multiple of 24.** Display 120, lead
+  96, turn 72, checks 72, detail and note 48, payoff 168. The `loud` variant
+  overrides them to 144 / 120 / 72 / 72 / 48.
+- **Every vertical margin and padding is a multiple of 24.** No exceptions,
+  including the eyebrow offset, the footer band, and the divider.
+- `.turn` and `.checks` sit exactly on a drawn rule on every line, because
+  their leading is 72. Display and detail land on the sub-grid and coincide
+  with a drawn rule periodically, which is what a baseline grid normally
+  looks like.
+- **The content block is vertically centred, so a render-time script snaps
+  it.** It measures each slide's first baseline with a zero-size inline-block
+  probe and translates the block onto the nearest unit. The shift is never
+  more than 12px, so centring survives. The script lives at the foot of each
+  post file and runs before Chrome prints.
+
+Changing a type size means checking its leading is still a whole number of
+units. That is the only maintenance cost of the grid, and it is the thing
+that makes the page read as constructed rather than decorated.
+
+## The inverted slide
+
+Cover is always inverted. It establishes the dark ground as part of the
+language before any later slide uses it, and it gives the deck a dark
+thumbnail, which is the highest-value frame in the whole post.
+
+Beyond the cover, **one more inverted slide per deck at most**, on the page
+the argument turns on. In post 1 that is slide 6, and only in the `loud`
+variant. Used more often it stops being a spike and becomes a pattern, which
+reads quieter, not louder.
+
+On an inverted slide the colour rule still holds: every word is one value
+(`--paper`), and only annotations carry colour. Highlighted words go dark so
+they stay legible on the gold swipe, and the selection box inverts to a paper
+fill with a dark word.
+
 ## Consistency rules
 
 Learned from an audit that found eleven inconsistencies in the first build.
