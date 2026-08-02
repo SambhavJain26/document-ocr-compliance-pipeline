@@ -43,7 +43,13 @@
   --page-w:   1080px;
   --page-h:   1350px;
   --margin-x: 96px;
-  --measure:  888px;
+
+  /* Rule weights. Three, declared, and nothing uses a number outside them.
+     hair separates, line outlines, mark is furniture the eye reads as a
+     deliberate stroke. */
+  --w-hair: 1px;
+  --w-line: 2px;
+  --w-mark: 3px;
 
   /* --- Type scale ------------------------------------------------------- */
   --size-display: 112px;
@@ -89,6 +95,8 @@ body.loud {
   --size-detail:   42px;
   --size-pay:     196px;
   --size-tag:      33px;
+  --w-line:         3px;
+  --w-mark:         5px;
 }
 
 body.loud .pen--circle > svg { stroke-width: 8; }
@@ -98,9 +106,8 @@ body.loud .hl          { background-size: 100% 0.94em; background-position: 0 0.
 body.loud .display,
 body.loud .close-lead  { letter-spacing: -0.046em; }
 body.loud .lead        { letter-spacing: -0.04em; }
-body.loud .head        { border-bottom-width: 5px; }
 body.loud .checks li   { font-weight: 700; }
-body.loud .tags li     { border-width: 3px; font-weight: 700; }
+body.loud .tags li     { font-weight: 700; }
 body.loud .margin-note { font-size: 44px; }
 
 @page { size: 1080px 1350px; margin: 0; }
@@ -212,7 +219,7 @@ html, body {
   z-index: 5;
 }
 
-.eyebrow::before { content: ""; width: 38px; height: 3px; background: var(--pen); }
+.eyebrow::before { content: ""; width: 38px; height: var(--w-mark); background: var(--marker); }
 
 /* The footer sits inside its own clear band. Nothing is allowed to bleed
    across it — an earlier pass let a graphic run over the page number and it
@@ -223,7 +230,7 @@ html, body {
   right: var(--margin-x);
   bottom: 74px;
   padding-top: 20px;
-  border-top: 1px solid var(--rule);
+  border-top: var(--w-hair) solid var(--rule);
   display: flex;
   justify-content: space-between;
   align-items: baseline;
@@ -252,7 +259,7 @@ html, body {
   z-index: 6;
 }
 
-.byline::before { content: ""; width: 38px; height: 3px; background: var(--marker); }
+.byline::before { content: ""; width: 38px; height: var(--w-mark); background: var(--marker); }
 
 /* ===========================================================================
    CONTENT BLOCK
@@ -287,16 +294,21 @@ html, body {
    slivers the moment a highlighted phrase wraps. The SVG has uneven top and
    bottom edges so it reads as a marker pass, not a rectangle. */
 .hl {
-  padding: 0 0.1em;
+  /* The padding lets the swipe overhang the glyphs; the equal negative
+     margin stops it pushing the next character away. Without the margin,
+     the punctuation after a highlight detaches and reads as a typo. */
+  padding: 0 0.12em;
+  margin: 0 -0.12em;
   background-repeat: no-repeat;
-  background-size: 100% 0.82em;
-  background-position: 0 0.58em;
+  background-size: 100% 0.84em;
+  background-position: 0 0.56em;
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='40' preserveAspectRatio='none'%3E%3Cpath d='M1,7 C46,1 128,11 206,5 C284,-1 348,10 399,3 L399,34 C352,39 268,29 186,35 C104,41 44,32 1,37 Z' fill='%23F8C043'/%3E%3C/svg%3E");
 }
 
-.hl--tight { background-size: 100% 0.7em; background-position: 0 0.64em; }
+/* Keeps a short phrase and its mark on one line. */
+.nb { white-space: nowrap; }
 
 /* Pen strokes. The SVG is supplied inline by the post so the path can be
    sized to the word; these rules only place and color it. */
@@ -357,7 +369,7 @@ html, body {
   width: 15px;
   height: 15px;
   background: var(--paper);
-  border: 3px solid var(--pen);
+  border: var(--w-mark) solid var(--pen);
   border-radius: 50%;
 }
 
@@ -412,7 +424,7 @@ html, body {
 
 .divider {
   width: 100%;
-  height: 1px;
+  height: var(--w-hair);
   background: var(--rule);
   margin: 54px 0;
 }
@@ -442,7 +454,7 @@ html, body {
   text-transform: uppercase;
   color: var(--ink-micro);
   padding-bottom: 20px;
-  border-bottom: 3px solid var(--ink);
+  border-bottom: var(--w-mark) solid var(--ink);
   display: inline-block;
   margin-bottom: 52px;
 }
@@ -450,20 +462,28 @@ html, body {
 /* Checks: the fixed-logic list ------------------------------------------- */
 .checks { list-style: none; }
 
+/* Not flex. A flex container turns any inline child — an annotated span, for
+   instance — into its own flex item, which tears the sentence apart. The
+   number is positioned instead so the text stays one continuous run. */
 .checks li {
-  display: flex;
-  gap: 26px;
+  position: relative;
   font-weight: 600;
   font-size: var(--size-check);
   line-height: 1.2;
   letter-spacing: -0.024em;
   color: var(--ink);
-  padding: 28px 0;
-  border-bottom: 1px solid var(--rule);
+  padding: 28px 0 28px 74px;
+  border-bottom: var(--w-hair) solid var(--rule);
 }
 
-.checks li:first-child { border-top: 1px solid var(--rule); }
-.checks li b { font-weight: 800; color: var(--pen); flex: 0 0 42px; }
+.checks li:first-child { border-top: var(--w-hair) solid var(--rule); }
+.checks li b {
+  position: absolute;
+  left: 0;
+  top: 28px;
+  font-weight: 800;
+  color: var(--pen);
+}
 
 /* Tags: the transcribed fields ------------------------------------------- */
 .tags {
@@ -479,7 +499,7 @@ html, body {
   font-size: var(--size-tag);
   letter-spacing: -0.01em;
   color: var(--ink);
-  border: 2px solid var(--ink);
+  border: var(--w-line) solid var(--ink);
   border-radius: 999px;
   padding: 10px 24px 12px;
 }
@@ -505,11 +525,4 @@ html, body {
   color: var(--ink);
 }
 
-.close-turn {
-  font-weight: 600;
-  font-size: var(--size-turn);
-  line-height: 1.18;
-  letter-spacing: -0.024em;
-  color: var(--ink);
-  margin-top: 52px;
-}
+

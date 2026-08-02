@@ -103,6 +103,43 @@ Annotation classes, usable inside any of them: `.hl` (marker), `.pen
 Slide copy runs from 8 words to 24, so a fixed top anchor strands short
 slides in the upper third with a dead page underneath.
 
+## Variants
+
+Declared as themes on the stylesheet, set on `<body>`, so a post still only
+picks classes. They compose: `class="loud theme-flip"` is valid.
+
+- **`theme-flip`** — ink and pen swap. Display type becomes `#1F4393`, every
+  pen mark and the selection box become near-black. Marker stays gold.
+- **`loud`** — same palette, more volume. Bigger type against tighter
+  margins, heavier pen strokes, a deeper marker swipe, and `.slide--invert`
+  on the payoff slide. One inverted page per deck; used twice it stops being
+  a spike and becomes a pattern, which is quieter, not louder.
+
+## Consistency rules
+
+Learned from an audit that found eleven inconsistencies in the first build.
+Each of these exists because something looked like a mistake.
+
+1. **Three rule weights, declared, and nothing uses a number outside them.**
+   `--w-hair` separates, `--w-line` outlines, `--w-mark` is furniture the eye
+   reads as a deliberate stroke. The `loud` variant scales the tokens rather
+   than overriding individual rules.
+2. **Both furniture marks are gold.** The eyebrow rule and the byline rule
+   are the same 38px stroke and must stay the same color.
+3. **One treatment for "the line after the statement."** Always `.turn`,
+   always behind a `.divider`. There is no second, quieter variant — an
+   earlier pass set one slide's closer in 400-weight grey and it buried a
+   load-bearing line.
+4. **Parallel copy gets parallel marks.** Mirrored sentences take the same
+   device with different hand-drawn paths, never different devices.
+5. **Every slide carries at least one mark.** In a deck whose identity is
+   the annotation layer, a bare page reads as an omission.
+6. **`.hl` cancels its own padding with an equal negative margin.** Without
+   it the character after a highlight detaches and reads as a typo.
+7. **No flex containers around annotated text.** A flex parent turns an
+   inline `.pen` span into its own flex item and tears the sentence apart.
+   `.checks` positions its numeral instead.
+
 ## Standing rules
 
 - **Nothing bleeds across the footer.** An earlier pass let a graphic run
