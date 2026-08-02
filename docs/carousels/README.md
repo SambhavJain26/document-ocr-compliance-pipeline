@@ -14,8 +14,8 @@ mobile, which is where these get read.
 ## The concept: the marked-up document
 
 The deck looks like a page somebody has been over with a highlighter and a
-pen. Marker swipes, circled words, an underline, a strike-through, one word
-boxed like a selected object.
+pen. Marker swipes, circled words, an underline, a strike-through, and one
+brace hung in the margin beside the line it comments on.
 
 This is not decoration. The subject of this work is documents that a person
 reads and annotates, so the annotation layer *is* the argument, and it is
@@ -24,8 +24,13 @@ second element without needing photography, icons, or illustration.
 
 **Nothing is a clean rectangle.** The marker swipe has uneven top and bottom
 edges, the circles are drawn as open loops that overshoot, the underline is
-two strokes at different opacities. If a mark looks machine-made it has
-failed.
+two strokes at different opacities, and the brace is drawn freehand. If a mark
+looks machine-made it has failed.
+
+**The page is ruled, horizontally and vertically.** Faint horizontal lines
+every 72px plus one vertical margin rule at 56px, the way a notebook page is
+ruled. The vertical stroke is what makes the horizontal ruling read as a grid
+somebody printed rather than a texture somebody applied.
 
 ## Palette
 
@@ -52,8 +57,10 @@ One rule, and it removes every "is this intentional" question:
 > type, or as the page number.**
 
 Every word on every slide is `#02081F` or `#383B3D`. Nothing else. Color
-enters only as a marker swipe, a pen stroke, or a selection box — that is,
-only as something a person added on top of a finished page.
+enters only as a marker swipe or a pen stroke — that is, only as something a
+person added on top of a finished page. Page furniture (the horizontal ruling
+and the vertical margin rule) is an ink tint, because it is printed rather
+than added.
 
 | Value | Role |
 |---|---|
@@ -63,7 +70,7 @@ only as something a person added on top of a finished page.
 | `#7B8285` | Eyebrow, footer deck title |
 | `#F8C043` | The highlighter swipe. Byline rule |
 | `#3563CA` | The pen. Circles, underlines, strikes, page number, the second-voice note |
-| `#1F4393` | The selection box fill. Once per deck, on the word the argument turns on |
+| `#1F4393` | Reserved |
 | Everything else | Reserved. Defined in the stylesheet for a deck that needs to look unlike this one |
 
 ## Type
@@ -89,15 +96,22 @@ Open Sans, Poppins, Montserrat — the generic-template tells.
 
 | Layout | Classes |
 |---|---|
-| Cover | `.display` `.kicker` |
+| Cover | `.display` + `<em>` second voice, `.kicker` |
 | Statement | `.lead` `.divider` `.turn` |
 | Field list | `.lead` `.tags` `.divider` `.turn` |
 | Check list | `.head` `.checks` |
 | Payoff | `.head` `.pay` `.margin-note` |
 | Close | `.close-lead` `.divider` `.turn` `.byline` |
 
-Annotation classes, usable inside any of them: `.hl` (marker), `.pen
---circle` / `--under` / `--strike`, `.sel` (selection box).
+Annotation classes, usable inside any of them: `.hl` (marker), `.pen--circle`
+/ `--under` / `--strike` (inline pen marks), `.margin-mark` (a brace hung in
+the right margin, one per deck), and `<em>` inside `.display` for the second
+voice.
+
+The selection box (`.sel`, a word boxed with corner handles) was cut. It
+appeared exactly once, introduced a fill colour used nowhere else, and needed
+two override rules to survive an inverted slide. One instance is an exception,
+not a system.
 
 **Content centers in a bounded band** between the eyebrow and the footer.
 Slide copy runs from 8 words to 24, so a fixed top anchor strands short
@@ -139,18 +153,18 @@ that makes the page read as constructed rather than decorated.
 
 ## The inverted slide
 
-Cover is always inverted. It establishes the dark ground as part of the
-language before any later slide uses it, and it gives the deck a dark
-thumbnail, which is the highest-value frame in the whole post.
+**One inverted slide per deck**, on the page the argument turns on. In post 1
+that is slide 6, the payoff. Used more often it stops being a spike and
+becomes a pattern, which reads quieter, not louder.
 
-Beyond the cover, **one more inverted slide per deck at most**, on the page
-the argument turns on. In post 1 that is slide 6. Used more often it stops
-being a spike and becomes a pattern, which reads quieter, not louder.
+The cover was briefly inverted too, to establish the dark ground as part of
+the language before slide 6 used it. That was reverted: the two-voice cover
+and the margin rule carry enough weight on their own, and a light cover keeps
+the dark slide as the single loudest frame in the deck.
 
 On an inverted slide the colour rule still holds: every word is one value
 (`--paper`), and only annotations carry colour. Highlighted words go dark so
-they stay legible on the gold swipe, and the selection box inverts to a paper
-fill with a dark word.
+they stay legible on the gold swipe.
 
 ## Consistency rules
 

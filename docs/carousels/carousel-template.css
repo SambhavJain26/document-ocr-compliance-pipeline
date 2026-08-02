@@ -26,7 +26,7 @@
   /* --- THE COLOR RULE ---------------------------------------------------
      Type is always ink. Every single word, every slide, no exceptions.
      Color only ever appears as an annotation on top of type — a marker
-     swipe, a pen stroke, a selection box — or as the page number. That is
+     swipe or a pen stroke — or as the page number. That is
      the whole system, and it is why nothing reads as arbitrary. */
   --paper:     var(--gold-100);
   --ink:       var(--blue-700);   /* all display type */
@@ -35,14 +35,14 @@
 
   --marker:    var(--gold-200);   /* highlighter swipe */
   --pen:       var(--blue-400);   /* circles, underlines, page number */
-  --sel:       var(--blue-500);   /* selection box fill */
 
   --rule:      rgba(2, 8, 31, 0.13);
 
   /* --- Grid ------------------------------------------------------------- */
   --page-w:   1080px;
   --page-h:   1350px;
-  --margin-x: 78px;
+  --margin-x: 96px;
+  --rule-x:   56px;   /* the vertical margin rule, left of the text edge */
 
   /* Rule weights. Three, declared, and nothing uses a number outside them.
      hair separates, line outlines, mark is furniture the eye reads as a
@@ -52,13 +52,13 @@
   --w-mark: 5px;
 
   /* --- Type scale ------------------------------------------------------- */
-  --size-display: 124px;
-  --size-lead:    104px;
-  --size-turn:     66px;
-  --size-check:    58px;
-  --size-detail:   42px;
+  --size-display: 112px;
+  --size-lead:     96px;
+  --size-turn:     62px;
+  --size-check:    54px;
+  --size-detail:   40px;
   --size-pay:     192px;
-  --size-tag:      33px;
+  --size-tag:      28px;
   --size-micro:    18px;
 
   /* Switzer carries everything. Zodiak Bold Italic is the second voice, for
@@ -108,11 +108,16 @@ html, body {
 .slide--invert { background: var(--ink); }
 
 .slide--invert::before {
-  background-image: repeating-linear-gradient(
-    to bottom,
-    transparent 0 71px,
-    rgba(253, 240, 214, 0.08) 71px 72px
-  );
+  background-image:
+    linear-gradient(to right,
+      transparent 0 var(--rule-x),
+      rgba(253, 240, 214, 0.28) var(--rule-x) calc(var(--rule-x) + 3px),
+      transparent calc(var(--rule-x) + 3px)),
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0 71px,
+      rgba(253, 240, 214, 0.08) 71px 72px
+    );
 }
 
 .slide--invert::after { mix-blend-mode: screen; opacity: 0.07; }
@@ -140,11 +145,6 @@ html, body {
 /* A highlighted word sits on gold, so it has to go dark or it disappears. */
 .slide--invert .hl         { color: var(--ink); }
 
-/* The selection box inverts with everything else: paper fill, dark word,
-   handles filled with the ground and ringed in marker. */
-.slide--invert .sel        { background: var(--paper); color: var(--ink); }
-.slide--invert .sel i      { background: var(--ink); border-color: var(--marker); }
-
 .slide--invert .footer {
   color: rgba(253, 240, 214, 0.55);
   background: var(--ink);
@@ -153,18 +153,27 @@ html, body {
 
 .slide--invert .footer b { color: var(--marker); }
 
-/* Ruled paper. Faint horizontal lines the full width, so the ground reads as
-   a page rather than a color field, and so the annotation layer has
-   something to be annotating. */
+/* Ruled paper. Faint horizontal lines the full width plus a single vertical
+   margin rule, the way a notebook page is ruled. The vertical stroke is what
+   makes the horizontal ruling read as a grid somebody printed rather than a
+   texture somebody applied.
+
+   Both are ink tints, never colour. Page furniture is printed; colour is
+   only ever something a person added by hand on top of it. */
 .slide::before {
   content: "";
   position: absolute;
   inset: 0;
-  background-image: repeating-linear-gradient(
-    to bottom,
-    transparent 0 71px,
-    rgba(2, 8, 31, 0.045) 71px 72px
-  );
+  background-image:
+    linear-gradient(to right,
+      transparent 0 var(--rule-x),
+      rgba(2, 8, 31, 0.22) var(--rule-x) calc(var(--rule-x) + 3px),
+      transparent calc(var(--rule-x) + 3px)),
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0 71px,
+      rgba(2, 8, 31, 0.045) 71px 72px
+    );
   z-index: 0;
 }
 
@@ -333,31 +342,33 @@ html, body {
   stroke-width: 9;
 }
 
-/* The selected element. A word boxed like an object picked up in a design
-   tool, corner handles and all. Used once per deck, on the word the whole
-   argument turns on. */
-.sel {
-  position: relative;
-  display: inline-block;
-  background: var(--sel);
-  color: var(--paper);
-  padding: 0.04em 0.16em 0.1em;
-  margin: 0 0.06em;
-}
-
-.sel i {
+/* A mark that lives outside the text block, hung in the right margin and
+   pointing back at the line it annotates. Every other mark sits on a word;
+   this one is the reason the page reads as something a person worked over
+   rather than a page with styled spans. One per deck. */
+.margin-mark {
   position: absolute;
-  width: 15px;
-  height: 15px;
-  background: var(--paper);
-  border: var(--w-mark) solid var(--pen);
-  border-radius: 50%;
+  right: -62px;
+  top: -0.06em;
+  width: 36px;
+  height: calc(100% + 0.12em);
+  z-index: 7;
 }
 
-.sel i:nth-child(1) { left: -9px;  top: -9px; }
-.sel i:nth-child(2) { right: -9px; top: -9px; }
-.sel i:nth-child(3) { left: -9px;  bottom: -9px; }
-.sel i:nth-child(4) { right: -9px; bottom: -9px; }
+/* A brace, not an arrow. The margin channel is 96px wide, and an arrow small
+   enough to fit it reads as a smudge next to 62px type. A brace is narrow
+   and tall, which is the shape the space actually offers.
+   vector-effect keeps the stroke even while the path stretches to the block. */
+.margin-mark svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  fill: none;
+  stroke: var(--pen);
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 
 /* A note in the second voice, hung under the thing it annotates. */
 .margin-note {
@@ -383,6 +394,13 @@ html, body {
   line-height: 144px;
   letter-spacing: -0.046em;
   color: var(--ink);
+}
+
+.display em {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 800;
+  letter-spacing: -0.022em;
 }
 
 .kicker {
@@ -411,6 +429,7 @@ html, body {
 }
 
 .turn {
+  position: relative;
   font-weight: 600;
   font-size: var(--size-turn);
   line-height: 72px;
