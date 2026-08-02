@@ -64,6 +64,45 @@
   --serif: "Zodiak", Georgia, serif;
 }
 
+/* ===========================================================================
+   VARIANTS
+   Both are declared here rather than in per-post HTML, so a post still only
+   picks classes. Set one on <body>.
+   =========================================================================== */
+
+/* theme-flip — ink and pen swap. Display type becomes blue, every pen mark
+   and the selection box become near-black. Marker stays gold. */
+body.theme-flip {
+  --ink: var(--blue-500);
+  --pen: var(--blue-700);
+  --sel: var(--blue-700);
+}
+
+/* loud — same palette, more volume. Bigger type against tighter margins,
+   heavier pen strokes, a deeper marker swipe, and one inverted slide. */
+body.loud {
+  --margin-x:      78px;
+  --size-display: 124px;
+  --size-lead:    100px;
+  --size-turn:     66px;
+  --size-check:    58px;
+  --size-detail:   42px;
+  --size-pay:     196px;
+  --size-tag:      33px;
+}
+
+body.loud .pen--circle > svg { stroke-width: 8; }
+body.loud .pen--under  > svg { stroke-width: 9; }
+body.loud .pen--strike > svg { stroke-width: 9; }
+body.loud .hl          { background-size: 100% 0.94em; background-position: 0 0.5em; }
+body.loud .display,
+body.loud .close-lead  { letter-spacing: -0.046em; }
+body.loud .lead        { letter-spacing: -0.04em; }
+body.loud .head        { border-bottom-width: 5px; }
+body.loud .checks li   { font-weight: 700; }
+body.loud .tags li     { border-width: 3px; font-weight: 700; }
+body.loud .margin-note { font-size: 44px; }
+
 @page { size: 1080px 1350px; margin: 0; }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -95,6 +134,36 @@ html, body {
 }
 
 .slide:last-child { page-break-after: auto; break-after: auto; }
+
+/* The inverted slide. One spike per deck, on the slide the whole argument
+   turns on. Used more than once it stops being a spike and becomes a
+   pattern, which is quieter, not louder. */
+.slide--invert { background: var(--ink); }
+
+.slide--invert::before {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0 71px,
+    rgba(253, 240, 214, 0.08) 71px 72px
+  );
+}
+
+.slide--invert::after { mix-blend-mode: screen; opacity: 0.07; }
+
+.slide--invert .eyebrow     { color: rgba(253, 240, 214, 0.6); }
+.slide--invert .eyebrow::before { background: var(--marker); }
+.slide--invert .head        { color: rgba(253, 240, 214, 0.6); border-bottom-color: var(--paper); }
+.slide--invert .pay         { color: var(--paper); }
+.slide--invert .margin-note { color: var(--marker); }
+.slide--invert .pen > svg   { stroke: var(--marker); }
+
+.slide--invert .footer {
+  color: rgba(253, 240, 214, 0.55);
+  background: var(--ink);
+  border-top-color: rgba(253, 240, 214, 0.22);
+}
+
+.slide--invert .footer b { color: var(--marker); }
 
 /* Ruled paper. Faint horizontal lines the full width, so the ground reads as
    a page rather than a color field, and so the annotation layer has
