@@ -42,23 +42,23 @@
   /* --- Grid ------------------------------------------------------------- */
   --page-w:   1080px;
   --page-h:   1350px;
-  --margin-x: 96px;
+  --margin-x: 78px;
 
   /* Rule weights. Three, declared, and nothing uses a number outside them.
      hair separates, line outlines, mark is furniture the eye reads as a
      deliberate stroke. */
   --w-hair: 1px;
-  --w-line: 2px;
-  --w-mark: 3px;
+  --w-line: 3px;
+  --w-mark: 5px;
 
   /* --- Type scale ------------------------------------------------------- */
-  --size-display: 112px;
-  --size-lead:     88px;
-  --size-turn:     62px;
-  --size-check:    54px;
-  --size-detail:   40px;
-  --size-pay:     168px;
-  --size-tag:      31px;
+  --size-display: 124px;
+  --size-lead:    104px;
+  --size-turn:     66px;
+  --size-check:    58px;
+  --size-detail:   42px;
+  --size-pay:     192px;
+  --size-tag:      33px;
   --size-micro:    18px;
 
   /* Switzer carries everything. Zodiak Bold Italic is the second voice, for
@@ -69,55 +69,6 @@
   --sans:  "Switzer", "Segoe UI", system-ui, sans-serif;
   --serif: "Zodiak", Georgia, serif;
 }
-
-/* ===========================================================================
-   VARIANTS
-   Both are declared here rather than in per-post HTML, so a post still only
-   picks classes. Set one on <body>.
-   =========================================================================== */
-
-/* theme-flip — ink and pen swap. Display type becomes blue, every pen mark
-   and the selection box become near-black. Marker stays gold. */
-body.theme-flip {
-  --ink: var(--blue-500);
-  --pen: var(--blue-700);
-  --sel: var(--blue-700);
-}
-
-/* loud — same palette, more volume. Bigger type against tighter margins,
-   heavier pen strokes, a deeper marker swipe, and one inverted slide. */
-body.loud {
-  --margin-x:      78px;
-  --size-display: 124px;
-  --size-lead:    104px;
-  --size-turn:     66px;
-  --size-check:    58px;
-  --size-detail:   42px;
-  --size-pay:     192px;
-  --size-tag:      33px;
-  --w-line:         3px;
-  --w-mark:         5px;
-}
-
-body.loud .pen--circle > svg { stroke-width: 8; }
-body.loud .pen--under  > svg { stroke-width: 9; }
-body.loud .pen--strike > svg { stroke-width: 9; }
-body.loud .hl          { background-size: 100% 0.94em; background-position: 0 0.5em; }
-body.loud .display,
-body.loud .close-lead  { letter-spacing: -0.046em; }
-body.loud .lead        { letter-spacing: -0.04em; }
-body.loud .checks li   { font-weight: 700; }
-body.loud .tags li     { font-weight: 700; }
-body.loud .margin-note { font-size: 44px; }
-
-/* Leading stays on the baseline unit at the larger sizes. */
-body.loud .display,
-body.loud .close-lead  { line-height: 144px; }
-body.loud .lead        { line-height: 120px; }
-body.loud .turn        { line-height: 72px; }
-body.loud .checks li   { line-height: 72px; }
-body.loud .detail,
-body.loud .margin-note { line-height: 48px; }
 
 @page { size: 1080px 1350px; margin: 0; }
 
@@ -330,8 +281,8 @@ html, body {
   padding: 0 0.12em;
   margin: 0 -0.12em;
   background-repeat: no-repeat;
-  background-size: 100% 0.84em;
-  background-position: 0 0.56em;
+  background-size: 100% 0.94em;
+  background-position: 0 0.5em;
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='40' preserveAspectRatio='none'%3E%3Cpath d='M1,7 C46,1 128,11 206,5 C284,-1 348,10 399,3 L399,34 C352,39 268,29 186,35 C104,41 44,32 1,37 Z' fill='%23F8C043'/%3E%3C/svg%3E");
@@ -363,7 +314,7 @@ html, body {
   top: -0.12em;
   width: calc(100% + 0.28em);
   height: 1.24em;
-  stroke-width: 5;
+  stroke-width: 8;
 }
 
 .pen--under > svg {
@@ -371,7 +322,7 @@ html, body {
   bottom: -0.18em;
   width: calc(100% + 0.12em);
   height: 0.30em;
-  stroke-width: 6;
+  stroke-width: 9;
 }
 
 .pen--strike > svg {
@@ -379,7 +330,7 @@ html, body {
   top: 0.52em;
   width: calc(100% + 0.16em);
   height: 0.2em;
-  stroke-width: 6;
+  stroke-width: 9;
 }
 
 /* The selected element. A word boxed like an object picked up in a design
@@ -413,7 +364,7 @@ html, body {
   font-family: var(--serif);
   font-style: italic;
   font-weight: 700;
-  font-size: 40px;
+  font-size: 44px;
   line-height: 48px;
   letter-spacing: -0.014em;
   color: var(--pen);
@@ -429,8 +380,8 @@ html, body {
 .display {
   font-weight: 900;
   font-size: var(--size-display);
-  line-height: 120px;
-  letter-spacing: -0.038em;
+  line-height: 144px;
+  letter-spacing: -0.046em;
   color: var(--ink);
 }
 
@@ -447,8 +398,8 @@ html, body {
 .lead {
   font-weight: 800;
   font-size: var(--size-lead);
-  line-height: 96px;
-  letter-spacing: -0.032em;
+  line-height: 120px;
+  letter-spacing: -0.04em;
   color: var(--ink);
 }
 
@@ -497,7 +448,7 @@ html, body {
    number is positioned instead so the text stays one continuous run. */
 .checks li {
   position: relative;
-  font-weight: 600;
+  font-weight: 700;
   font-size: var(--size-check);
   line-height: 72px;
   letter-spacing: -0.024em;
@@ -525,7 +476,7 @@ html, body {
 }
 
 .tags li {
-  font-weight: 600;
+  font-weight: 700;
   font-size: var(--size-tag);
   letter-spacing: -0.01em;
   color: var(--ink);
@@ -550,8 +501,8 @@ html, body {
 .close-lead {
   font-weight: 900;
   font-size: var(--size-display);
-  line-height: 120px;
-  letter-spacing: -0.038em;
+  line-height: 144px;
+  letter-spacing: -0.046em;
   color: var(--ink);
 }
 

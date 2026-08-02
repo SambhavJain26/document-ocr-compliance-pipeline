@@ -91,10 +91,10 @@ Open Sans, Poppins, Montserrat — the generic-template tells.
 |---|---|
 | Cover | `.display` `.kicker` |
 | Statement | `.lead` `.divider` `.turn` |
-| Field list | `.lead` `.tags` `.detail` |
+| Field list | `.lead` `.tags` `.divider` `.turn` |
 | Check list | `.head` `.checks` |
 | Payoff | `.head` `.pay` `.margin-note` |
-| Close | `.close-lead` `.close-turn` `.byline` |
+| Close | `.close-lead` `.divider` `.turn` `.byline` |
 
 Annotation classes, usable inside any of them: `.hl` (marker), `.pen
 --circle` / `--under` / `--strike`, `.sel` (selection box).
@@ -103,26 +103,24 @@ Annotation classes, usable inside any of them: `.hl` (marker), `.pen
 Slide copy runs from 8 words to 24, so a fixed top anchor strands short
 slides in the upper third with a dead page underneath.
 
-## Variants
+## One deck, no variants
 
-Declared as themes on the stylesheet, set on `<body>`, so a post still only
-picks classes. They compose: `class="loud theme-flip"` is valid.
+There was briefly a `theme-flip` theme (ink and pen swapped) and a `loud`
+theme (bigger type, tighter margins, heavier strokes) layered over a quieter
+base. The loud settings won and are now the template's own values. Both
+variant files are deleted.
 
-- **`theme-flip`** — ink and pen swap. Display type becomes `#1F4393`, every
-  pen mark and the selection box become near-black. Marker stays gold.
-- **`loud`** — same palette, more volume. Bigger type against tighter
-  margins, heavier pen strokes, a deeper marker swipe, and `.slide--invert`
-  on the payoff slide. One inverted page per deck; used twice it stops being
-  a spike and becomes a pattern, which is quieter, not louder.
+Do not reintroduce a theme layer for a single consumer. Every change then has
+to be made twice, and the base it overrides has no other reader. If a future
+post needs a different treatment, add a named layout, not a theme.
 
 ## The baseline grid
 
 The ruled lines are drawn every 72px. The **baseline unit is 24px** — every
 third unit is a drawn rule.
 
-- **Every leading is set in px and is a multiple of 24.** Display 120, lead
-  96, turn 72, checks 72, detail and note 48, payoff 168. The `loud` variant
-  overrides them to 144 / 120 / 72 / 72 / 48.
+- **Every leading is set in px and is a multiple of 24.** Display 144, lead
+  120, turn 72, checks 72, detail and note 48, payoff 192.
 - **Every vertical margin and padding is a multiple of 24.** No exceptions,
   including the eyebrow offset, the footer band, and the divider.
 - `.turn` and `.checks` sit exactly on a drawn rule on every line, because
@@ -146,9 +144,8 @@ language before any later slide uses it, and it gives the deck a dark
 thumbnail, which is the highest-value frame in the whole post.
 
 Beyond the cover, **one more inverted slide per deck at most**, on the page
-the argument turns on. In post 1 that is slide 6, and only in the `loud`
-variant. Used more often it stops being a spike and becomes a pattern, which
-reads quieter, not louder.
+the argument turns on. In post 1 that is slide 6. Used more often it stops
+being a spike and becomes a pattern, which reads quieter, not louder.
 
 On an inverted slide the colour rule still holds: every word is one value
 (`--paper`), and only annotations carry colour. Highlighted words go dark so
@@ -162,8 +159,7 @@ Each of these exists because something looked like a mistake.
 
 1. **Three rule weights, declared, and nothing uses a number outside them.**
    `--w-hair` separates, `--w-line` outlines, `--w-mark` is furniture the eye
-   reads as a deliberate stroke. The `loud` variant scales the tokens rather
-   than overriding individual rules.
+   reads as a deliberate stroke.
 2. **Both furniture marks are gold.** The eyebrow rule and the byline rule
    are the same 38px stroke and must stay the same color.
 3. **One treatment for "the line after the statement."** Always `.turn`,
