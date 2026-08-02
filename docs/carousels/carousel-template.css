@@ -1,13 +1,14 @@
 /* ---------------------------------------------------------------------------
    LinkedIn document carousel — fixed template.
 
-   One stylesheet for every carousel in docs/linkedin-post-scripts.md.
+   Concept: the marked-up document. The deck looks like a page somebody has
+   been over with a highlighter and a pen — swipes, circled words, underlines,
+   a selected element. That is literally the subject matter of this work
+   (documents, read and annotated by a person), and the annotation layer is
+   what stops a type-only deck reading as generic.
+
    Per-post HTML supplies content and picks layout classes; it must not
    introduce sizes, colors, or spacing of its own.
-
-   See docs/carousels/README.md for the palette role table, the type
-   rationale, and the graphic system. template-specimen.html renders every
-   layout on one page.
 
    Page: 1080 x 1350 (4:5).
 --------------------------------------------------------------------------- */
@@ -22,56 +23,45 @@
   --blue-600: #0E2455;  --gold-600: #4C390E;  --grey-600: #383B3D;
   --blue-700: #02081F;  --gold-700: #251A04;  --grey-700: #191B1C;
 
-  /* --- Semantic roles ---------------------------------------------------
-     Reversed from the navy deck: warm light ground, near-black type, gold
-     carrying the headings and blue carrying the structure. Both brand
-     colors do real work rather than one being decorative. */
-  --paper:        var(--gold-100);
-  --paper-panel:  #FBF7F0;
+  /* --- THE COLOR RULE ---------------------------------------------------
+     Type is always ink. Every single word, every slide, no exceptions.
+     Color only ever appears as an annotation on top of type — a marker
+     swipe, a pen stroke, a selection box — or as the page number. That is
+     the whole system, and it is why nothing reads as arbitrary. */
+  --paper:     var(--gold-100);
+  --ink:       var(--blue-700);   /* all display type */
+  --ink-soft:  var(--grey-600);   /* running copy */
+  --ink-micro: var(--grey-400);   /* eyebrow, footer title */
 
-  --ink:          var(--blue-700);   /* display type, reads near-black */
-  --ink-body:     var(--grey-600);   /* running copy */
-  --ink-mute:     var(--grey-400);   /* index rail, inactive */
+  --marker:    var(--gold-200);   /* highlighter swipe */
+  --pen:       var(--blue-400);   /* circles, underlines, page number */
+  --sel:       var(--blue-500);   /* selection box fill */
 
-  /* Headings take the brand blue rather than gold. Gold on cream is the
-     same value as cream and the whole deck goes monochrome beige; blue is
-     the only thing in the palette with enough contrast to carry type at
-     size, and it keeps both brand colors doing real work. */
-  --head:         var(--blue-500);   /* the item heading */
-  --accent:       var(--gold-300);   /* badge fill, rules, grid */
-  --accent-hot:   var(--gold-200);   /* one filled grid cell */
-
-  --struct:       var(--gold-400);   /* step labels, page numbers */
-  --ghost:        rgba(202, 156, 53, 0.26);
-  --rule:         rgba(161, 124, 40, 0.42);
+  --rule:      rgba(2, 8, 31, 0.13);
 
   /* --- Grid ------------------------------------------------------------- */
-  --page-w:    1080px;
-  --page-h:    1350px;
-  --margin-x:  100px;
-  --measure:   880px;
-  --eyebrow-y: 88px;
+  --page-w:   1080px;
+  --page-h:   1350px;
+  --margin-x: 96px;
+  --measure:  888px;
 
   /* --- Type scale ------------------------------------------------------- */
-  --size-display: 94px;
-  --size-lead:    80px;
-  --size-step:    30px;
-  --size-detail:  40px;
-  --size-sub:     40px;
-  --size-item:    40px;
-  --size-figure: 104px;
-  --size-micro:   17px;
-  --size-index:   18px;
-  --size-note:    23px;
-  --size-ghost:  620px;
+  --size-display: 112px;
+  --size-lead:     94px;
+  --size-turn:     62px;
+  --size-check:    54px;
+  --size-detail:   40px;
+  --size-pay:     168px;
+  --size-tag:      31px;
+  --size-micro:    18px;
 
-  /* Clash Display for anything large, Boska italic for the emphasis words
-     inside a headline, Satoshi for everything set small. Three families is
-     one more than the usual ceiling and it is deliberate: the mixed-face
-     headline is the whole reference look. */
-  --display: "Clash Display", "Arial Black", sans-serif;
-  --accentf: "Boska", Georgia, serif;
-  --text:    "Satoshi", "Segoe UI", system-ui, sans-serif;
+  /* Switzer carries everything. Zodiak Bold Italic is the second voice, for
+     the one word in a deck that has to land differently. Two families, and
+     the previous set is gone: Clash Display's period is an oversized square
+     that wrecks every sentence ending, and Boska's italic is too light to
+     hold against a black grotesque. */
+  --sans:  "Switzer", "Segoe UI", system-ui, sans-serif;
+  --serif: "Zodiak", Georgia, serif;
 }
 
 @page { size: 1080px 1350px; margin: 0; }
@@ -81,6 +71,7 @@
 html, body {
   width: var(--page-w);
   background: var(--paper);
+  font-family: var(--sans);
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
   -webkit-font-smoothing: antialiased;
@@ -105,13 +96,18 @@ html, body {
 
 .slide:last-child { page-break-after: auto; break-after: auto; }
 
-/* Bookends get a panel inset rather than a different color, so the deck
-   stays one material and the cover still reads as a cover. */
-.slide--deep::before {
+/* Ruled paper. Faint horizontal lines the full width, so the ground reads as
+   a page rather than a color field, and so the annotation layer has
+   something to be annotating. */
+.slide::before {
   content: "";
   position: absolute;
-  inset: 44px;
-  border: 2px solid var(--rule);
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0 71px,
+    rgba(2, 8, 31, 0.045) 71px 72px
+  );
   z-index: 0;
 }
 
@@ -125,404 +121,326 @@ html, body {
   mix-blend-mode: multiply;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 240px 240px;
+  z-index: 9;
 }
 
 /* ===========================================================================
-   FURNITURE — eyebrow, footer bar, index rail, byline
+   FURNITURE
    =========================================================================== */
 
 .eyebrow {
   position: absolute;
   left: var(--margin-x);
-  top: var(--eyebrow-y);
+  top: 84px;
   display: flex;
   align-items: center;
-  gap: 20px;
-  font-family: var(--text);
+  gap: 18px;
   font-weight: 700;
   font-size: var(--size-micro);
-  letter-spacing: 0.22em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--struct);
-  z-index: 4;
+  color: var(--ink-micro);
+  z-index: 5;
 }
 
-.eyebrow::before {
-  content: "";
-  width: 42px;
-  height: 3px;
-  background: var(--accent);
-}
+.eyebrow::before { content: ""; width: 38px; height: 3px; background: var(--pen); }
 
-.slide--deep .eyebrow { left: 144px; top: 132px; }
-
-/* Footer bar, straight off the reference decks: the deck title on the left,
-   the page number on the right, a hairline between them and the page. */
+/* The footer sits inside its own clear band. Nothing is allowed to bleed
+   across it — an earlier pass let a graphic run over the page number and it
+   read as a mistake rather than as a decision. */
 .footer {
   position: absolute;
   left: var(--margin-x);
   right: var(--margin-x);
-  bottom: 78px;
-  padding-top: 22px;
+  bottom: 74px;
+  padding-top: 20px;
   border-top: 1px solid var(--rule);
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  font-family: var(--text);
   font-weight: 500;
   font-size: var(--size-micro);
-  letter-spacing: 0.04em;
-  color: var(--ink-mute);
-  z-index: 4;
+  letter-spacing: 0.03em;
+  color: var(--ink-micro);
+  background: var(--paper);
+  z-index: 8;
 }
 
-.footer b {
-  font-family: var(--display);
-  font-weight: 600;
-  font-size: 26px;
-  letter-spacing: 0;
-  color: var(--head);
-}
-
-.slide--deep .footer { left: 144px; right: 144px; bottom: 122px; }
-
-/* The index rail. Slides carry at most 22 words, so a numbered item leaves
-   the lower field empty. Listing all six with the current one live fills it
-   with the thing a count-based deck most needs to prove. */
-.index {
-  position: absolute;
-  left: var(--margin-x);
-  bottom: 186px;
-  width: var(--measure);
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px 56px;
-  font-family: var(--text);
-  font-weight: 500;
-  font-size: var(--size-index);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--ink-mute);
-  z-index: 4;
-}
-
-.index b { font-weight: 700; color: var(--grey-300); margin-right: 14px; }
-.index .on   { color: var(--ink); }
-.index .on b { color: var(--accent); }
+.footer b { font-weight: 800; font-size: 22px; letter-spacing: 0; color: var(--pen); }
 
 .byline {
   position: absolute;
   left: var(--margin-x);
-  bottom: 186px;
+  bottom: 168px;
   display: flex;
   align-items: center;
-  gap: 20px;
-  font-family: var(--text);
+  gap: 18px;
   font-weight: 700;
   font-size: var(--size-micro);
-  letter-spacing: 0.22em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--struct);
-  z-index: 4;
+  color: var(--ink);
+  z-index: 6;
 }
 
-.byline::before { content: ""; width: 42px; height: 3px; background: var(--accent); }
-.slide--deep .byline { left: 144px; bottom: 218px; }
+.byline::before { content: ""; width: 38px; height: 3px; background: var(--marker); }
 
 /* ===========================================================================
    CONTENT BLOCK
    =========================================================================== */
 
+/* Content sits in a fixed band between the eyebrow and the footer and
+   centers inside it. Slide copy runs from 8 words to 24, so a fixed top
+   anchor leaves short slides stranded in the upper third with a dead page
+   underneath. Centering in a bounded band keeps every slide full. */
 .body {
   position: absolute;
   left: var(--margin-x);
-  bottom: 320px;
-  width: var(--measure);
-  z-index: 3;
+  right: var(--margin-x);
+  top: 226px;
+  bottom: 190px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  z-index: 6;
 }
 
-.body--top    { top: 300px; bottom: auto; }
-.body--nofoot { bottom: 220px; }
-.slide--deep .body { left: 144px; width: 792px; top: 296px; bottom: auto; }
+.body--close { bottom: 250px; }
 
 /* ===========================================================================
-   LAYOUT 1 — COVER
+   ANNOTATION LAYER — the marker, the pen, the selection
+   Hand-drawn geometry, deliberately imperfect. Nothing here is a rectangle
+   with a flat corner, because the point is that a person did it.
    =========================================================================== */
 
-.badge {
-  display: inline-block;
-  background: var(--accent);
-  color: var(--blue-700);
-  font-family: var(--text);
-  font-weight: 700;
-  font-size: 22px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  padding: 12px 22px 11px;
-  margin-bottom: 44px;
+/* Highlighter swipe. Painted as a background image rather than a pseudo
+   element so it clones onto every line box — a pseudo element collapses to
+   slivers the moment a highlighted phrase wraps. The SVG has uneven top and
+   bottom edges so it reads as a marker pass, not a rectangle. */
+.hl {
+  padding: 0 0.1em;
+  background-repeat: no-repeat;
+  background-size: 100% 0.82em;
+  background-position: 0 0.58em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='40' preserveAspectRatio='none'%3E%3Cpath d='M1,7 C46,1 128,11 206,5 C284,-1 348,10 399,3 L399,34 C352,39 268,29 186,35 C104,41 44,32 1,37 Z' fill='%23F8C043'/%3E%3C/svg%3E");
 }
 
+.hl--tight { background-size: 100% 0.7em; background-position: 0 0.64em; }
+
+/* Pen strokes. The SVG is supplied inline by the post so the path can be
+   sized to the word; these rules only place and color it. */
+.pen {
+  position: relative;
+  display: inline-block;
+}
+
+.pen > svg {
+  position: absolute;
+  overflow: visible;
+  fill: none;
+  stroke: var(--pen);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+  z-index: 7;
+}
+
+.pen--circle > svg {
+  left: -0.14em;
+  top: -0.12em;
+  width: calc(100% + 0.28em);
+  height: 1.24em;
+  stroke-width: 5;
+}
+
+.pen--under > svg {
+  left: -0.06em;
+  bottom: -0.18em;
+  width: calc(100% + 0.12em);
+  height: 0.30em;
+  stroke-width: 6;
+}
+
+.pen--strike > svg {
+  left: -0.08em;
+  top: 0.52em;
+  width: calc(100% + 0.16em);
+  height: 0.2em;
+  stroke-width: 6;
+}
+
+/* The selected element. A word boxed like an object picked up in a design
+   tool, corner handles and all. Used once per deck, on the word the whole
+   argument turns on. */
+.sel {
+  position: relative;
+  display: inline-block;
+  background: var(--sel);
+  color: var(--paper);
+  padding: 0.04em 0.16em 0.1em;
+  margin: 0 0.06em;
+}
+
+.sel i {
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  background: var(--paper);
+  border: 3px solid var(--pen);
+  border-radius: 50%;
+}
+
+.sel i:nth-child(1) { left: -9px;  top: -9px; }
+.sel i:nth-child(2) { right: -9px; top: -9px; }
+.sel i:nth-child(3) { left: -9px;  bottom: -9px; }
+.sel i:nth-child(4) { right: -9px; bottom: -9px; }
+
+/* A note in the second voice, hung under the thing it annotates. */
+.margin-note {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 700;
+  font-size: 40px;
+  line-height: 1.3;
+  letter-spacing: -0.014em;
+  color: var(--pen);
+  max-width: 740px;
+  margin-top: 68px;
+}
+
+/* ===========================================================================
+   LAYOUTS
+   =========================================================================== */
+
+/* Cover ------------------------------------------------------------------ */
 .display {
-  font-family: var(--display);
-  font-weight: 600;
+  font-weight: 900;
   font-size: var(--size-display);
-  line-height: 1.0;
-  letter-spacing: -0.028em;
+  line-height: 1.02;
+  letter-spacing: -0.038em;
   color: var(--ink);
 }
 
-/* The emphasis word inside a headline, set in the contrast serif italic.
-   This is the reference decks' single strongest device. */
-.display em,
-.close-lead em {
-  font-family: var(--accentf);
-  font-style: italic;
-  font-weight: 400;
-  letter-spacing: -0.01em;
-  color: var(--head);
-}
-
-.mark { width: 124px; height: 4px; background: var(--accent); margin: 52px 0 44px; }
-
-.sub {
-  font-family: var(--text);
-  font-weight: 400;
-  font-size: var(--size-sub);
-  line-height: 1.34;
-  letter-spacing: -0.012em;
-  color: var(--ink-body);
-  max-width: 560px;
-}
-
-/* ===========================================================================
-   LAYOUT 2 — NUMBERED ITEM  (post 1, slides 2-7)
-   =========================================================================== */
-
-/* Fixed width plus right alignment so every digit bleeds by the same amount.
-   Without it a "1" and a "4" clip differently and the set stops looking
-   deliberate. */
-.ghost {
-  position: absolute;
-  top: -58px;
-  right: -30px;
-  width: 560px;
-  text-align: right;
-  font-family: var(--display);
+.kicker {
   font-weight: 600;
-  font-size: var(--size-ghost);
-  line-height: 1;
-  color: var(--ghost);
-  z-index: 1;
-  user-select: none;
-}
-
-.step {
-  font-family: var(--accentf);
-  font-style: italic;
-  font-weight: 400;
-  font-size: var(--size-step);
-  letter-spacing: 0.01em;
-  color: var(--struct);
-  margin-bottom: 18px;
-}
-
-.label {
-  font-family: var(--display);
-  font-weight: 600;
-  font-size: var(--size-lead);
-  line-height: 1.04;
+  font-size: var(--size-turn);
+  line-height: 1.16;
   letter-spacing: -0.026em;
-  color: var(--head);
-  max-width: 840px;
+  color: var(--ink);
+  margin-top: 56px;
+}
+
+/* Statement: a lead, a divider, and the turn ----------------------------- */
+.lead {
+  font-weight: 800;
+  font-size: var(--size-lead);
+  line-height: 1.08;
+  letter-spacing: -0.032em;
+  color: var(--ink);
+}
+
+.divider {
+  width: 100%;
+  height: 1px;
+  background: var(--rule);
+  margin: 54px 0;
+}
+
+.turn {
+  font-weight: 600;
+  font-size: var(--size-turn);
+  line-height: 1.18;
+  letter-spacing: -0.024em;
+  color: var(--ink);
 }
 
 .detail {
-  font-family: var(--text);
   font-weight: 400;
   font-size: var(--size-detail);
-  line-height: 1.45;
+  line-height: 1.46;
   letter-spacing: -0.012em;
-  color: var(--ink-body);
-  max-width: 856px;
-  margin-top: 38px;
+  color: var(--ink-soft);
+  margin-top: 34px;
 }
 
-/* ===========================================================================
-   LAYOUT 3 — GROUPED LIST  (post 7, twelve flags in two severity groups)
-   Groups read apart through rule weight, the group label and numeral
-   alignment. Color never carries the severity split.
-   =========================================================================== */
-
-.group__label {
+/* Head for the matched pair ---------------------------------------------- */
+.head {
+  font-weight: 700;
+  font-size: var(--size-micro);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-micro);
+  padding-bottom: 20px;
+  border-bottom: 3px solid var(--ink);
   display: inline-block;
-  font-family: var(--text);
-  font-weight: 700;
-  font-size: var(--size-micro);
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--ink);
-  padding-top: 26px;
-  border-top: 4px solid var(--accent);
-  margin-bottom: 54px;
+  margin-bottom: 52px;
 }
 
-.group__label--soft { border-top-width: 1px; color: var(--ink-mute); }
+/* Checks: the fixed-logic list ------------------------------------------- */
+.checks { list-style: none; }
 
-.items { list-style: none; }
-
-.items li {
+.checks li {
   display: flex;
-  gap: 30px;
-  font-family: var(--display);
-  font-weight: 500;
-  font-size: var(--size-item);
-  line-height: 1.22;
-  letter-spacing: -0.018em;
+  gap: 26px;
+  font-weight: 600;
+  font-size: var(--size-check);
+  line-height: 1.2;
+  letter-spacing: -0.024em;
   color: var(--ink);
-  padding: 24px 0;
+  padding: 28px 0;
   border-bottom: 1px solid var(--rule);
 }
 
-.items li:first-child { border-top: 1px solid var(--rule); }
+.checks li:first-child { border-top: 1px solid var(--rule); }
+.checks li b { font-weight: 800; color: var(--pen); flex: 0 0 42px; }
 
-.items span {
-  flex: 0 0 66px;
-  font-family: var(--text);
-  font-weight: 700;
-  font-size: var(--size-index);
-  letter-spacing: 0.08em;
-  color: var(--struct);
-  padding-top: 10px;
-}
-
-/* ===========================================================================
-   LAYOUT 4 — FIGURE STACK  (post 4, the arithmetic)
-   =========================================================================== */
-
-.figures { list-style: none; }
-
-.figures li {
+/* Tags: the transcribed fields ------------------------------------------- */
+.tags {
   display: flex;
-  align-items: baseline;
   flex-wrap: wrap;
-  gap: 0 26px;
-  margin-bottom: 40px;
-}
-
-.figures li:last-child { margin-bottom: 0; }
-
-.figure {
-  font-family: var(--display);
-  font-weight: 600;
-  font-size: var(--size-figure);
-  line-height: 1.06;
-  letter-spacing: -0.036em;
-  color: var(--ink);
-}
-
-.figure--accent { color: var(--head); }
-
-.figure__cap {
-  font-family: var(--text);
-  font-weight: 400;
-  font-size: var(--size-detail);
-  line-height: 1.36;
-  letter-spacing: -0.012em;
-  color: var(--ink-body);
-}
-
-.note {
-  font-family: var(--accentf);
-  font-style: italic;
-  font-size: var(--size-note);
-  color: var(--struct);
-}
-
-/* ===========================================================================
-   LAYOUT 5 — MATCHED PAIR  (post 13, can / cannot)
-   Identical geometry both sides. If the "can" side ever looks heavier the
-   argument tilts, so nothing here varies but the words.
-   =========================================================================== */
-
-.pair__head {
-  font-family: var(--text);
-  font-weight: 700;
-  font-size: var(--size-micro);
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--struct);
-  padding-bottom: 22px;
-  border-bottom: 1px solid var(--rule);
-  margin-bottom: 44px;
-}
-
-.pair__body {
-  font-family: var(--display);
-  font-weight: 600;
-  font-size: var(--size-lead);
-  line-height: 1.08;
-  letter-spacing: -0.026em;
-  color: var(--ink);
-}
-
-/* ===========================================================================
-   LAYOUT 6 — CLOSE
-   =========================================================================== */
-
-.close-lead {
-  font-family: var(--display);
-  font-weight: 600;
-  font-size: var(--size-display);
-  line-height: 1.0;
-  letter-spacing: -0.028em;
-  color: var(--ink);
-}
-
-.close-detail {
-  font-family: var(--text);
-  font-weight: 400;
-  font-size: var(--size-sub);
-  line-height: 1.36;
-  letter-spacing: -0.012em;
-  color: var(--ink-body);
-  max-width: 760px;
+  gap: 14px;
   margin-top: 44px;
+  list-style: none;
 }
 
-.close-ask {
-  font-family: var(--accentf);
+.tags li {
+  font-weight: 600;
+  font-size: var(--size-tag);
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  padding: 10px 24px 12px;
+}
+
+/* The payoff word --------------------------------------------------------- */
+.pay {
+  font-family: var(--serif);
   font-style: italic;
-  font-weight: 400;
-  font-size: 56px;
+  font-weight: 800;
+  font-size: var(--size-pay);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+  display: inline-block;
+}
+
+/* Close ------------------------------------------------------------------- */
+.close-lead {
+  font-weight: 900;
+  font-size: var(--size-display);
+  line-height: 1.02;
+  letter-spacing: -0.038em;
+  color: var(--ink);
+}
+
+.close-turn {
+  font-weight: 600;
+  font-size: var(--size-turn);
   line-height: 1.18;
-  letter-spacing: -0.012em;
-  color: var(--head);
-  margin-top: 64px;
+  letter-spacing: -0.024em;
+  color: var(--ink);
+  margin-top: 52px;
 }
-
-/* ===========================================================================
-   GRAPHIC — THE DATE GRID
-   Seven columns of hairline cells with a few filled, bleeding off the page
-   edge. The concept is literal: the work is documents with dates on them.
-   Bookend slides only.
-   =========================================================================== */
-
-.grid {
-  position: absolute;
-  display: grid;
-  grid-template-columns: repeat(7, 88px);
-  grid-auto-rows: 88px;
-  z-index: 1;
-}
-
-.grid--cover { right: -252px; bottom: -128px; }
-.grid--close { right: -252px; bottom: -128px; transform: rotate(180deg); }
-
-.grid i {
-  display: block;
-  border: 1px solid rgba(161, 124, 40, 0.48);
-  margin: -1px 0 0 -1px;
-}
-
-.grid i.on  { background: rgba(202, 156, 53, 0.34); }
-.grid i.hot { background: rgba(31, 67, 147, 0.82); }
