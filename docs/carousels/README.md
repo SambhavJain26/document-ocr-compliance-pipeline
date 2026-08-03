@@ -193,6 +193,28 @@ Each of these exists because something looked like a mistake.
    inline `.pen` span into its own flex item and tears the sentence apart.
    `.checks` positions its numeral instead.
 
+## The film grain, and why it is a tile
+
+A 128x128 noise tile at 5% opacity on every slide, so a flat PDF reads as
+printed rather than screenshotted. Two constraints, both learned the hard
+way, and both worth keeping.
+
+**It must never be an `feTurbulence` filter.** A filter has to be evaluated
+at output resolution, so Chrome bakes a full-page bitmap into every slide.
+That took the PDF from 132 KB to **24 MB** for visually identical output —
+32 embedded images instead of 1. Shrinking the filter's tile does nothing;
+only baking it to a real image does.
+
+**The tile must be high-passed.** Generate noise, blur it lightly so it
+clumps like fractal noise rather than looking sandy, then subtract a heavily
+blurred copy so the tile carries no large-scale light and dark regions. Skip
+that step and the tile's own variation repeats across the page and the grid
+becomes plainly visible. All blurs wrap at the edges so there is no seam.
+
+Nothing else in the deck is raster. Type is vector with embedded font
+subsets, and every mark, rule and box is a vector shape, so file size and
+visual quality are independent here.
+
 ## Standing rules
 
 - **Nothing bleeds across the footer.** An earlier pass let a graphic run
