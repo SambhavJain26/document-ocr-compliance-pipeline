@@ -100,8 +100,17 @@ Open Sans, Poppins, Montserrat — the generic-template tells.
 | Statement | `.lead` `.divider` `.turn` |
 | Field list | `.lead` `.tags` `.divider` `.turn` |
 | Check list | `.head` `.checks` |
+| Figure | `.fig-lead` `.fig` `.fig-note` |
 | Payoff | `.head` `.pay` `.margin-note` |
 | Close | `.close-lead` `.divider` `.turn` `.byline` |
+
+**Figure is for a slide whose subject is a number.** The numeral runs at 208px
+and the sentence framing it is deliberately quiet, so the number is read first
+and the sentence only explains it. A statement layout cannot do this: its lead
+and turn are sized for prose, and a figure set at prose size stops being the
+point of the slide. `.fig-lead` and `.fig-note` are the same treatment above
+and below the figure, because they are one sentence either side of a number
+rather than two voices. Post 4 opens on `$0.002` this way.
 
 Annotation classes, usable inside any of them: `.hl` (marker),
 `.pen--circle` / `--under` / `--strike` (inline pen marks), and `.sel` (a word
@@ -156,8 +165,9 @@ that makes the page read as constructed rather than decorated.
 ## The inverted slide
 
 **One inverted slide per deck**, on the page the argument turns on. In post 1
-that is slide 6, the payoff. Used more often it stops being a spike and
-becomes a pattern, which reads quieter, not louder.
+that is slide 6, the payoff; in post 4 it is slide 5, the question the whole
+post hands to the reader. Used more often it stops being a spike and becomes a
+pattern, which reads quieter, not louder.
 
 The cover was briefly inverted too, to establish the dark ground before slide
 6 used it. That was reverted: a light cover keeps the dark slide as the single
@@ -168,6 +178,14 @@ pair, not to invert the cover again.
 On an inverted slide the colour rule still holds: every word is one value
 (`--paper`), and only annotations carry colour. Highlighted words go dark so
 they stay legible on the gold swipe.
+
+**The swipe also has to grow there, and flipping the colour alone is not
+enough.** `.hl` is sized to overhang a word rather than to enclose it, so on
+paper the uncovered ascenders are still ink on cream and read fine. On the
+inverted ground they are dark ink on dark navy and disappear — post 4's slide 5
+lost half of "cheap part" that way. The stylesheet raises and grows the swipe
+on `.slide--invert` so it clears the cap height. Check any highlight that lands
+on an inverted slide.
 
 ## Consistency rules
 

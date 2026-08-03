@@ -58,6 +58,7 @@
   --size-turn:     62px;
   --size-check:    54px;
   --size-detail:   40px;
+  --size-fig:     208px;
   --size-pay:     192px;
   --size-tag:      28px;
   --size-micro:    18px;
@@ -143,8 +144,17 @@ html, body {
 .slide--invert .checks li  { border-color: rgba(253, 240, 214, 0.22); }
 .slide--invert .tags li    { color: var(--paper); border-color: var(--paper); }
 
-/* A highlighted word sits on gold, so it has to go dark or it disappears. */
-.slide--invert .hl         { color: var(--ink); }
+/* A highlighted word sits on gold, so it has to go dark or it disappears.
+   Flipping the colour is not enough on its own: the swipe is sized to overhang
+   a word rather than to enclose it, so on paper the uncovered ascenders are
+   still ink on cream and read fine, while on the inverted ground they are dark
+   ink on dark navy and vanish. Here the swipe has to clear the cap height, so
+   it is raised and grown to enclose the whole glyph. */
+.slide--invert .hl {
+  color: var(--ink);
+  background-position: 0 0.20em;
+  background-size: 100% 1.24em;
+}
 
 .slide--invert .footer {
   color: rgba(253, 240, 214, 0.55);
@@ -412,6 +422,33 @@ html, body {
   color: var(--ink);
   margin-top: 48px;
 }
+
+/* Figure: a slide whose subject is a number ------------------------------ */
+/* The numeral is the loudest thing on the page and the sentence framing it is
+   deliberately quiet, so the number is read first and the sentence only
+   explains it. A statement layout cannot do this: its lead and turn are sized
+   for prose, and a figure set at prose size stops being the point of the
+   slide. The framing line takes the same treatment above the figure as below
+   it, because it is one sentence either side of the number, not two voices. */
+.fig {
+  font-weight: 900;
+  font-size: var(--size-fig);
+  line-height: 216px;
+  letter-spacing: -0.055em;
+  color: var(--ink);
+}
+
+.fig-lead,
+.fig-note {
+  font-weight: 600;
+  font-size: var(--size-turn);
+  line-height: 72px;
+  letter-spacing: -0.024em;
+  color: var(--ink);
+}
+
+.fig-lead { margin-bottom: 48px; }
+.fig-note { margin-top: 48px; }
 
 /* Statement: a lead, a divider, and the turn ----------------------------- */
 .lead {
