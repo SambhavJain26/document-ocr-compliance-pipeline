@@ -342,7 +342,7 @@ The honest, defensible position if someone pushes in the comments: the model cos
 
 ---
 
-## Post 7. Twelve things that can be wrong with a certificate
+## Post 7. Twelve things that can be wrong when a COI arrives
 
 **Format:** document carousel, 11 slides. **Framework:** Value-Stack. **Pillar:** honest limitation. **CTA:** none.
 
@@ -351,6 +351,8 @@ The honest, defensible position if someone pushes in the comments: the model cos
 The old slide 4 claimed "All seven go to a person." Two of the seven never reach one: `NOT_A_COI` and `OLDER_THAN_ON_FILE` short-circuit to their own ignore dispositions in `buildResult` before the hard-flag branch that sets `NEEDS_REVIEW`. The line is now accurate, and the correction is more interesting than the error, because "stop everything" turning out not to mean "fetch a human" is the sort working.
 
 A new slide 2 states the principle behind the split. It was only ever in the post copy, and the post copy does not travel with the document — the PDF is what gets shared, and inside it the reader met seven stop-cold items that look milder than the five filed ones with no explanation offered. Slide 9 asserts the sorting is the work; now something earns it.
+
+**Cover widened 2026-08-03.** Was "Twelve things that can be wrong with a COI," which promised narrower than the list delivers. Three of the twelve are not defects in a certificate at all: a document that is not a certificate, one already superseded by a newer certificate on file, and a vendor name a keystroke off an existing vendor, where the ambiguity is on your side rather than the document's. Two more, an unreadable scan and a password-protected file, are properties of the copy you received rather than of the certificate. "When a COI arrives" frames the moment rather than the document, and every one of the twelve fits it. The alternative cover lines were rewritten for the same reason, and the third also carried the "seven need a person" error.
 
 ### The post copy that sits above the document
 
@@ -368,7 +370,7 @@ A new slide 2 states the principle behind the split. It was only ever in the pos
 
 **Slide 1 (cover)**
 
-> Twelve things that can be wrong with a COI.
+> Twelve things that can be wrong when a COI arrives.
 >
 > Seven should stop you. Five should just get written down.
 
@@ -436,9 +438,9 @@ A new slide 2 states the principle behind the split. It was only ever in the pos
 
 ### Alternative cover lines
 
-- "Twelve ways a COI can be wrong. Only seven of them should stop anything."
+- "Twelve ways a COI can arrive unusable. Only seven of them should stop anything."
 - "A one-page document with twelve possible problems, and the hard part isn't finding them."
-- "Seven certificate problems that need a person. Five that just need writing down. Here are all twelve."
+- "Seven problems that stop a COI cold. Five that just need writing down. Here are all twelve."
 
 ### Production note
 

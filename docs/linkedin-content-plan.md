@@ -223,13 +223,13 @@ Assume the reader knows what a certificate of insurance is. Publish once industr
 
 ---
 
-## 7. Twelve things that can be wrong with a certificate
+## 7. Twelve things that can be wrong when a COI arrives
 
-**Format:** carousel, 10 slides · **Framework:** Value-Stack · **Pillar:** insurance domain literacy · **CTA:** none
+**Format:** carousel, 11 slides · **Framework:** Value-Stack · **Pillar:** insurance domain literacy · **CTA:** none
 
-**Hook angle:** Cover states the exact count and the split. Completeness is the promise.
+**Hook angle:** Cover states the exact count and the split. Completeness is the promise. The cover frames the arrival rather than the document, because three of the twelve are not defects in a certificate at all.
 
-**The turn:** Seven of them should stop you and get a person involved. Five should be noted and filed. A process that treats all twelve the same trains everyone to ignore it.
+**The turn:** Seven of them should stop you, and most get a person involved. Five should be noted and filed. A process that treats all twelve the same trains everyone to ignore it.
 
 **Evidence:** Stop-cold: expiration before effective date, an impossible date, illegible or ambiguous fields, not a certificate at all, older than what's on file, a vendor name one keystroke from an existing one, a password-protected file. File-with-note: holder not on your accepted list, a limit under your minimum, no general liability line, no workers' comp line, a renewal that leaves a gap. Source: `scripts/lib/coi-stage-4-validator.js`.
 
