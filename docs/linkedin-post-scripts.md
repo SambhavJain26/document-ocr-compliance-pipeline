@@ -535,9 +535,7 @@ Do not restore severity language to the group labels without restoring slide 2 w
 >
 > A real vendor cannot be emailed by accident.
 
-**Slide 8 (close, the receipt)**
-
-*A real screenshot of the approval email, with the caption beneath it.*
+**Slide 8 (close)**
 
 > Vendor. Reason. Recipient. The exact message. Two buttons.
 >
@@ -553,9 +551,15 @@ Do not restore severity language to the group labels without restoring slide 2 w
 
 ### Production note
 
-**Slide 8 is a real screenshot, not typed copy.** It is the receipt the carousel is built toward, and a mocked-up version undoes the post. Capture the actual approval email: vendor name, reason, intended recipient, drafted message, both buttons, all in one frame. Redact the mailbox address. Crop tight enough to read at thumbnail size and set the caption beneath the image rather than over it.
+**Superseded 2026-08-04. Owner's call: no screenshot, and no image anywhere in the deck.** Slide 8 is typed copy, set on the deck's one inverted slide so the close carries the weight the artifact would have. The five things the email contains are stated rather than shown, in prose rather than in pills or a framed panel, because a mocked-up interface on a post about not faking your evidence is worse than no artifact at all. Read the paragraph below for what the screenshot was doing, because the cost of dropping it is real and is now carried by the copy alone.
 
-I removed this slide in the 2026-08-02 reframe and put it back after a voice sweep. Two reasons. It is the element that makes the framework work, and without it slide 8 closed on "ask where the line is drawn, if nobody can say it in one sentence it hasn't been," which is the same construction as post 1's closing slide. Two carousels ending on an identical shape is what makes a set read as templated. The artifact also serves the buyer-tool framing perfectly well: this is what a specific answer looks like when someone actually has one.
+The original note, kept because the reasoning still stands and may be worth revisiting:
+
+> **Slide 8 is a real screenshot, not typed copy.** It is the receipt the carousel is built toward, and a mocked-up version undoes the post. Capture the actual approval email: vendor name, reason, intended recipient, drafted message, both buttons, all in one frame. Redact the mailbox address. Crop tight enough to read at thumbnail size and set the caption beneath the image rather than over it.
+>
+> I removed this slide in the 2026-08-02 reframe and put it back after a voice sweep. Two reasons. It is the element that makes the framework work, and without it slide 8 closed on "ask where the line is drawn, if nobody can say it in one sentence it hasn't been," which is the same construction as post 1's closing slide. Two carousels ending on an identical shape is what makes a set read as templated. The artifact also serves the buyer-tool framing perfectly well: this is what a specific answer looks like when someone actually has one.
+
+**What the deck gives up.** Problem-Proof wants a real artifact as its receipt, and this deck no longer has one, so "This is what a drawn line looks like" now points at the list above it rather than at evidence. The framework label is still fair, because slides 4 to 7 are specific and checkable claims about a real build, but the proof is testimony rather than exhibit. If a real capture ever becomes available, slide 8 is where it goes.
 
 ### Facts traced
 

@@ -61,6 +61,7 @@
   /* --- Type scale ------------------------------------------------------- */
   --size-display: 112px;
   --size-lead:     96px;
+  --size-claim:    78px;
   --size-turn:     62px;
   --size-check:    54px;
   --size-detail:   40px;
@@ -142,9 +143,21 @@ html, body {
 .slide--invert .display,
 .slide--invert .kicker,
 .slide--invert .lead,
+.slide--invert .claim,
+.slide--invert .lead-in,
+.slide--invert .lead-out,
 .slide--invert .turn,
 .slide--invert .close-lead,
 .slide--invert .checks li  { color: var(--paper); }
+
+/* Everything that can sit on the dark ground has to be listed here, and this
+   set was completed after post 13 inverted a slide carrying a byline: .byline
+   is ink, so it had gone invisible. A layout added to the stylesheet is not
+   finished until its inverted colours exist, because the slide that needs them
+   is the one slide in the deck nobody can miss. */
+.slide--invert .group      { color: var(--paper); border-top-color: var(--paper); }
+.slide--invert .detail     { color: rgba(253, 240, 214, 0.72); }
+.slide--invert .byline     { color: var(--paper); }
 
 .slide--invert .divider    { background: rgba(253, 240, 214, 0.22); }
 .slide--invert .checks li  { border-color: rgba(253, 240, 214, 0.22); }
@@ -444,8 +457,13 @@ html, body {
   color: var(--ink);
 }
 
-.fig-lead,
-.fig-note {
+/* The quiet line either side of a main statement. Named for the job rather
+   than for the figure, because it is not figure-specific: post 4 uses it to
+   frame a numeral, post 13 to introduce one half of a matched pair. Same
+   treatment above and below, because it is one voice either side of the thing
+   it frames, not two. */
+.lead-in,
+.lead-out {
   font-weight: 600;
   font-size: var(--size-turn);
   line-height: 72px;
@@ -453,8 +471,23 @@ html, body {
   color: var(--ink);
 }
 
-.fig-lead { margin-bottom: 48px; }
-.fig-note { margin-top: 48px; }
+.lead-in { margin-bottom: 48px; }
+.lead-out { margin-top: 48px; }
+
+/* Claim: a statement too long for .lead, too load-bearing for .turn ------- */
+/* The band holds seven and a half lines of .lead, and a statement much past a
+   hundred characters needs eight. Dropping such a statement to .turn is worse
+   than the overset: it makes the slide quieter than the ordinary slides around
+   it, and a slide carrying a whole claim on its own should not be the quietest
+   in the deck. Post 13's matched pair is the case — both halves take .claim so
+   the only difference between the two slides is the words. */
+.claim {
+  font-weight: 800;
+  font-size: var(--size-claim);
+  line-height: 96px;
+  letter-spacing: -0.032em;
+  color: var(--ink);
+}
 
 /* Statement: a lead, a divider, and the turn ----------------------------- */
 .lead {
@@ -486,7 +519,7 @@ html, body {
   line-height: 48px;
   letter-spacing: -0.012em;
   color: var(--ink-soft);
-  margin-top: 34px;
+  margin-top: 48px;
 }
 
 /* Head for the matched pair ---------------------------------------------- */

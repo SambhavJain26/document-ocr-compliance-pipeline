@@ -16,8 +16,8 @@
 <section class="slide">
   <div class="eyebrow"><span>Vendor paperwork &middot; property management</span></div>
   <div class="body">
-    <h1 class="fig-lead">Having AI read a vendor insurance certificate costs about <span class="hl">two tenths of a cent</span>.</h1>
-    <p class="fig-lead">Not <span class="pen pen--strike">two dollars<svg viewBox="0 0 300 12" preserveAspectRatio="none"><path d="M4,6 C66,10 158,2 296,8"/></svg></span>.</p>
+    <h1 class="lead-in">Having AI read a vendor insurance certificate costs about <span class="hl">two tenths of a cent</span>.</h1>
+    <p class="lead-in">Not <span class="pen pen--strike">two dollars<svg viewBox="0 0 300 12" preserveAspectRatio="none"><path d="M4,6 C66,10 158,2 296,8"/></svg></span>.</p>
     <p class="fig"><span class="sel">$0.002.<i></i><i></i><i></i><i></i></span></p>
   </div>
   <div class="footer"><span>What it actually costs to have AI read a document</span><b>01</b></div>
@@ -39,7 +39,7 @@
   <div class="eyebrow"><span>Vendor paperwork &middot; property management</span></div>
   <div class="body">
     <p class="fig">Thirty</p>
-    <p class="fig-note">certificates a month.</p>
+    <p class="lead-out">certificates a month.</p>
     <div class="divider"></div>
     <p class="turn">The model cost is <span class="hl">under a dime</span>.</p>
   </div>
@@ -104,7 +104,7 @@
     // Every layout's first text element is listed. A list is not one: a probe
     // inside a bare <ul> measures the strut of an anonymous line box, not a
     // baseline, so a slide that opens on .checks needs its first row named.
-    var host = body.querySelector('.display, .lead, .head, .group, .fig-lead, .fig, .close-lead, .pay, .checks li');
+    var host = body.querySelector('.display, .lead, .head, .group, .lead-in, .claim, .fig, .close-lead, .pay, .checks li');
     if (!host) { host = body.firstElementChild; }
     if (!host) { return; }
 

@@ -101,7 +101,8 @@ Open Sans, Poppins, Montserrat — the generic-template tells.
 | Field list | `.lead` `.tags` `.divider` `.turn` |
 | Check list | `.head` `.checks` |
 | Grouped list | `.group` `.checks` · `.checks--marked` |
-| Figure | `.fig-lead` `.fig` `.fig-note` |
+| Claim | `.claim`, optionally `.lead-in` above |
+| Figure | `.lead-in` `.fig` `.lead-out` |
 | Payoff | `.head` `.pay` `.margin-note` |
 | Close | `.close-lead` `.divider` `.turn` `.byline` |
 
@@ -121,17 +122,42 @@ therefore a numeral treatment, not a severity signal — do not reach for it to
 mean "worse". Post 1 keeps plain `.checks`, so the modifier is what a deck opts
 into rather than something `.checks` does by default.
 
-**A long close uses `.lead`, not `.close-lead`.** The Close layout assumes a
-short line. Much past forty characters, `.close-lead` runs to five lines at
-112px, overruns the `.body--close` band and pushes the turn into the byline —
-post 7's close did exactly that. Drop to `.lead` and the slide gets the air a
-closing slide is supposed to have. Everything else about the layout is unchanged.
+**Claim is a statement too long for `.lead` and too load-bearing for `.turn`.**
+The band holds seven and a half lines of `.lead`, so a statement much past a
+hundred characters needs eight and overruns. Dropping it to `.turn` is worse
+than the overset: it makes a slide carrying a whole claim on its own the
+quietest slide in the deck. `.claim` sits between them at 78px on a 96px
+leading. Post 13's matched pair uses it on both halves, so the only difference
+between those two slides is the words, with `.lead-in` above the first to
+introduce the pair.
+
+**Nothing in the system is raster.** A `.shot` image layout was built for post
+13's receipt slide and removed the same day: owner's call, 2026-08-04, no
+screenshots in these decks. Type is vector with embedded font subsets and every
+mark is a vector shape, so the only bitmap in a rendered PDF is the grain tile.
+If a deck ever needs an artifact again, state it in prose rather than drawing a
+frame that imitates an interface — a post about not faking your evidence cannot
+be the one that ships a mocked-up screenshot.
+
+**A long line drops a size step rather than overrunning.** The display sizes
+assume short lines. Past roughly forty characters `.close-lead` runs to five
+lines at 112px, overruns the `.body--close` band and pushes the turn into the
+byline — post 7's close did exactly that, and post 13's cover did the same at
+`.display`. Drop one step, to `.lead` in both cases, and the slide gets the air
+it was supposed to have. Everything else about the layout is unchanged.
+
+**A mark cannot span a line break inside `.pen`.** `.pen` is an inline-block, so
+a phrase too wide for the line wraps *inside* it while the stroke, positioned
+against the box, covers only part. Post 13's cover struck a five-word quoted
+question at display size and the stroke landed on line one alone. Mark one word,
+or use `.nb`, or drop a size step. `.hl` is exempt: it paints as a background
+and clones onto every line box.
 
 **Figure is for a slide whose subject is a number.** The numeral runs at 208px
 and the sentence framing it is deliberately quiet, so the number is read first
 and the sentence only explains it. A statement layout cannot do this: its lead
 and turn are sized for prose, and a figure set at prose size stops being the
-point of the slide. `.fig-lead` and `.fig-note` are the same treatment above
+point of the slide. `.lead-in` and `.lead-out` are the same treatment above
 and below the figure, because they are one sentence either side of a number
 rather than two voices. Post 4 opens on `$0.002` this way.
 
@@ -204,6 +230,19 @@ that makes the page read as constructed rather than decorated.
 that is slide 6, the payoff; in post 4 it is slide 5, the question the whole
 post hands to the reader; in post 7 it is slide 9, the thesis. Used more often
 it stops being a spike and becomes a pattern, which reads quieter, not louder.
+
+Post 13 is the one deck that inverts its **close**, and the reason is worth
+keeping. That slide was to have been a screenshot of a real approval email, and
+when the artifact was dropped the proof had to be stated in type instead. Left
+alone it would have been another statement slide in a deck of statement slides,
+so the inversion carries the weight the photograph would have. Invert a close
+only when it is doing that job, not because it is last.
+
+**A layout is not finished until its inverted colours exist.** Inverting post
+13's close put a `.byline` on the dark ground for the first time and it vanished,
+because `.byline` is ink and nothing had ever needed it otherwise. `.claim`,
+`.group`, `.lead-in`, `.lead-out` and `.detail` were unhandled for the same
+reason. Add a layout, add its `.slide--invert` line in the same pass.
 
 The cover was briefly inverted too, to establish the dark ground before slide
 6 used it. That was reverted: a light cover keeps the dark slide as the single
