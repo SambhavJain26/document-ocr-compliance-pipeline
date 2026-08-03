@@ -39,6 +39,12 @@
 
   --rule:      rgba(2, 8, 31, 0.13);
 
+  /* The marker swipe itself, held once. Uneven top and bottom edges so it
+     reads as a pass of a highlighter rather than a rectangle. Two things
+     paint it — a highlighted phrase, and the numerals of a stop-cold group —
+     and they must not be able to drift apart. */
+  --swipe: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='40' preserveAspectRatio='none'%3E%3Cpath d='M1,7 C46,1 128,11 206,5 C284,-1 348,10 399,3 L399,34 C352,39 268,29 186,35 C104,41 44,32 1,37 Z' fill='%23F8C043'/%3E%3C/svg%3E");
+
   /* --- Grid ------------------------------------------------------------- */
   --page-w:   1080px;
   --page-h:   1350px;
@@ -314,7 +320,7 @@ html, body {
   background-position: 0 0.5em;
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='40' preserveAspectRatio='none'%3E%3Cpath d='M1,7 C46,1 128,11 206,5 C284,-1 348,10 399,3 L399,34 C352,39 268,29 186,35 C104,41 44,32 1,37 Z' fill='%23F8C043'/%3E%3C/svg%3E");
+  background-image: var(--swipe);
 }
 
 /* Keeps a short phrase and its mark on one line. */
@@ -520,6 +526,46 @@ html, body {
   top: 24px;
   font-weight: 800;
   color: var(--pen);
+}
+
+/* Groups: one list split by severity across several slides ---------------- */
+/* A split like this has to be legible before a single word is read. If the
+   two groups look alike, the reader is being asked to weigh twelve
+   equal-looking rows, which is the exact failure the post is about.
+
+   Three things carry it, and none of them is hue on its own. The group label
+   sits under its own rule, heavier than the hairline between rows so it reads
+   as a boundary rather than another row. The numerals hold one left column on
+   every slide of the group, so a slide that carries no label still belongs to
+   it. And the stop-cold group's numerals sit on a marker swipe while the
+   filed group's carry nothing at all, so the accent means exactly one thing.
+
+   The label is set at turn size, not as a .head. These labels are sentences
+   the writer wrote, and shrinking a sentence to 18px furniture buries it. */
+.group {
+  font-weight: 600;
+  font-size: var(--size-turn);
+  line-height: 72px;
+  letter-spacing: -0.024em;
+  color: var(--ink);
+  border-top: var(--w-line) solid var(--ink);
+  padding-top: 24px;
+  margin-bottom: 48px;
+}
+
+/* Numerals on a swipe. Ink on gold, because a pen-blue numeral on a gold swipe
+   is the one colour pairing in this palette that does not hold.
+
+   The swipe is raised and grown against the .hl default. That default is set
+   for prose, where a phrase has descenders and the swipe is meant to overhang
+   the baseline; lining figures have neither, so the prose placement leaves the
+   gold sitting under the numeral as a faint underline instead of behind it. */
+.checks--marked li b {
+  color: var(--ink);
+  background-image: var(--swipe);
+  background-repeat: no-repeat;
+  background-size: 100% 1.20em;
+  background-position: 0 0;
 }
 
 /* Tags: the transcribed fields ------------------------------------------- */

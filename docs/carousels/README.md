@@ -100,9 +100,32 @@ Open Sans, Poppins, Montserrat — the generic-template tells.
 | Statement | `.lead` `.divider` `.turn` |
 | Field list | `.lead` `.tags` `.divider` `.turn` |
 | Check list | `.head` `.checks` |
+| Grouped list | `.group` `.checks` · `.checks--marked` |
 | Figure | `.fig-lead` `.fig` `.fig-note` |
 | Payoff | `.head` `.pay` `.margin-note` |
 | Close | `.close-lead` `.divider` `.turn` `.byline` |
+
+**Grouped list is for one list split by severity across several slides.** Post 7
+runs twelve flags over six slides in two groups. The `.group` label sits under a
+rule heavier than the hairline between rows, so it reads as a boundary rather
+than another row, and the numerals hold one left column on every slide of the
+group, so a slide carrying no label still belongs to it. Label sentences are set
+at turn size rather than as a `.head`, because they are sentences the writer
+wrote and 18px furniture buries them.
+
+**The numerals are one treatment across the whole list.** An earlier pass gave
+the first group swiped numerals and the second plain ones, to carry the severity
+split visually. Owner's call, 2026-08-03: all twelve read the same, and the
+labels and their rules carry the split on their own. `.checks--marked` is
+therefore a numeral treatment, not a severity signal — do not reach for it to
+mean "worse". Post 1 keeps plain `.checks`, so the modifier is what a deck opts
+into rather than something `.checks` does by default.
+
+**A long close uses `.lead`, not `.close-lead`.** The Close layout assumes a
+short line. Much past forty characters, `.close-lead` runs to five lines at
+112px, overruns the `.body--close` band and pushes the turn into the byline —
+post 7's close did exactly that. Drop to `.lead` and the slide gets the air a
+closing slide is supposed to have. Everything else about the layout is unchanged.
 
 **Figure is for a slide whose subject is a number.** The numeral runs at 208px
 and the sentence framing it is deliberately quiet, so the number is read first
@@ -119,6 +142,19 @@ boxed with corner handles, once per deck on the cover).
 **Every mark sits on a word.** A brace hung in the right margin was tried and
 cut: at the sizes this deck runs, a mark floating outside the text block reads
 as debris rather than as annotation.
+
+**A circle goes on one word.** Stretched over a phrase it flattens into a wide
+ellipse that overshoots the last word and cuts through the first, and it stops
+looking drawn. Two of post 7's circles were pulled back to a single word for
+this reason. If a phrase needs marking, that is what the marker is for.
+
+**The marker swipe lives once, in `--swipe`.** Both things that paint it — a
+highlighted phrase and a `.checks--marked` numeral — read the same custom
+property, so they cannot drift apart. Note that its default placement is set
+for prose, which has descenders and wants the swipe to overhang the baseline.
+Lining figures have neither, so `.checks--marked` raises and grows the swipe;
+without that it sits under the numeral as a faint underline rather than behind
+it. The same correction is why the inverted slide restates it.
 
 **Zodiak sets exactly one word in the deck** — the payoff on slide 6. The note
 underneath it takes the same treatment as the second line on every other
@@ -166,8 +202,8 @@ that makes the page read as constructed rather than decorated.
 
 **One inverted slide per deck**, on the page the argument turns on. In post 1
 that is slide 6, the payoff; in post 4 it is slide 5, the question the whole
-post hands to the reader. Used more often it stops being a spike and becomes a
-pattern, which reads quieter, not louder.
+post hands to the reader; in post 7 it is slide 9, the thesis. Used more often
+it stops being a spike and becomes a pattern, which reads quieter, not louder.
 
 The cover was briefly inverted too, to establish the dark ground before slide
 6 used it. That was reverted: a light cover keeps the dark slide as the single

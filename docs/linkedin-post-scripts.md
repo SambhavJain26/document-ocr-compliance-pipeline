@@ -344,19 +344,25 @@ The honest, defensible position if someone pushes in the comments: the model cos
 
 ## Post 7. Twelve things that can be wrong with a certificate
 
-**Format:** document carousel, 10 slides. **Framework:** Value-Stack. **Pillar:** honest limitation. **CTA:** none.
+**Format:** document carousel, 11 slides. **Framework:** Value-Stack. **Pillar:** honest limitation. **CTA:** none.
+
+**Revised 2026-08-03.** Two changes, both found while building the carousel.
+
+The old slide 4 claimed "All seven go to a person." Two of the seven never reach one: `NOT_A_COI` and `OLDER_THAN_ON_FILE` short-circuit to their own ignore dispositions in `buildResult` before the hard-flag branch that sets `NEEDS_REVIEW`. The line is now accurate, and the correction is more interesting than the error, because "stop everything" turning out not to mean "fetch a human" is the sort working.
+
+A new slide 2 states the principle behind the split. It was only ever in the post copy, and the post copy does not travel with the document — the PDF is what gets shared, and inside it the reader met seven stop-cold items that look milder than the five filed ones with no explanation offered. Slide 9 asserts the sorting is the work; now something earns it.
 
 ### The post copy that sits above the document
 
 > A COI is one page. That's the trap. It looks like a document you can check by looking at it.
 >
-> There are twelve specific things I check for, and they're sorted by what should happen next rather than by how alarming they sound. Seven stop the process and get a person involved. Five get filed with a note attached that stays visible on the row.
+> There are twelve specific things I check for, and they're sorted by what should happen next rather than by how alarming they sound. Seven stop the process, and most of them get a person involved. Five get filed with a note attached that stays visible on the row.
 >
 > The split is the part that matters. A process that treats a password-protected file the same as a limit slightly under your minimum is a process people learn to ignore inside a month. Anything can flag everything. Sorting by severity is the actual work, and it's the part that gets skipped.
 >
 > All twelve are in the slides. None of them tell you whether the vendor is actually insured. That's a different question and a certificate cannot answer it.
 
-*Word count: 149. Em dashes: 0. The fold lands after "check by looking at it," so the trap is stated and the count is still ahead of the reader.*
+*Word count: 152. Em dashes: 0. The fold lands after "check by looking at it," so the trap is stated and the count is still ahead of the reader.*
 
 ### Slides
 
@@ -368,59 +374,65 @@ The honest, defensible position if someone pushes in the comments: the model cos
 
 **Slide 2**
 
+> Seven mean you don't have a certificate you can use.
+>
+> Five mean you do, and it falls short.
+
+**Slide 3**
+
 > Seven that stop everything.
 >
 > 1. Expiration date falls before the effective date.
 > 2. A date nowhere near believable.
 > 3. Too unclear to read confidently.
 
-**Slide 3**
+**Slide 4**
 
 > 4. Not a certificate at all.
 > 5. Older than the one already on file.
 > 6. Vendor name one keystroke off an existing vendor.
 
-**Slide 4**
+**Slide 5**
 
 > 7. The file is password protected and cannot be opened.
 >
-> All seven go to a person. None of them get a guess.
+> Five go to a person. Two need no one. None of them get a guess.
 
-**Slide 5**
+**Slide 6**
 
 > Five that get filed, with a note.
 >
 > 8. The certificate holder isn't one of your legal names.
 > 9. A limit under your minimum for that trade.
 
-**Slide 6**
+**Slide 7**
 
 > 10. No general liability line on the document.
 > 11. No workers' comp line, unless that vendor is marked exempt.
 
-**Slide 7**
+**Slide 8**
 
 > 12. A renewal that starts after the old policy lapsed, leaving a gap between two certificates that both look fine.
 
-**Slide 8**
+**Slide 9**
 
 > Seven stop the process. Five get written down and stay visible.
 >
 > The sorting is the actual work.
 
-**Slide 9**
+**Slide 10**
 
 > Anything can flag everything.
 >
 > A process that treats all twelve the same is a process everyone learns to ignore.
 
-**Slide 10 (close)**
+**Slide 11 (close)**
 
 > None of the twelve tells you whether the vendor is actually insured.
 >
 > That's a different question, and the certificate can't answer it.
 
-*Longest slide: 24 words. Cover promises twelve, slides deliver exactly twelve numbered items, split exactly seven and five.*
+*Longest slide: 24 words, now slide 5. Cover promises twelve, slides deliver exactly twelve numbered items, split exactly seven and five. Slide 2 states the principle before the reader meets a single item, because the objection forms while reading the lists, not after.*
 
 ### Alternative cover lines
 
@@ -443,7 +455,13 @@ Every one of the twelve is a real flag with the severity shown, from `scripts/li
 
 Per the brief, `MODEL_REFUSED` and `MODEL_OUTPUT_INVALID` are excluded. They are real hard flags, but they describe the model misbehaving rather than the document being wrong, and including them turns a list a person can hand-check into a spec sheet. The third severity, `NO_CANCELLATION_NOTICE_WORDING`, is a neutral note rather than a problem, so it is also out. The count of twelve is exact and holds.
 
-The workers' comp exemption on slide 6 is real: the flag is suppressed for vendors marked exempt (`docs/how-the-system-works.md`).
+The workers' comp exemption on slide 7 is real: the flag is suppressed for vendors marked exempt (`docs/how-the-system-works.md`).
+
+**Hard does not mean dangerous, and slides 2 and 5 depend on this.** In `buildResult`, a hard flag routes to `store_needs_review` / `NEEDS_REVIEW` — except `NOT_A_COI` and `OLDER_THAN_ON_FILE`, which are tested first and get `ignore_not_certificate` and `ignore_older_than_on_file` with a null status. So five of the seven reach a person and two are closed without one. The unifying property of all seven is that no usable certificate comes out of them, not that they are the worst outcomes. The five soft flags are the opposite case: the document read cleanly and what it says falls short of your requirement. Anyone challenging the sort in the comments is challenging that distinction, and it is the defensible one.
+
+### Production note on the severity split
+
+Do not restore severity language to the group labels without restoring slide 2 with it. "Stop everything" and "filed with a note" describe consequences, and a reader maps consequence onto danger — at which point the deck appears to halt on a password-protected file while merely noting that a vendor has no general liability line. That objection is correct on its face and is only answered by the principle slide.
 
 ### Flagged as my invention
 
