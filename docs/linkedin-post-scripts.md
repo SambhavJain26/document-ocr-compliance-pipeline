@@ -354,6 +354,8 @@ A new slide 2 states the principle behind the split. It was only ever in the pos
 
 **Cover widened 2026-08-03.** Was "Twelve things that can be wrong with a COI," which promised narrower than the list delivers. Three of the twelve are not defects in a certificate at all: a document that is not a certificate, one already superseded by a newer certificate on file, and a vendor name a keystroke off an existing vendor, where the ambiguity is on your side rather than the document's. Two more, an unreadable scan and a password-protected file, are properties of the copy you received rather than of the certificate. "When a COI arrives" frames the moment rather than the document, and every one of the twelve fits it. The alternative cover lines were rewritten for the same reason, and the third also carried the "seven need a person" error.
 
+**Slide 10 given a subject, 2026-08-03.** Was "Anything can flag everything." In the post copy that line lands, because the sentence before it supplies the referent. On a slide it opens cold, and "anything" leaves the reader working out whether it means any tool, any person or any process before the point arrives. Naming the subject fixes it in one word and keeps the short opener the slide's rhythm depends on. The post copy keeps "Anything," which is correct there and needs no help.
+
 ### The post copy that sits above the document
 
 > A COI is one page. That's the trap. It looks like a document you can check by looking at it.
@@ -424,7 +426,7 @@ A new slide 2 states the principle behind the split. It was only ever in the pos
 
 **Slide 10**
 
-> Anything can flag everything.
+> Any tool can flag everything.
 >
 > A process that treats all twelve the same is a process everyone learns to ignore.
 
