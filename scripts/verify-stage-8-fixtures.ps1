@@ -11,11 +11,11 @@ $tmpRoot = Join-Path $repoRoot "tmp"
 $resultsPath = Join-Path $repoRoot "docs\stage-8-fixture-results.md"
 
 $workflowSpecs = @(
-  @{ Path = "n8n-workflows\stage-5-intake-workflow.json"; Id = "stage-5-intake-workflow"; Name = "Stage 5 - COI Intake Workflow"; Requires = "gmail" },
-  @{ Path = "n8n-workflows\stage-5-source-document-route.json"; Id = "stage-5-source-document-route"; Name = "Stage 5 - Source Document Route"; Requires = "" },
-  @{ Path = "n8n-workflows\stage-6-daily-watch-chase.json"; Id = "stage-6-daily-watch-chase"; Name = "Stage 6 - Daily Watch Chase"; Requires = "openai" },
-  @{ Path = "n8n-workflows\stage-6-non-pdf-reply-notice.json"; Id = "stage-6-non-pdf-reply-notice"; Name = "Stage 6 - Non PDF Reply Notice"; Requires = "gmail" },
-  @{ Path = "n8n-workflows\stage-7-dashboard-demo-view.json"; Id = "stage-7-dashboard-demo-view"; Name = "Stage 7 - Dashboard Demo View"; Requires = "" }
+  @{ Path = "n8n-workflows\stage-5-intake-workflow.json"; Id = "stage-5-intake-workflow"; Name = "COI Intake"; Requires = "gmail" },
+  @{ Path = "n8n-workflows\stage-5-source-document-route.json"; Id = "stage-5-source-document-route"; Name = "Source Document Route"; Requires = "" },
+  @{ Path = "n8n-workflows\stage-6-daily-watch-chase.json"; Id = "stage-6-daily-watch-chase"; Name = "Daily Watch and Chase"; Requires = "openai" },
+  @{ Path = "n8n-workflows\stage-6-non-pdf-reply-notice.json"; Id = "stage-6-non-pdf-reply-notice"; Name = "Non-PDF Reply Notice"; Requires = "gmail" },
+  @{ Path = "n8n-workflows\stage-7-dashboard-demo-view.json"; Id = "stage-7-dashboard-demo-view"; Name = "COI Dashboard"; Requires = "" }
 )
 
 $results = New-Object System.Collections.Generic.List[object]

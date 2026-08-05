@@ -114,7 +114,7 @@ return $input.all().map((item, index) => {
 
 const workflow = {
   id: "stage-4-extraction-validation-core",
-  name: "Stage 4 - COI Extraction and Validation Core",
+  name: "Extraction and Validation Core",
   nodes: [
     node("11111111-1111-4111-8111-111111111111", "Manual Trigger - Run Stage 4 Smoke", "n8n-nodes-base.manualTrigger", 1, [0, 0]),
     node(

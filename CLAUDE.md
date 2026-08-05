@@ -119,6 +119,10 @@ LinkedIn carousels are HTML rendered to PDF at 1080x1350. The `linkedin-carousel
 
 Prefer editable workflow JSON exports over manual-only UI changes. Name every node descriptively; never leave default names like `Code`, `If`, `Set`, or `HTTP Request`.
 
+Workflow display names are product-facing and deliberately decoupled from workflow IDs. IDs keep their `stage-*` form because scripts, CLI commands, and verify helpers reference them; display names say what each workflow does (`COI Intake`, `Source Document Route`, `Daily Watch and Chase`, `Non-PDF Reply Notice`, `COI Dashboard`). Do not "fix" that mismatch. Node names keep their stage labels because code nodes and expressions reference other nodes by exact name, so renaming a node is a breaking change. Canvas sticky notes come from a `sticky()` helper in each `scripts/generate-stage-*` generator; never hand-add them to the JSON.
+
+The repo is not mounted into the n8n container, only `fixtures/` and `data/certificates`, so `import:workflow` cannot read a repo path. Pipe JSON on stdin: `cat wf.json | docker compose exec -T n8n sh -lc 'tmp=/tmp/wf.json; cat > $tmp; n8n import:workflow --input=$tmp'`. From Git Bash set `MSYS_NO_PATHCONV=1` first, or container paths are rewritten to Windows paths and the import fails with `ENOENT`.
+
 Use n8n credentials by name only. Never hardcode secrets, bearer tokens, OAuth client secrets, Gmail tokens, or OpenAI keys in workflow JSON.
 
 Known n8n gotchas to account for during implementation:

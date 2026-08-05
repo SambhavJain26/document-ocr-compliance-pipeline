@@ -87,14 +87,14 @@ try {
     return
   }
 
-  $cleanupSql = "DELETE FROM workflow_entity WHERE id = 'stage-4-extraction-validation-core' OR name = 'Stage 4 - COI Extraction and Validation Core';"
+  $cleanupSql = "DELETE FROM workflow_entity WHERE id = 'stage-4-extraction-validation-core' OR name = 'Extraction and Validation Core';"
   docker compose exec -T postgres psql -U vendor_coi -d vendor_coi -v ON_ERROR_STOP=1 -c $cleanupSql | Out-Null
 
   $workflowJson = Get-Content -Raw $workflowPath
   $importCommand = "tmp=/tmp/stage-4-extraction-validation-core.json; cat > `$tmp; n8n import:workflow --input=`$tmp"
   $workflowJson | docker compose exec -T n8n sh -lc $importCommand | Out-Host
 
-  $workflowId = docker compose exec -T postgres psql -U vendor_coi -d vendor_coi -v ON_ERROR_STOP=1 -t -A -c "SELECT id FROM workflow_entity WHERE id = 'stage-4-extraction-validation-core' OR name = 'Stage 4 - COI Extraction and Validation Core' LIMIT 1;"
+  $workflowId = docker compose exec -T postgres psql -U vendor_coi -d vendor_coi -v ON_ERROR_STOP=1 -t -A -c "SELECT id FROM workflow_entity WHERE id = 'stage-4-extraction-validation-core' OR name = 'Extraction and Validation Core' LIMIT 1;"
   $workflowId = $workflowId.Trim()
   if (-not $workflowId) {
     throw "Imported Stage 4 workflow was not found in n8n's workflow table."

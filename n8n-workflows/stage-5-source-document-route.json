@@ -1,7 +1,24 @@
 {
   "id": "stage-5-source-document-route",
-  "name": "Stage 5 - Source Document Route",
+  "name": "Source Document Route",
   "nodes": [
+    {
+      "parameters": {
+        "content": "## Handing the original back\n\nEvery dashboard row links here. The stored path is checked to be inside the allowed storage area **before** the file is read, and a missing file answers cleanly instead of erroring the run.\n\nThis is the smallest workflow here and the one that matters most: it is why nobody has to take an extracted date on trust. The document that produced it is one click away.",
+        "height": 620,
+        "width": 1420,
+        "color": 4
+      },
+      "id": "aa000000-0000-4500-8500-000000000011",
+      "name": "Note - 0011",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        -300
+      ],
+      "webhookId": "stage-5-source-document-webhook"
+    },
     {
       "parameters": {
         "httpMethod": "GET",
@@ -17,8 +34,7 @@
       "position": [
         0,
         0
-      ],
-      "webhookId": "stage-5-source-document-webhook"
+      ]
     },
     {
       "parameters": {

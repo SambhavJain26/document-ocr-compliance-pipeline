@@ -199,7 +199,7 @@ Timings are cumulative. Read at an unhurried pace, roughly 130 words per minute.
 ### Notes
 
 - If you would rather the word "approve" never appear: shot 6 becomes "That click releases one email. It says nothing about the vendor." The line as written is stronger, because it negates the claiming sense out loud.
-- Shot 6 requires the approval email to already be waiting. Execute **Stage 6 - Daily Watch Chase** off camera a minute before recording, per the demo script.
+- Shot 6 requires the approval email to already be waiting. Execute **Daily Watch and Chase** off camera a minute before recording, per the demo script.
 - Facts traced: four states and status wording from `docs/how-the-system-works.md`; two-strike stop-chasing from the same; five-second refresh from the same; the "reports what a document says, never what is true" boundary from `docs/demo-script.md` Language Rules.
 
 ---

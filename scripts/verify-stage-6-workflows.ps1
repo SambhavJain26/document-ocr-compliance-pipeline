@@ -101,8 +101,8 @@ try {
   $dailyWorkflowId = "stage-6-daily-watch-chase"
   $replyWorkflowId = "stage-6-non-pdf-reply-notice"
 
-  Import-Stage6Workflow -Path $dailyWorkflowPath -WorkflowId $dailyWorkflowId -WorkflowName "Stage 6 - Daily Watch Chase"
-  Import-Stage6Workflow -Path $replyWorkflowPath -WorkflowId $replyWorkflowId -WorkflowName "Stage 6 - Non PDF Reply Notice"
+  Import-Stage6Workflow -Path $dailyWorkflowPath -WorkflowId $dailyWorkflowId -WorkflowName "Daily Watch and Chase"
+  Import-Stage6Workflow -Path $replyWorkflowPath -WorkflowId $replyWorkflowId -WorkflowName "Non-PDF Reply Notice"
 
   docker compose run --rm --no-deps n8n update:workflow --id=$dailyWorkflowId --active=true | Out-Host
   docker compose run --rm --no-deps n8n update:workflow --id=$replyWorkflowId --active=true | Out-Host

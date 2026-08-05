@@ -116,8 +116,8 @@ try {
   $dashboardWorkflowId = "stage-7-dashboard-demo-view"
   $sourceWorkflowId = "stage-5-source-document-route"
 
-  Import-Stage7Workflow -Path $sourceWorkflowPath -WorkflowId $sourceWorkflowId -WorkflowName "Stage 5 - Source Document Route"
-  Import-Stage7Workflow -Path $dashboardWorkflowPath -WorkflowId $dashboardWorkflowId -WorkflowName "Stage 7 - Dashboard Demo View"
+  Import-Stage7Workflow -Path $sourceWorkflowPath -WorkflowId $sourceWorkflowId -WorkflowName "Source Document Route"
+  Import-Stage7Workflow -Path $dashboardWorkflowPath -WorkflowId $dashboardWorkflowId -WorkflowName "COI Dashboard"
 
   docker compose run --rm --no-deps n8n update:workflow --id=$sourceWorkflowId --active=true | Out-Host
   docker compose run --rm --no-deps n8n update:workflow --id=$dashboardWorkflowId --active=true | Out-Host

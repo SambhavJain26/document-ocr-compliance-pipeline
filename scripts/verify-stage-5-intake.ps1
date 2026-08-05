@@ -146,11 +146,11 @@ try {
 
   $intakeWorkflowId = "stage-5-intake-workflow"
   $sourceWorkflowId = "stage-5-source-document-route"
-  $cleanupSql = "DELETE FROM workflow_entity WHERE id IN ('$intakeWorkflowId', '$sourceWorkflowId') OR name IN ('Stage 5 - COI Intake Workflow', 'Stage 5 - Source Document Route');"
+  $cleanupSql = "DELETE FROM workflow_entity WHERE id IN ('$intakeWorkflowId', '$sourceWorkflowId') OR name IN ('COI Intake', 'Source Document Route');"
 
   try {
     Invoke-Stage5Sql $cleanupSql | Out-Null
-    Import-Stage5Workflow -Path $intakeWorkflowPath -WorkflowId $intakeWorkflowId -WorkflowName "Stage 5 - COI Intake Workflow"
+    Import-Stage5Workflow -Path $intakeWorkflowPath -WorkflowId $intakeWorkflowId -WorkflowName "COI Intake"
 
     Reset-Stage5Data
     Invoke-Stage5IntakeSmoke -WorkflowId $intakeWorkflowId -FixtureSet "f01-clean-current"
@@ -158,7 +158,7 @@ try {
     Assert-Stage5SqlTrue "SELECT count(*) = 1 FROM coverages cv JOIN certificates c ON c.id = cv.certificate_id WHERE c.source_ref = 'f01-clean-current' AND cv.coverage_type = 'GENERAL_LIABILITY' AND cv.each_occurrence = 1000000 AND cv.general_aggregate = 2000000;" "f01 GL coverage limits were not stored as expected."
     Assert-Stage5SqlTrue "SELECT count(*) = 0 FROM intake_notices;" "f01 unexpectedly created intake notices."
 
-    Import-Stage5Workflow -Path $sourceWorkflowPath -WorkflowId $sourceWorkflowId -WorkflowName "Stage 5 - Source Document Route"
+    Import-Stage5Workflow -Path $sourceWorkflowPath -WorkflowId $sourceWorkflowId -WorkflowName "Source Document Route"
     docker compose run --rm --no-deps n8n update:workflow --id=$sourceWorkflowId --active=true | Out-Host
     docker compose restart n8n | Out-Host
     Wait-Stage5N8n

@@ -1,6 +1,6 @@
 {
   "id": "stage-4-extraction-validation-core",
-  "name": "Stage 4 - COI Extraction and Validation Core",
+  "name": "Extraction and Validation Core",
   "nodes": [
     {
       "parameters": {},

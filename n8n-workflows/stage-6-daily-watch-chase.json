@@ -1,7 +1,71 @@
 {
   "id": "stage-6-daily-watch-chase",
-  "name": "Stage 6 - Daily Watch Chase",
+  "name": "Daily Watch and Chase",
   "nodes": [
+    {
+      "parameters": {
+        "content": "## Runs once a day at 08:00\n\nThis is the half of the system that notices **nothing happening**. An inbox trigger only ever fires on arrivals; it cannot detect an absence, and absence is the actual failure this product exists to catch.\n\nEscalation runs **first**, so a vendor who has already ignored two requests is taken out of the loop before any new chase is considered.\n\nThen vendors are sorted into buckets: never received, expired, 14d, 30d, 60d, re-attestation. Vendors with no certificate come first, because they have no date to remind anyone.",
+        "height": 700,
+        "width": 900,
+        "color": 5
+      },
+      "id": "bb000000-0000-4600-8600-000000000001",
+      "name": "Note - 0001",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        -320
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Draft, then log before sending\n\nThe model writes a short request naming the vendor, policy number and expiry date. If it comes back empty, over 120 words, or containing a forbidden word, it is discarded and a fixed template is used instead.\n\nThe upload link is appended **after** those checks, so the model cannot invent a destination.\n\n**Record Pending Outreach** writes the row before anything is sent, so a reminder can never go out without a record of it existing.",
+        "height": 700,
+        "width": 880,
+        "color": 5
+      },
+      "id": "bb000000-0000-4600-8600-000000000002",
+      "name": "Note - 0002",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        860,
+        -320
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## The approval gate\n\nNo approver address configured, so the run stores a config notice and emails nobody. That is a deliberate refusal, not a fallback.\n\nOtherwise the execution **pauses here** until a person clicks. The approver sees the vendor, the reason, the intended recipient, the upload destination, and the exact draft.\n\n**No response in 24 hours means it expires rather than sends.** Silence never results in mail going out.\n\nClicking approve releases one specific email. It is not an approval of the vendor.",
+        "height": 880,
+        "width": 1480,
+        "color": 4
+      },
+      "id": "bb000000-0000-4600-8600-000000000003",
+      "name": "Note - 0003",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1760,
+        -400
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Logged either way\n\n**Approved**, so sent from the office's own mailbox, then send time, recipient, body and follow-up date are recorded.\n**Declined**, so logged and nothing is sent.\n\nAfter two ignored requests the escalation pre-pass hands the vendor to a person and pauses automated chasing. It will not email a vendor indefinitely.\n\nNote: `stage_6_outbound_test_mode` redirects real sends to a test address while it is true. Switch it off deliberately before live use.",
+        "height": 700,
+        "width": 860,
+        "color": 5
+      },
+      "id": "bb000000-0000-4600-8600-000000000004",
+      "name": "Note - 0004",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3260,
+        -360
+      ]
+    },
     {
       "parameters": {},
       "id": "71000000-0000-4600-8600-000000000001",

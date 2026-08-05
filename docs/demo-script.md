@@ -34,15 +34,15 @@ This table is the reference for the whole video. Every scene below names its wor
 
 | Workflow name in n8n | Responsible for | Triggered by |
 |---|---|---|
-| **Stage 5 - COI Intake Workflow** | Everything that happens to an arriving certificate: storing the original, reading it, checking it against the rules, filing the result | `Gmail Trigger - COI Intake`, `Form Trigger - Certificate Upload`, or a manual run |
-| **Stage 5 - Source Document Route** | Serving the original PDF back when someone clicks the link on a row | `Webhook - Source PDF` |
-| **Stage 6 - Daily Watch Chase** | Finding paperwork that is missing, lapsing or lapsed, drafting the reminder, holding it for a person, sending and logging it | `Schedule Trigger - Daily Watch 08:00` |
-| **Stage 6 - Non PDF Reply Notice** | Vendor replies that are not certificates, so a plain text answer or a portal link becomes a manager notice rather than nothing | `Gmail Trigger - Stage 6 Replies` |
-| **Stage 7 - Dashboard Demo View** | Rendering the register as a web page. This is a view, not an application | `Webhook - COI Dashboard` |
+| **COI Intake** | Everything that happens to an arriving certificate: storing the original, reading it, checking it against the rules, filing the result | `Gmail Trigger - COI Intake`, `Form Trigger - Certificate Upload`, or a manual run |
+| **Source Document Route** | Serving the original PDF back when someone clicks the link on a row | `Webhook - Source PDF` |
+| **Daily Watch and Chase** | Finding paperwork that is missing, lapsing or lapsed, drafting the reminder, holding it for a person, sending and logging it | `Schedule Trigger - Daily Watch 08:00` |
+| **Non-PDF Reply Notice** | Vendor replies that are not certificates, so a plain text answer or a portal link becomes a manager notice rather than nothing | `Gmail Trigger - Stage 6 Replies` |
+| **COI Dashboard** | Rendering the register as a web page. This is a view, not an application | `Webhook - COI Dashboard` |
 
-**A sixth workflow exists and does not run.** `Stage 4 - COI Extraction and Validation Core` is the harness the checking rules were built and tested in. The rules themselves live in one file, `scripts/lib/coi-stage-4-validator.js`, and are embedded into the intake workflow by a generator script. Worth knowing if a technical viewer asks why the checks behave identically everywhere. Do not put it on camera.
+**A sixth workflow exists and does not run.** `Extraction and Validation Core` is the harness the checking rules were built and tested in. The rules themselves live in one file, `scripts/lib/coi-stage-4-validator.js`, and are embedded into the intake workflow by a generator script. Worth knowing if a technical viewer asks why the checks behave identically everywhere. Do not put it on camera.
 
-**A note on the names.** "Stage 5" and "Stage 6" are build stage names, not client-facing ones. Leave them as they are. They reinforce that this was constructed in a sequence for a specific job, which is the whole point. If a client later wants them renamed to match their own vocabulary, that is a fifteen-minute job and worth mentioning if it comes up.
+**A note on the names.** These are named for what they do, not for the order they were built in. An earlier version carried build-stage prefixes (`Stage 5 - COI Intake Workflow` and so on); those were removed because the workflow list is on camera in Scene 2 and internal scaffolding language does not belong there. The workflow IDs still carry the stage names, which is invisible in the UI and is why the CLI commands and script references are unchanged. If a client wants them renamed again to match their own vocabulary, it is a generator edit and a re-import.
 
 ### On-screen workflow labels
 
@@ -118,11 +118,11 @@ The board must already have data on it. All staging is done through the same scr
 
 **2. Check the workflows.** Open n8n at `http://localhost:5678` and go to Workflows. All five must show **Active**:
 
-- Stage 5 - COI Intake Workflow
-- Stage 5 - Source Document Route
-- Stage 6 - Daily Watch Chase
-- Stage 6 - Non PDF Reply Notice
-- Stage 7 - Dashboard Demo View
+- COI Intake
+- Source Document Route
+- Daily Watch and Chase
+- Non-PDF Reply Notice
+- COI Dashboard
 
 An inactive Stage 6 watch is the single most likely reason no approval email shows up in Scene 7. If anything is inactive, toggle it on and restart n8n from Docker Desktop.
 
@@ -153,11 +153,11 @@ Hold back `fixtures/pdfs/f02-expiring-20-days.pdf`. That is the one uploaded liv
 | `f11-not-a-certificate.pdf` | **No row changes at all.** Anchor Tile and Flooring LLC stays "No certificate on file". A manager notice is created instead. The intake workflow must not invent a certificate from a W-9 |
 | `f18-password-protected.pdf` | Rapid Response Restoration LLC goes to **Needs review**, without the workflow erroring |
 
-For `f11`, open the **Executions** tab on Stage 5 - COI Intake Workflow and confirm the run finished successfully. A clean finish that creates no certificate is the correct result, not a failure.
+For `f11`, open the **Executions** tab on COI Intake and confirm the run finished successfully. A clean finish that creates no certificate is the correct result, not a failure.
 
 `f18` leaves an extra Needs review row on the board. That is harmless. It is a real review case and Scene 5 has plenty to point at either way.
 
-**6. Prime the approval email.** A minute before you record Scene 7, open Stage 6 - Daily Watch Chase and click **Execute workflow**. The run pauses at `Gmail Approval - Send and Wait` and one approval email lands in the demo mailbox. Do this off camera so the email is already waiting, or show the click on camera if you would rather the trigger be visible.
+**6. Prime the approval email.** A minute before you record Scene 7, open Daily Watch and Chase and click **Execute workflow**. The run pauses at `Gmail Approval - Send and Wait` and one approval email lands in the demo mailbox. Do this off camera so the email is already waiting, or show the click on camera if you would rather the trigger be visible.
 
 After the Scene 7 approval, check `outreach_log` in pgweb for a row carrying the vendor, sent timestamp, recipient and follow-up date. That confirms the send was recorded, not just delivered.
 
@@ -178,7 +178,7 @@ Close everything else. Silence notifications.
 
 ## Scene 1: A certificate arrives and nothing gets typed (0:00-0:22)
 
-**Workflow on screen:** Stage 5 - COI Intake Workflow
+**Workflow on screen:** COI Intake
 
 **Screen:** Gmail, an unread message with a PDF attachment. Open it, show the attachment, do not download it. Cut to the dashboard and let the row fill in.
 
@@ -220,7 +220,7 @@ Move down the rows as they are named.
 
 ## Scene 3: The register, and why the wording matters (1:20-2:12)
 
-**Workflow on screen:** Stage 7 - Dashboard Demo View
+**Workflow on screen:** COI Dashboard
 
 **Screen:** Dashboard, scrolled to the top. Let the rows sit for three seconds before speaking.
 
@@ -242,7 +242,7 @@ Short pause.
 
 ## Scene 4: Watching one certificate go through intake (2:12-3:50)
 
-**Workflow on screen:** Stage 5 - COI Intake Workflow
+**Workflow on screen:** COI Intake
 
 **Screen:** the upload form, then n8n Executions, then the dashboard.
 
@@ -282,7 +282,7 @@ Switch to the dashboard. It refreshes every five seconds.
 
 ## Scene 5: The four states, and the smaller notes (3:50-5:03)
 
-**Workflow on screen:** decisions made in Stage 5 - COI Intake Workflow, rendered by Stage 7 - Dashboard Demo View
+**Workflow on screen:** decisions made in COI Intake, rendered by COI Dashboard
 
 **Screen:** Dashboard. Move down the rows deliberately.
 
@@ -310,7 +310,7 @@ Point at an amber note under a vendor name.
 
 ## Scene 6: The original document, one click away (5:03-5:36)
 
-**Workflow on screen:** Stage 5 - Source Document Route
+**Workflow on screen:** Source Document Route
 
 **Screen:** Click a source link on a row. Let the PDF open. Hold on it for three full seconds before speaking.
 
@@ -326,7 +326,7 @@ Close the tab. Return to the dashboard.
 
 ## Scene 7: What happens when nothing arrives (5:36-7:04)
 
-**Workflow on screen:** Stage 6 - Daily Watch Chase
+**Workflow on screen:** Daily Watch and Chase
 
 **Screen:** the daily watch workflow, then Gmail, then the outreach log.
 

@@ -70,17 +70,19 @@ Everything the system does is one of these five. Nothing runs outside them.
 
 | Workflow, as named in n8n | What it owns | What starts it |
 |---|---|---|
-| **Stage 5 - COI Intake Workflow** | Everything that happens to an arriving certificate: storing the original, reading it, checking it, filing the result | `Gmail Trigger - COI Intake`, `Form Trigger - Certificate Upload`, or `Manual Trigger - Run Stage 5 Smoke` |
-| **Stage 5 - Source Document Route** | Handing the original PDF back when someone clicks the link on a dashboard row | `Webhook - Source PDF` |
-| **Stage 6 - Daily Watch Chase** | Finding paperwork that is missing or running out, drafting the reminder, holding it for a person, sending it, logging it, and escalating when a vendor ignores you | `Schedule Trigger - Daily Watch 08:00`, or `Manual Trigger - Run Stage 6 Watch` |
-| **Stage 6 - Non PDF Reply Notice** | Vendor replies that are not certificates, so a plain text answer or a portal link becomes a manager notice instead of nothing | `Gmail Trigger - Stage 6 Replies` |
-| **Stage 7 - Dashboard Demo View** | Turning the current state of the database into the register web page | `Webhook - COI Dashboard` |
+| **COI Intake** | Everything that happens to an arriving certificate: storing the original, reading it, checking it, filing the result | `Gmail Trigger - COI Intake`, `Form Trigger - Certificate Upload`, or `Manual Trigger - Run Stage 5 Smoke` |
+| **Source Document Route** | Handing the original PDF back when someone clicks the link on a dashboard row | `Webhook - Source PDF` |
+| **Daily Watch and Chase** | Finding paperwork that is missing or running out, drafting the reminder, holding it for a person, sending it, logging it, and escalating when a vendor ignores you | `Schedule Trigger - Daily Watch 08:00`, or `Manual Trigger - Run Stage 6 Watch` |
+| **Non-PDF Reply Notice** | Vendor replies that are not certificates, so a plain text answer or a portal link becomes a manager notice instead of nothing | `Gmail Trigger - Stage 6 Replies` |
+| **COI Dashboard** | Turning the current state of the database into the register web page | `Webhook - COI Dashboard` |
 
 Two of these are event-driven and the important one is not, which is worth understanding because it explains why both exist. The intake workflow reacts to something happening: a document arrived. The daily watch reacts to nothing happening, which is a thing no inbox trigger can ever detect. An email trigger fires on arrivals. It has no way to notice an absence, and absence is the actual failure mode this product exists to catch.
 
-**A sixth export exists and does not run.** `Stage 4 - COI Extraction and Validation Core` is the harness the checking rules were built and tested in. The rules themselves live in `scripts/lib/coi-stage-4-validator.js` and are copied into the intake workflow by a generator script, which is why the checks behave identically wherever they run. If you ever need to change a rule, you change that file and regenerate. You do not edit the workflow.
+**A sixth export exists and does not run.** `Extraction and Validation Core` is the harness the checking rules were built and tested in. The rules themselves live in `scripts/lib/coi-stage-4-validator.js` and are copied into the intake workflow by a generator script, which is why the checks behave identically wherever they run. If you ever need to change a rule, you change that file and regenerate. You do not edit the workflow.
 
-The stage numbers in the names are build-stage names, not client-facing ones. They record the order the system was constructed in, and they can be renamed to match an office's own vocabulary without touching behaviour.
+Each workflow is named for what it does. The underlying workflow IDs still carry build-stage names (`stage-5-intake-workflow` and so on), which is why scripts and CLI commands refer to those rather than to the display names. The display names can be changed to match an office's own vocabulary without touching behaviour: they are set in the `scripts/generate-stage-*` generators, and changing one is a regenerate and a re-import.
+
+Every node inside these workflows still carries a stage label in its name, for example `Load Stage 6 Actionable Vendors`. That is deliberate. Several code nodes and expressions reference other nodes by exact name, so node names are load-bearing in a way workflow names are not.
 
 ## The Parts Underneath
 
@@ -100,7 +102,7 @@ Distinct from the five workflows above. These are the components the workflows u
 
 ## The Journey Of One Certificate
 
-**Workflow: Stage 5 - COI Intake Workflow.** All of it. Six steps, in order, with the nodes that do them.
+**Workflow: COI Intake.** All of it. Six steps, in order, with the nodes that do them.
 
 **1. It arrives.** Three ways in, and each has its own short entry path that normalizes the document and loads your settings:
 
@@ -216,7 +218,7 @@ Two statuses can only ever be set by a human: **cancelled** and **non-renewed**.
 
 ## The Source Document Link
 
-**Workflow: Stage 5 - Source Document Route.** Six nodes, and the smallest thing here that matters most.
+**Workflow: Source Document Route.** Six nodes, and the smallest thing here that matters most.
 
 Every dashboard row carries a link to the certificate it came from. Clicking it hits `Webhook - Source PDF`, which passes the certificate id to `Load Certificate Source Path`. `Route Safe Stored PDF` checks the stored path is inside the allowed area before anything is read, then `Read Stored Source PDF` and `Respond With Stored PDF` hand the original back. If the file is missing or the path fails the check, `Respond Source PDF Not Found` answers instead of erroring.
 
@@ -228,7 +230,7 @@ It is also the reason the storage step runs before the reading step. The link is
 
 ## What Happens When Nothing Arrives
 
-**Workflow: Stage 6 - Daily Watch Chase.** The other half of the system, and the half that addresses the actual problem. Everything above assumes a document turned up. This part assumes it did not.
+**Workflow: Daily Watch and Chase.** The other half of the system, and the half that addresses the actual problem. Everything above assumes a document turned up. This part assumes it did not.
 
 `Schedule Trigger - Daily Watch 08:00` starts it once a day. The first thing that runs is `Escalate Stage 6 Overdue Outreach`, a pre-pass that deals with vendors who have already ignored enough requests, before any new chasing is considered. Handling escalations first means a vendor who has stopped responding is taken out of the automated loop before the system considers sending them anything else.
 
@@ -256,7 +258,7 @@ One caveat worth knowing about re-attestation. The date it measures against, `la
 
 ## The Chase, And The Approval Gate
 
-**Workflow: Stage 6 - Daily Watch Chase**, continuing from above. This is the longest path in the system, so here it is node by node.
+**Workflow: Daily Watch and Chase**, continuing from above. This is the longest path in the system, so here it is node by node.
 
 `OpenAI Draft Stage 6 Chase Email` writes a short email, under 120 words, naming the vendor, the policy number and the expiry date, requesting updated paperwork, and making no claims about coverage. Where a producer or agent is on file, the request is addressed to them rather than to the vendor, because the agent is the party who can actually produce the document.
 
@@ -286,7 +288,7 @@ If a follow-up comes due and no newer certificate has arrived, a second request 
 
 ## Replies That Are Not Certificates
 
-**Workflow: Stage 6 - Non PDF Reply Notice.** Three nodes, and easy to forget it exists.
+**Workflow: Non-PDF Reply Notice.** Three nodes, and easy to forget it exists.
 
 `Gmail Trigger - Stage 6 Replies` watches for vendor replies. `Normalize Stage 6 Reply Notice` and `Store Stage 6 Reply Notice` turn anything that is not a certificate, a plain text answer or a link to an insurance portal, into a manager notice rather than letting it disappear.
 
@@ -298,7 +300,7 @@ A reply that does carry a PDF is picked up by the intake workflow instead, throu
 
 ## The Dashboard
 
-**Workflow: Stage 7 - Dashboard Demo View.** Five nodes and no storage of its own.
+**Workflow: COI Dashboard.** Five nodes and no storage of its own.
 
 `Webhook - COI Dashboard` receives the request. `Load Stage 7 Dashboard Rows` pulls the current state from Postgres. `Build Stage 7 Dashboard HTML` renders the page. `Respond With Stage 7 Dashboard` returns it. That is the whole workflow. There is a second webhook node for a stable URL, feeding the same three nodes.
 
@@ -338,7 +340,7 @@ If chasing behaves in a way the workflow diagram does not explain, the answer is
 ## Where Everything Lives
 
 - **Vendor register, certificates, coverage lines, reminder history and settings.** The Postgres database
-- **Original PDFs.** A dated folder on disk, one folder per day, linked from every row through Stage 5 - Source Document Route
+- **Original PDFs.** A dated folder on disk, one folder per day, linked from every row through Source Document Route
 - **Your requirements.** Minimum limits per trade, accepted certificate holder legal names, reminder cadence, approver address and which AI model to use are all settings in the database, not values buried in the workflows
 - **What ran and when.** n8n's execution history
 - **API keys and mailbox access.** Stored inside n8n only, never in the project files
@@ -381,15 +383,15 @@ The paused-vendor clearing in that list was added after 17 of 18 vendors were fo
 
 Each symptom, and which workflow to open first.
 
-- **A row shows "Needs review" unexpectedly.** Open the source PDF from the row. The document usually explains it: an inverted date, a holder name that does not match, an unusually poor scan. If you want the detail, the run is in Stage 5 - COI Intake Workflow executions.
-- **A certificate arrived but no row changed.** Check it was a PDF, then check Stage 5 - COI Intake Workflow executions for that time. A clean run that creates no certificate is the correct result for a non-certificate document.
+- **A row shows "Needs review" unexpectedly.** Open the source PDF from the row. The document usually explains it: an inverted date, a holder name that does not match, an unusually poor scan. If you want the detail, the run is in COI Intake executions.
+- **A certificate arrived but no row changed.** Check it was a PDF, then check COI Intake executions for that time. A clean run that creates no certificate is the correct result for a non-certificate document.
 - **A Gmail certificate was missed entirely.** The intake trigger filters on unread with an attachment, polling every minute. A reply opened in Gmail before the trigger polls can be skipped, because it is no longer unread.
 - **A certificate photo was ignored.** If it was sent as a JPG or PNG rather than a PDF, intake filtered it out and created a notice. A photograph saved as a PDF is handled, through the vision branch.
-- **No reminder email appeared.** Confirm Stage 6 - Daily Watch Chase is published and active, and confirm the approver address is set. An inactive workflow has been the cause before, and an unset approver sends the run to `Store Stage 6 Config Notice` instead.
+- **No reminder email appeared.** Confirm Daily Watch and Chase is published and active, and confirm the approver address is set. An inactive workflow has been the cause before, and an unset approver sends the run to `Store Stage 6 Config Notice` instead.
 - **More reminders queued than expected.** Check the re-attestation note above. A vendor with no recorded attestation date is actionable even with good paperwork on file.
 - **A vendor is never chased.** Check `chase_paused` for that vendor. Earlier escalation testing has left every vendor but one paused before now, and it is invisible outside the dashboard chase column.
 - **A reminder was approved but the vendor never received it.** Check `stage_6_outbound_test_mode`. While it is true, approved sends are redirected to the test address.
-- **A source PDF link returns not found.** Stage 5 - Source Document Route answered with `Respond Source PDF Not Found`. The stored path is either missing or outside the allowed area.
+- **A source PDF link returns not found.** Source Document Route answered with `Respond Source PDF Not Found`. The stored path is either missing or outside the allowed area.
 - **The dashboard will not load after a restart.** n8n registers its web routes a little after the editor comes up. Wait, then retry.
 - **The database browser shows unfamiliar internal tables.** Run `apply-pgweb-viewer.ps1` and hard-refresh.
 

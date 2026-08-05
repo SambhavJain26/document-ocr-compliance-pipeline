@@ -1,7 +1,103 @@
 {
   "id": "stage-5-intake-workflow",
-  "name": "Stage 5 - COI Intake Workflow",
+  "name": "COI Intake",
   "nodes": [
+    {
+      "parameters": {
+        "content": "## Three ways a certificate arrives\n\n**Gmail** polls every minute for unread mail carrying an attachment. No label or sender filter.\n**Upload form** at `/form/coi-intake` for anything handed over outside email.\n**Manual trigger** replays a named fixture, for testing only.\n\nAll three converge at **Route Intake Item Type**. Past that point behaviour is identical, so a form upload is not a lesser citizen than an email.\n\nIMAP is a disabled fallback kept for non-Google mailboxes.",
+        "height": 1300,
+        "width": 1400,
+        "color": 5
+      },
+      "id": "aa000000-0000-4500-8500-000000000001",
+      "name": "Note - 0001",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        -380
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## First refusal\n\nAnything that is not a PDF stops here and becomes a manager notice.\n\nNo vendor record is invented from a document that is not a certificate. A clean run that creates nothing is the correct result.",
+        "height": 640,
+        "width": 620,
+        "color": 3
+      },
+      "id": "aa000000-0000-4500-8500-000000000002",
+      "name": "Note - 0002",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1330,
+        -380
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Test path only\n\nReads a fixture PDF from the read-only `fixtures/` mount. Only the manual trigger reaches these two nodes.\n\nGmail and form intake already carry their file, so they skip straight past.",
+        "height": 340,
+        "width": 490,
+        "color": 7
+      },
+      "id": "aa000000-0000-4500-8500-000000000006",
+      "name": "Note - 0006",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1955,
+        -140
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Saved before it is read\n\nThe original PDF is written to disk **before** anything tries to interpret it.\n\nIf every later step failed, the document would still exist and still be linked from its row. This ordering is what makes the source link on the dashboard trustworthy.",
+        "height": 460,
+        "width": 840,
+        "color": 4
+      },
+      "id": "aa000000-0000-4500-8500-000000000003",
+      "name": "Note - 0003",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2460,
+        -140
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Reading: text first, vision fallback\n\nPassword-protected files skip extraction entirely and go straight to review, because a locked file would otherwise take the whole run down.\n\n**Enough text**, so read the text layer.\n**Too little text**, meaning a scan or a phone photo, so the PDF itself is sent to be read visually.\n\nBoth paths return the same shape, including the model's own HIGH / MEDIUM / LOW confidence rating.",
+        "height": 900,
+        "width": 1940,
+        "color": 5
+      },
+      "id": "aa000000-0000-4500-8500-000000000004",
+      "name": "Note - 0004",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3300,
+        -320
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Fixed rules decide, not the model\n\nThe model only transcribes what the page says. Every consequential decision happens here, in code that runs identically every time.\n\nHard flag, so review. Soft flag, so filed with a note. Clean, so filed as current.\n\nRules live in `scripts/lib/coi-stage-4-validator.js`.",
+        "height": 460,
+        "width": 700,
+        "color": 4
+      },
+      "id": "aa000000-0000-4500-8500-000000000005",
+      "name": "Note - 0005",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        5270,
+        -140
+      ]
+    },
     {
       "parameters": {},
       "id": "11000000-0000-4500-8500-000000000001",

@@ -7,6 +7,17 @@ const repoRoot = path.resolve(__dirname, "..");
 const dailyPath = path.join(repoRoot, "n8n-workflows", "stage-6-daily-watch-chase.json");
 const replyPath = path.join(repoRoot, "n8n-workflows", "stage-6-non-pdf-reply-notice.json");
 
+function sticky(id, position, width, height, content, color = 5) {
+  return {
+    parameters: { content, height, width, color },
+    id,
+    name: `Note - ${id.slice(-4)}`,
+    type: "n8n-nodes-base.stickyNote",
+    typeVersion: 1,
+    position,
+  };
+}
+
 function node(id, name, type, typeVersion, position, parameters = {}, credentials = undefined) {
   const { __alwaysOutputData, ...cleanParameters } = parameters;
   const base = { parameters: cleanParameters, id, name, type, typeVersion, position };
@@ -354,8 +365,72 @@ Recipient: {{ $json.intended_recipient }}`
 
 const dailyWorkflow = {
   id: "stage-6-daily-watch-chase",
-  name: "Stage 6 - Daily Watch Chase",
+  name: "Daily Watch and Chase",
   nodes: [
+    sticky(
+      "bb000000-0000-4600-8600-000000000001",
+      [-80, -320],
+      900,
+      700,
+      [
+        "## Runs once a day at 08:00",
+        "",
+        "This is the half of the system that notices **nothing happening**. An inbox trigger only ever fires on arrivals; it cannot detect an absence, and absence is the actual failure this product exists to catch.",
+        "",
+        "Escalation runs **first**, so a vendor who has already ignored two requests is taken out of the loop before any new chase is considered.",
+        "",
+        "Then vendors are sorted into buckets: never received, expired, 14d, 30d, 60d, re-attestation. Vendors with no certificate come first, because they have no date to remind anyone.",
+      ].join("\n"),
+    ),
+    sticky(
+      "bb000000-0000-4600-8600-000000000002",
+      [860, -320],
+      880,
+      700,
+      [
+        "## Draft, then log before sending",
+        "",
+        "The model writes a short request naming the vendor, policy number and expiry date. If it comes back empty, over 120 words, or containing a forbidden word, it is discarded and a fixed template is used instead.",
+        "",
+        "The upload link is appended **after** those checks, so the model cannot invent a destination.",
+        "",
+        "**Record Pending Outreach** writes the row before anything is sent, so a reminder can never go out without a record of it existing.",
+      ].join("\n"),
+    ),
+    sticky(
+      "bb000000-0000-4600-8600-000000000003",
+      [1760, -400],
+      1480,
+      880,
+      [
+        "## The approval gate",
+        "",
+        "No approver address configured, so the run stores a config notice and emails nobody. That is a deliberate refusal, not a fallback.",
+        "",
+        "Otherwise the execution **pauses here** until a person clicks. The approver sees the vendor, the reason, the intended recipient, the upload destination, and the exact draft.",
+        "",
+        "**No response in 24 hours means it expires rather than sends.** Silence never results in mail going out.",
+        "",
+        "Clicking approve releases one specific email. It is not an approval of the vendor.",
+      ].join("\n"),
+      4,
+    ),
+    sticky(
+      "bb000000-0000-4600-8600-000000000004",
+      [3260, -360],
+      860,
+      700,
+      [
+        "## Logged either way",
+        "",
+        "**Approved**, so sent from the office's own mailbox, then send time, recipient, body and follow-up date are recorded.",
+        "**Declined**, so logged and nothing is sent.",
+        "",
+        "After two ignored requests the escalation pre-pass hands the vendor to a person and pauses automated chasing. It will not email a vendor indefinitely.",
+        "",
+        "Note: `stage_6_outbound_test_mode` redirects real sends to a test address while it is true. Switch it off deliberately before live use.",
+      ].join("\n"),
+    ),
     node("71000000-0000-4600-8600-000000000001", "Manual Trigger - Run Stage 6 Watch", "n8n-nodes-base.manualTrigger", 1, [0, -120]),
     node("71000000-0000-4600-8600-000000000002", "Schedule Trigger - Daily Watch 08:00", "n8n-nodes-base.scheduleTrigger", 1.2, [0, 120], {
       rule: {
@@ -534,8 +609,23 @@ const dailyWorkflow = {
 
 const replyWorkflow = {
   id: "stage-6-non-pdf-reply-notice",
-  name: "Stage 6 - Non PDF Reply Notice",
+  name: "Non-PDF Reply Notice",
   nodes: [
+    sticky(
+      "bb000000-0000-4600-8600-000000000011",
+      [-80, -320],
+      920,
+      600,
+      [
+        "## Replies that are not certificates",
+        "",
+        "The most common reply to a certificate request is not a certificate. It is \"my agent will send it Monday\", a link to a carrier portal, or a question.",
+        "",
+        "Without this workflow those replies sit unread in a mailbox nobody watches, and the vendor gets chased again a week later as though they had ignored you. That is the fastest way to sour a working relationship with a tradesperson you depend on.",
+        "",
+        "A reply that **does** carry a PDF is picked up by **COI Intake** instead, through its own Gmail trigger.",
+      ].join("\n"),
+    ),
     node("81000000-0000-4600-8600-000000000001", "Gmail Trigger - Stage 6 Replies", "n8n-nodes-base.gmailTrigger", 1.4, [0, 0], {
       authentication: "oAuth2",
       event: "messageReceived",
