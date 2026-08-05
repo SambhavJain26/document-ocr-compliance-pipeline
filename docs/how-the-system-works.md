@@ -254,7 +254,11 @@ The cadence is a setting rather than a hardcoded rule. Currently reminders at 60
 
 Chasing is skipped when a vendor is paused, when a reminder is already awaiting approval, or when a recent reminder has not yet come due for follow-up. The system does not pile on. It also does not restart its counting when a vendor crosses a bucket boundary: the same expiry is treated as one continuous issue whether it is sixty days out or thirty, which is why a vendor does not receive a fresh first request every time a threshold is passed.
 
-One caveat worth knowing about re-attestation. The date it measures against, `last_attested_at`, is only ever set by hand. No workflow writes it, including the one that files a certificate. A vendor who has filed perfectly good paperwork but has never had that date recorded therefore still satisfies the re-attestation condition and will appear in that bucket. If re-attestation is producing more work than expected, that is the first thing to check.
+Re-attestation measures against `last_attested_at` on the vendor record. Filing a certificate counts as an attestation: when `Store Stage 5 Intake Result` files a document as current, it records that date against the vendor, so the 90-day clock restarts every time a vendor sends current paperwork.
+
+The date recorded is the certificate's own date rather than the day it arrived, and it only ever moves forward. That means uploading a certificate that is still current but was issued eight months ago does **not** reset the clock to today, and the vendor will correctly appear for re-attestation. That is the intended reading: the vendor last confirmed anything eight months ago.
+
+A vendor who replies to a re-attestation request in words rather than with a document is a different case. That reply becomes a manager notice through Non-PDF Reply Notice, and a person sets `last_attested_at` by hand, in the same way manual `CANCELLED` and `NON_RENEWED` statuses are set. Nothing infers an attestation from an email body.
 
 ## The Chase, And The Approval Gate
 
@@ -388,7 +392,7 @@ Each symptom, and which workflow to open first.
 - **A Gmail certificate was missed entirely.** The intake trigger filters on unread with an attachment, polling every minute. A reply opened in Gmail before the trigger polls can be skipped, because it is no longer unread.
 - **A certificate photo was ignored.** If it was sent as a JPG or PNG rather than a PDF, intake filtered it out and created a notice. A photograph saved as a PDF is handled, through the vision branch.
 - **No reminder email appeared.** Confirm Daily Watch and Chase is published and active, and confirm the approver address is set. An inactive workflow has been the cause before, and an unset approver sends the run to `Store Stage 6 Config Notice` instead.
-- **More reminders queued than expected.** Check the re-attestation note above. A vendor with no recorded attestation date is actionable even with good paperwork on file.
+- **More reminders queued than expected.** Check `last_attested_at` on the vendors involved. A vendor with no recorded attestation date is re-attest actionable even with good paperwork on file, which is correct for a vendor imported at onboarding who has not sent anything since, and wrong if their certificate was filed by this system. Filing a certificate records the date automatically.
 - **A vendor is never chased.** Check `chase_paused` for that vendor. Earlier escalation testing has left every vendor but one paused before now, and it is invisible outside the dashboard chase column.
 - **A reminder was approved but the vendor never received it.** Check `stage_6_outbound_test_mode`. While it is true, approved sends are redirected to the test address.
 - **A source PDF link returns not found.** Source Document Route answered with `Respond Source PDF Not Found`. The stored path is either missing or outside the allowed area.

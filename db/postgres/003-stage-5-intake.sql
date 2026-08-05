@@ -268,6 +268,20 @@ BEGIN
       WHERE vendor_id = effective_vendor_id
         AND status = 'ON_FILE'
         AND id <> certificate_id_value;
+
+      -- Filing a current certificate is itself an attestation: the vendor has
+      -- just confirmed their coverage details by sending the document. Without
+      -- this, last_attested_at stays NULL forever, and the RE_ATTEST branch in
+      -- stage_6_actionable_vendors treats NULL as "never confirmed", so every
+      -- vendor with perfectly good paperwork stays permanently chase-eligible.
+      --
+      -- The certificate's own date is used rather than the current date, so an
+      -- old-but-still-current certificate does not reset the clock to today.
+      -- GREATEST ignores NULLs, so this only ever moves the date forward.
+      UPDATE vendors
+      SET last_attested_at = GREATEST(last_attested_at, coalesce(certificate_date_value, CURRENT_DATE)),
+          updated_at = now()
+      WHERE id = effective_vendor_id;
     END IF;
 
     RETURN jsonb_build_object(
@@ -304,5 +318,24 @@ BEGIN
   );
 END;
 $$;
+
+-- Backfill for deployments that filed certificates before the attestation
+-- update above existed. Those vendors carry a NULL last_attested_at, which the
+-- RE_ATTEST branch reads as "never confirmed", so they would keep generating
+-- re-attestation reminders despite having current paperwork on file.
+-- Idempotent: only advances a vendor whose recorded date is missing or older.
+UPDATE vendors v
+SET last_attested_at = filed.certificate_date,
+    updated_at = now()
+FROM (
+  SELECT vendor_id, max(certificate_date) AS certificate_date
+  FROM certificates
+  WHERE status = 'ON_FILE'
+    AND vendor_id IS NOT NULL
+    AND certificate_date IS NOT NULL
+  GROUP BY vendor_id
+) AS filed
+WHERE filed.vendor_id = v.id
+  AND (v.last_attested_at IS NULL OR v.last_attested_at < filed.certificate_date);
 
 COMMIT;

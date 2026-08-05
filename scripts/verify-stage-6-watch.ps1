@@ -171,6 +171,51 @@ SELECT stage_6_store_reply_notice(jsonb_build_object(
   ));
 
 SELECT * FROM stage_6_escalate_overdue('2026-07-30');
+
+-- Filing a current certificate through the real storage function must record an
+-- attestation date. Without it, last_attested_at stays NULL, the RE_ATTEST
+-- branch reads NULL as "never confirmed", and every vendor with perfectly good
+-- paperwork stays permanently chase-eligible. Northstar Snow Removal is used by
+-- no other check in this file, so this stays isolated.
+SELECT store_stage_5_intake_result(jsonb_build_object(
+    'fixture_id', 'stage6-attestation',
+    'disposition', 'store_on_file',
+    'status', 'ON_FILE',
+    'extraction_method', 'text',
+    'vendor_match', jsonb_build_object(
+      'match_type', 'exact',
+      'score', 1,
+      'vendor_id', (SELECT id FROM vendors WHERE normalised_name = normalize_vendor_name('Northstar Snow Removal LLC')),
+      'vendor_legal_name', 'Northstar Snow Removal LLC'
+    ),
+    'holder_match', jsonb_build_object('matched', true, 'best_match', 'Harbourline Property Management LLC', 'score', 1),
+    'validation_flags', '[]'::jsonb,
+    'certificate', jsonb_build_object(
+      'source', 'form',
+      'source_ref', 'stage6-attestation',
+      'original_filename', 'stage6-attestation.pdf',
+      'stored_path', '/home/node/.n8n-files/certificates/2026/07/30/stage6-attestation.pdf',
+      'certificate_date', '2026-07-20',
+      'certificate_holder', 'Harbourline Property Management LLC',
+      'holder_match', true,
+      'extraction_confidence', 'HIGH',
+      'extraction_method', 'text',
+      'raw_extraction', jsonb_build_object('vendor_legal_name', 'Northstar Snow Removal LLC'),
+      'validation_flags', '[]'::jsonb,
+      'status', 'ON_FILE'
+    ),
+    'coverages', jsonb_build_array(jsonb_build_object(
+      'coverage_type', 'GENERAL_LIABILITY',
+      'insurer_name', 'Northgate Mutual',
+      'policy_number', 'NMG-2020-GL',
+      'effective_date', '2026-07-01',
+      'expiration_date', '2027-06-30',
+      'each_occurrence', '1000000',
+      'general_aggregate', '2000000',
+      'addl_insd_asserted', true,
+      'subr_wvd_asserted', false
+    ))
+  ));
 '@
 
   Invoke-Stage6Sql $sideEffectsSql | Out-Null
@@ -211,6 +256,16 @@ checks AS (
   SELECT 're-attest bucket exists',
     EXISTS (SELECT 1 FROM actions WHERE vendor_legal_name = 'Apex Plumbing Services LLC' AND bucket = 'RE_ATTEST'),
     coalesce((SELECT bucket FROM actions WHERE vendor_legal_name = 'Apex Plumbing Services LLC' LIMIT 1), 'missing')
+
+  UNION ALL
+  SELECT 'filing a certificate records an attestation date',
+    (SELECT last_attested_at FROM vendors WHERE normalised_name = normalize_vendor_name('Northstar Snow Removal LLC')) = '2026-07-20'::date,
+    coalesce((SELECT last_attested_at::text FROM vendors WHERE normalised_name = normalize_vendor_name('Northstar Snow Removal LLC')), 'null')
+
+  UNION ALL
+  SELECT 'freshly filed certificate is not re-attest actionable',
+    NOT EXISTS (SELECT 1 FROM actions WHERE vendor_legal_name = 'Northstar Snow Removal LLC'),
+    coalesce((SELECT bucket FROM actions WHERE vendor_legal_name = 'Northstar Snow Removal LLC' LIMIT 1), 'not actionable')
 
   UNION ALL
   SELECT 'paused vendor suppressed',
