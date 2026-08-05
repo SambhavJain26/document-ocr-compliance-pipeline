@@ -25,7 +25,7 @@ RULES
 
 6. Field order and layout vary between form revisions and between carriers. Locate fields by their labels, not by position.
 
-7. Set is_certificate_of_insurance to false if this document is not a certificate of liability insurance. Return nulls for all other fields.
+7. Set is_certificate_of_insurance to false only when this is a different kind of document, for example a W-9, an invoice, a licence, a quote, or a letter. Judge the document by its structure and its fields, not by its styling or provenance. A watermark or label such as SPECIMEN, SAMPLE, DRAFT, COPY or TEST DOCUMENT describes the copy in front of you, not the kind of document it is; a watermarked certificate of liability insurance is still a certificate of liability insurance. If it carries insurer, policy number, coverage line, effective and expiration fields laid out as a certificate of liability insurance, it is one. When you do set it to false, return nulls for all other fields.
 
 8. If the Description of Operations box contains wording about notice of cancellation to the certificate holder, copy it verbatim into cancellation_notice_wording. Copy it exactly. Do not summarise it, and do not treat it as a promise that notice will be given.
 
