@@ -77,8 +77,12 @@ The workflow verifier imports and publishes the two Stage 6 demo-facing workflow
 To test the full Gmail approval/send path locally, set both config values before rerunning:
 
 ```sql
-UPDATE client_config SET value = 'worksambhav26@gmail.com' WHERE key = 'stage_6_approver_email';
-UPDATE client_config SET value = 'worksambhav26@gmail.com' WHERE key = 'stage_6_test_recipient_email';
+UPDATE client_config SET value = 'sambhavn8n@gmail.com' WHERE key = 'stage_6_approver_email';
+UPDATE client_config SET value = 'sambhavn8n@gmail.com' WHERE key = 'stage_6_test_recipient_email';
 ```
+
+The local demo mailbox is `sambhavn8n@gmail.com`, used as both approver and test recipient. It replaced an earlier account whose OAuth stopped working. Both values live in `client_config` rather than in workflow JSON, so changing mailbox again is a SQL update and a new n8n credential, with no workflow edit.
+
+**The n8n credential must be named exactly `Gmail account`.** All four Gmail nodes reference it by that name: the intake trigger, the reply trigger, the approval send-and-wait, and the approved send. Creating a credential under any other name leaves those nodes unbound and the failure shows up as an approval email that never arrives.
 
 Public phone approval remains deferred until the public HTTPS webhook path is configured before demo rehearsal.

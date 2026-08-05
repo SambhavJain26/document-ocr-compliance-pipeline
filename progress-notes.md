@@ -253,6 +253,12 @@ The staged plan in `build-plan.md` follows the later `coi-demo-build-plan.md` wh
   4. Added a model preflight as step 1 of the pre-recording checklist, since a wrong `model_id` breaks staging silently.
 - Added a documented fallback to the script for recording without working Gmail OAuth: Scenes 2 to 6 and 8 to 10 do not touch Gmail, Scene 1 can open the upload form instead of the mailbox, and Scene 7 should be re-recorded rather than faked.
 
+2026-08-05, mailbox change:
+
+- The demo Gmail account changed to `sambhavn8n@gmail.com` because OAuth on the previous account stopped working. Updated `stage_6_approver_email` and `stage_6_test_recipient_email` in local `client_config`, and updated the example SQL in `docs/stage-6-watch-chase-runbook.md`. Earlier log entries in this file still name the old address; those are historical records of runs that happened and are left as written.
+- Recorded in the runbook and the demo script that the n8n credential must be named exactly `Gmail account`. All four Gmail nodes bind to it by name: `Gmail Trigger - COI Intake`, `Gmail Trigger - Stage 6 Replies`, `Gmail Approval - Send and Wait`, and `Gmail Send Approved Stage 6 Chase`. A credential created under a different name leaves those nodes unbound, and the symptom is an approval email that never arrives rather than a visible error.
+- No workflow JSON changed. Mailbox identity lives in `client_config` and in the named credential, not in the exports, so switching accounts is a SQL update plus a credential.
+
 ## Open Behaviour Findings
 
 Recorded 2026-07-31 from a read-only review of Stage 6 and Stage 7 behaviour prompted by demo-rehearsal questions. Items 1 and 2 were implemented and verified later the same day; item 3 remains blocked. Item 4 was found and fixed on 2026-08-05. Status is marked on each.

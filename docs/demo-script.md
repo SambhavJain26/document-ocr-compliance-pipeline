@@ -155,6 +155,15 @@ Count the grey rows on your dashboard before recording. Grey rows plus red rows 
 
 Scenes 1 and 7 need working Gmail OAuth in n8n. Scene 1 shows a certificate arriving by email, and Scene 7 is the approval. If Gmail is not connected, see the fallback at the end of this file before recording.
 
+The demo mailbox is `sambhavn8n@gmail.com`, and it is both the approver and the test recipient. Two things to check:
+
+- **The n8n credential must be named exactly `Gmail account`.** All four Gmail nodes reference it by that name. A credential under a different name leaves them unbound, and the symptom is an approval email that simply never arrives, with no obvious error.
+- **`stage_6_approver_email` and `stage_6_test_recipient_email` must both be set** in `client_config`. If either is blank, the run stores a config notice and emails nobody, which is deliberate but will look like nothing happened.
+
+Approver and recipient being the same address is fine. It means the approval request and the resulting vendor email both land in the same inbox, so searching All Mail by exact subject is clearer than watching the Primary tab.
+
+While `stage_6_outbound_test_mode` is `true`, the approved send is redirected to the test recipient rather than the real producer. Leave it true for recording.
+
 ### Tabs to have open
 
 1. n8n workflows: `http://localhost:5678/home/workflows`
@@ -632,7 +641,9 @@ Paste as timestamps. Recompute these against your final edit; they follow the sc
 - [ ] `f02-expiring-20-days.pdf` held back for Scene 4
 - [ ] Grey rows plus red rows counted, so Scene 7 says the right number
 - [ ] Daily Watch and Chase executed off camera, approval email waiting
-- [ ] Gmail OAuth connected, or the fallback plan chosen
+- [ ] Gmail OAuth connected for `sambhavn8n@gmail.com`, or the fallback plan chosen
+- [ ] n8n Gmail credential named exactly `Gmail account`
+- [ ] `stage_6_approver_email` and `stage_6_test_recipient_email` both set to the demo mailbox
 - [ ] pgweb showing only `coi_pgweb` views
 - [ ] Workflow label overlay prepared for all five names
 - [ ] No day counts spoken in narration
