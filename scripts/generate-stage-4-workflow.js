@@ -414,7 +414,10 @@ return $input.all().map((item, index) => {
         options: {
           instructions: extractionPrompt,
           maxTokens: 1500,
-          temperature: 0,
+          // No temperature. The model ID is a runtime setting in client_config,
+          // and some models reject this parameter outright with a bad request,
+          // which fails the whole run. Determinism here comes from the JSON
+          // schema and the transcribe-only prompt, not from a sampling knob.
           store: false,
           textFormat: {
             textOptions: {
@@ -467,7 +470,10 @@ return $input.all().map((item, index) => {
         options: {
           instructions: extractionPrompt,
           maxTokens: 1500,
-          temperature: 0,
+          // No temperature. The model ID is a runtime setting in client_config,
+          // and some models reject this parameter outright with a bad request,
+          // which fails the whole run. Determinism here comes from the JSON
+          // schema and the transcribe-only prompt, not from a sampling knob.
           store: false,
           textFormat: {
             textOptions: {

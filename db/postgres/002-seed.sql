@@ -9,13 +9,15 @@ INSERT INTO client_config(key, value) VALUES
   ('approval_channel', 'email'),
   ('telegram_chat_id', ''),
   ('timezone', 'America/New_York'),
-  -- gpt-5.4-nano was the original default and is no longer usable here: it reads
-  -- the watermarked synthetic fixtures as "not a certificate" even on the clean
-  -- happy-path document. coi-demo-build-plan.md warned against the nano tier for
-  -- exactly this reason and recommended the mini tier. Verified 2026-08-05: mini
-  -- files all seven demo fixtures and still refuses f11-not-a-certificate.
-  ('model_id', 'gpt-5.4-mini'),
-  ('model_id_fallback', 'gpt-5.6-luna')
+  -- Do not put gpt-5.4-nano back. It reads the watermarked synthetic fixtures as
+  -- "not a certificate" even on the clean happy-path document, files nothing, and
+  -- still reports success, so the failure looks like an empty board.
+  -- gpt-5.6-luna needs the OpenAI nodes to send no temperature parameter; it
+  -- rejects it with a bad request. The generators omit temperature for that
+  -- reason. Verified 2026-08-05 on luna: all seven demo fixtures file, and
+  -- f11-not-a-certificate is still refused.
+  ('model_id', 'gpt-5.6-luna'),
+  ('model_id_fallback', 'gpt-5.4-mini')
 ON CONFLICT (key) DO UPDATE
 SET value = EXCLUDED.value;
 

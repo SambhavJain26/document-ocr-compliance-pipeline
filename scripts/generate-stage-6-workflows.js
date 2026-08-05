@@ -79,21 +79,52 @@ Rules:
 - This is an administrative paperwork request only.`;
 
 const prepareDraftPayloadCode = `
+// The Responses API returns { output: [ { content: [ { text } ] } ] }, and that
+// text arrives already parsed as an object rather than as a JSON string. Two
+// bugs used to live here: arrays satisfied "typeof x === 'object'" and were
+// returned raw before the array branch could run, and the array branch then
+// called JSON.parse on something that was already an object. The result was
+// that a perfectly good model draft was silently discarded and every chase
+// email fell back to the fixed template. Check arrays first, and accept the
+// payload whether it arrives as an object or as a JSON string.
 function normalizeModelOutput(value) {
+  function asDraft(candidate) {
+    if (candidate && typeof candidate === "object" && !Array.isArray(candidate)) {
+      if (typeof candidate.subject === "string" || typeof candidate.body === "string") return candidate;
+      return null;
+    }
+    if (typeof candidate === "string") {
+      try { return asDraft(JSON.parse(candidate)); } catch (error) { return null; }
+    }
+    return null;
+  }
+
+  function fromResponses(list) {
+    if (!Array.isArray(list)) return null;
+    for (const entry of list) {
+      const content = entry && entry.content;
+      if (!Array.isArray(content)) continue;
+      for (const part of content) {
+        const found = asDraft(part && part.text);
+        if (found) return found;
+      }
+    }
+    return null;
+  }
+
+  if (Array.isArray(value)) return fromResponses(value) || {};
+
   if (value && typeof value === "object") {
-    if (typeof value.output === "object") return value.output;
-    if (typeof value.text === "string") {
-      try { return JSON.parse(value.text); } catch (error) {}
-    }
-    if (Array.isArray(value.output) && value.output[0]?.content?.[0]?.text) {
-      try { return JSON.parse(value.output[0].content[0].text); } catch (error) {}
-    }
+    const fromOutput = fromResponses(value.output);
+    if (fromOutput) return fromOutput;
+    const direct = asDraft(value.output);
+    if (direct) return direct;
+    const fromText = asDraft(value.text);
+    if (fromText) return fromText;
     return value;
   }
-  if (typeof value === "string") {
-    try { return JSON.parse(value); } catch (error) {}
-  }
-  return {};
+
+  return asDraft(value) || {};
 }
 
 function wordCount(text) {
@@ -113,10 +144,16 @@ function escapeHtml(value) {
     .replace(/'/g, "&#39;");
 }
 
+// Postgres hands dates back as full ISO timestamps, not YYYY-MM-DD. Appending
+// a time component to one of those produced an invalid date, and the guard
+// below then returned the raw value, so vendor-facing emails read
+// "expires 2026-06-26T00:00:00.000Z". Only add the time part when it is absent.
 function formatDate(value) {
   if (!value) return null;
-  const date = new Date(value + "T00:00:00Z");
-  if (Number.isNaN(date.getTime())) return value;
+  const raw = String(value);
+  const iso = /^\\d{4}-\\d{2}-\\d{2}$/.test(raw) ? raw + "T00:00:00Z" : raw;
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return raw;
   return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
 }
 
@@ -347,7 +384,9 @@ Recipient: {{ $json.intended_recipient }}`
       options: {
         instructions: draftInstructions,
         maxTokens: 350,
-        temperature: 0,
+        // No temperature. Some models reject this parameter outright with a
+        // bad request, which fails the whole run. The draft is bounded by the
+        // word limit, the forbidden-word check and the fallback template.
         store: false,
         textFormat: {
           textOptions: {

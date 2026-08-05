@@ -71,7 +71,7 @@ Every scene names one of these. Burn a small, muted label into the top left of t
 
 This is the step that will silently ruin a recording, so it goes first.
 
-Open pgweb at `http://localhost:8081/?session=coi-only` and check `client_config`. **`model_id` must be `gpt-5.4-mini`.**
+Open pgweb at `http://localhost:8081/?session=coi-only` and check `client_config`. **`model_id` must be `gpt-5.6-luna`.** The tested fallback is `gpt-5.4-mini`.
 
 If it says `gpt-5.4-nano`, stop and fix it. Verified on 2026-08-05: the nano tier reads the watermarked test certificates as "not a certificate of insurance" and refuses to file them, with high confidence. Your staging will appear to work, every upload will finish cleanly, and the board will stay empty. There is no error to see.
 
@@ -631,7 +631,8 @@ Paste as timestamps. Recompute these against your final edit; they follow the sc
 
 ## Pre-recording checklist
 
-- [ ] `model_id` is `gpt-5.4-mini` in `client_config`
+- [ ] `model_id` is `gpt-5.6-luna` in `client_config`
+- [ ] All five URLs return 200, especially `http://localhost:5678/form/coi-intake`
 - [ ] Containers running in Docker Desktop
 - [ ] All five workflows Active, list tidy enough to film
 - [ ] Dashboard loads and auto-refreshes

@@ -16,8 +16,7 @@
       "position": [
         -80,
         -320
-      ],
-      "webhookId": "stage-7-dashboard-webhook"
+      ]
     },
     {
       "parameters": {
@@ -35,7 +34,7 @@
         0,
         0
       ],
-      "webhookId": "stage-7-dashboard-stable-url-webhook"
+      "webhookId": "stage-7-dashboard-webhook"
     },
     {
       "parameters": {
@@ -52,7 +51,8 @@
       "position": [
         0,
         160
-      ]
+      ],
+      "webhookId": "stage-7-dashboard-stable-url-webhook"
     },
     {
       "parameters": {

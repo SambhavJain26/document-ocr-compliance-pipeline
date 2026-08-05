@@ -536,7 +536,10 @@ function openAiNode(id, name, position, branch) {
       options: {
         instructions: extractionPrompt,
         maxTokens: 1500,
-        temperature: 0,
+        // No temperature. The model ID is a runtime setting in client_config,
+        // and some models reject this parameter outright with a bad request,
+        // which fails the whole run. Determinism here comes from the JSON
+        // schema and the transcribe-only prompt, not from a sampling knob.
         store: false,
         textFormat: {
           textOptions: {
@@ -987,7 +990,20 @@ LEFT JOIN certificates c ON c.id = req.certificate_id;`,
   versionId: "stage-5-generated",
 };
 
-sourceWorkflow.nodes[0].webhookId = "stage-5-source-document-webhook";
+// Assign by node name, never by array index. Index-based assignment broke once
+// already: adding sticky notes to the front of the nodes array shifted every
+// index, so the webhook IDs landed on the sticky notes and the routes 404'd
+// while the workflows still reported active.
+function setWebhookId(workflow, nodeName, webhookId) {
+  const target = workflow.nodes.find((n) => n.name === nodeName);
+  if (!target) {
+    throw new Error(`Cannot set webhookId, node not found: ${nodeName}`);
+  }
+  target.webhookId = webhookId;
+}
+
+setWebhookId(sourceWorkflow, "Webhook - Source PDF", "stage-5-source-document-webhook");
+setWebhookId(intakeWorkflow, "Form Trigger - Certificate Upload", "stage-5-coi-intake-form");
 
 fs.mkdirSync(path.dirname(intakePath), { recursive: true });
 fs.writeFileSync(intakePath, `${JSON.stringify(intakeWorkflow, null, 2)}\n`, "utf8");

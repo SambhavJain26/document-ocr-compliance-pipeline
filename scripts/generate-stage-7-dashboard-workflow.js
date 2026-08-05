@@ -498,8 +498,20 @@ const dashboardWorkflow = {
   versionId: "stage-7-generated",
 };
 
-dashboardWorkflow.nodes[0].webhookId = "stage-7-dashboard-webhook";
-dashboardWorkflow.nodes[1].webhookId = "stage-7-dashboard-stable-url-webhook";
+// Assign by node name, never by array index. Index-based assignment broke once
+// already: adding a sticky note to the front of the nodes array shifted every
+// index, so the webhook IDs landed on the sticky note and the stable-URL route
+// 404'd while the workflow still reported active.
+function setWebhookId(workflow, nodeName, webhookId) {
+  const target = workflow.nodes.find((n) => n.name === nodeName);
+  if (!target) {
+    throw new Error(`Cannot set webhookId, node not found: ${nodeName}`);
+  }
+  target.webhookId = webhookId;
+}
+
+setWebhookId(dashboardWorkflow, "Webhook - COI Dashboard", "stage-7-dashboard-webhook");
+setWebhookId(dashboardWorkflow, "Webhook - COI Dashboard Stable URL", "stage-7-dashboard-stable-url-webhook");
 
 fs.mkdirSync(path.dirname(dashboardPath), { recursive: true });
 fs.writeFileSync(dashboardPath, `${JSON.stringify(dashboardWorkflow, null, 2)}\n`, "utf8");
