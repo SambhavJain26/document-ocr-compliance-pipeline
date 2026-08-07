@@ -220,29 +220,34 @@ SELECT
            ELSE ', follow-up ' || to_char(c.chase_follow_up_due, 'FMMon FMDD')
          END
   END AS display_chase,
+  -- Best-first ordering: clean rows at the top, then notes, then the ones that
+  -- need attention, with vendors that have nothing on file at the bottom. This
+  -- is the reverse of the original worst-first ranking. It reads better on
+  -- camera, because the walk down the board goes from settled to unsettled.
+  -- To go back to worst-first, invert these seven values and the ORDER BY.
   CASE
-    WHEN c.certificate_id IS NULL THEN 1
-    WHEN c.certificate_status IN ('NEEDS_REVIEW', 'CANCELLED', 'NON_RENEWED') THEN 2
-    WHEN c.expiration_date IS NULL THEN 2
-    WHEN c.days_to_expiry < 0 THEN 3
+    WHEN c.certificate_id IS NULL THEN 7
+    WHEN c.certificate_status IN ('NEEDS_REVIEW', 'CANCELLED', 'NON_RENEWED') THEN 6
+    WHEN c.expiration_date IS NULL THEN 6
+    WHEN c.days_to_expiry < 0 THEN 5
     WHEN c.days_to_expiry <= 30 THEN 4
-    WHEN coalesce(c.coverage_gap_count_marker, 0) > 0 THEN 5
-    WHEN cardinality(coalesce(c.flag_codes, ARRAY[]::TEXT[])) > 0 THEN 6
-    ELSE 7
+    WHEN coalesce(c.coverage_gap_count_marker, 0) > 0 THEN 3
+    WHEN cardinality(coalesce(c.flag_codes, ARRAY[]::TEXT[])) > 0 THEN 2
+    ELSE 1
   END AS sort_rank
 FROM classified c
 ORDER BY
   CASE
-    WHEN c.certificate_id IS NULL THEN 1
-    WHEN c.certificate_status IN ('NEEDS_REVIEW', 'CANCELLED', 'NON_RENEWED') THEN 2
-    WHEN c.expiration_date IS NULL THEN 2
-    WHEN c.days_to_expiry < 0 THEN 3
+    WHEN c.certificate_id IS NULL THEN 7
+    WHEN c.certificate_status IN ('NEEDS_REVIEW', 'CANCELLED', 'NON_RENEWED') THEN 6
+    WHEN c.expiration_date IS NULL THEN 6
+    WHEN c.days_to_expiry < 0 THEN 5
     WHEN c.days_to_expiry <= 30 THEN 4
-    WHEN coalesce(c.coverage_gap_count_marker, 0) > 0 THEN 5
-    WHEN cardinality(coalesce(c.flag_codes, ARRAY[]::TEXT[])) > 0 THEN 6
-    ELSE 7
+    WHEN coalesce(c.coverage_gap_count_marker, 0) > 0 THEN 3
+    WHEN cardinality(coalesce(c.flag_codes, ARRAY[]::TEXT[])) > 0 THEN 2
+    ELSE 1
   END,
-  c.days_to_expiry NULLS FIRST,
+  c.days_to_expiry DESC NULLS LAST,
   c.vendor_legal_name;
 $$;
 

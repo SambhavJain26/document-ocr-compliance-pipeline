@@ -481,7 +481,7 @@
     },
     {
       "parameters": {
-        "jsCode": "function sourceItems(nodeName) {\n  try { return $items(nodeName); } catch (error) { return []; }\n}\nconst candidates = [\n  ...sourceItems(\"Prepare Stored PDF Metadata\"),\n  ...sourceItems(\"Reattach Manual Fixture After File Read\"),\n];\nreturn $input.all().map((item, index) => {\n  const source = candidates.find((candidate) => candidate.json.stored_path === item.json.fileName) || candidates[index] || item;\n  return {\n    json: {\n      ...source.json,\n      fileName: item.json.fileName,\n      stored_path: source.json.stored_path || item.json.fileName,\n      validation_context: {\n        ...source.json.validation_context,\n        stored_path: source.json.stored_path || item.json.fileName,\n      },\n    },\n    binary: source.binary || item.binary,\n  };\n});"
+        "jsCode": "function sourceItems(nodeName) {\n  try { return $items(nodeName); } catch (error) { return []; }\n}\n\n// Detect encryption from the document itself rather than from a fixture name.\n// An encrypted PDF carries an /Encrypt entry in its trailer dictionary. The\n// routing node downstream used to compare $json.fixture_id against a fixture\n// ID, which meant two things: a real locked PDF arriving from a vendor was\n// never detected, and form or Gmail intake had no fixture_id at all, so the\n// comparison hit undefined and the run failed outright at that node.\nfunction detectPasswordProtected(item) {\n  try {\n    const encoded = item.binary && item.binary.data && item.binary.data.data;\n    if (typeof encoded === \"string\" && encoded.length > 0) {\n      const buffer = Buffer.from(encoded, \"base64\");\n      return /\\/Encrypt[\\s\\/<\\[]/.test(buffer.toString(\"latin1\"));\n    }\n  } catch (error) {}\n  // Binary was not inline, so fall back to the known fixture rather than\n  // guessing. Returning false here would file a locked document as readable.\n  return String((item.json && item.json.fixture_id) || \"\") === \"f18-password-protected\";\n}\n\nconst candidates = [\n  ...sourceItems(\"Prepare Stored PDF Metadata\"),\n  ...sourceItems(\"Reattach Manual Fixture After File Read\"),\n];\nreturn $input.all().map((item, index) => {\n  const source = candidates.find((candidate) => candidate.json.stored_path === item.json.fileName) || candidates[index] || item;\n  const binary = source.binary || item.binary;\n  return {\n    json: {\n      ...source.json,\n      fileName: item.json.fileName,\n      stored_path: source.json.stored_path || item.json.fileName,\n      is_password_protected: detectPasswordProtected({ json: source.json, binary }),\n      validation_context: {\n        ...source.json.validation_context,\n        stored_path: source.json.stored_path || item.json.fileName,\n      },\n    },\n    binary,\n  };\n});"
       },
       "id": "33000000-0000-4500-8500-000000000008",
       "name": "Reattach PDF Context After Storage",
@@ -498,16 +498,17 @@
           "options": {
             "caseSensitive": true,
             "leftValue": "",
-            "typeValidation": "strict"
+            "typeValidation": "loose"
           },
           "conditions": [
             {
-              "id": "password-fixture-condition",
-              "leftValue": "={{ $json.fixture_id }}",
-              "rightValue": "f18-password-protected",
+              "id": "password-protected-condition",
+              "leftValue": "={{ $json.is_password_protected }}",
+              "rightValue": "={{ true }}",
               "operator": {
-                "type": "string",
-                "operation": "equals"
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
               }
             }
           ],
@@ -550,7 +551,8 @@
       "position": [
         3640,
         180
-      ]
+      ],
+      "onError": "continueErrorOutput"
     },
     {
       "parameters": {
@@ -1069,6 +1071,13 @@
         [
           {
             "node": "Reattach Context After Text Extraction",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Mark Password Protected Review Result",
             "type": "main",
             "index": 0
           }

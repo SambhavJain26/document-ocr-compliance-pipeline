@@ -366,23 +366,45 @@ const reattachAfterWriteCode = `
 function sourceItems(nodeName) {
   try { return $items(nodeName); } catch (error) { return []; }
 }
+
+// Detect encryption from the document itself rather than from a fixture name.
+// An encrypted PDF carries an /Encrypt entry in its trailer dictionary. The
+// routing node downstream used to compare $json.fixture_id against a fixture
+// ID, which meant two things: a real locked PDF arriving from a vendor was
+// never detected, and form or Gmail intake had no fixture_id at all, so the
+// comparison hit undefined and the run failed outright at that node.
+function detectPasswordProtected(item) {
+  try {
+    const encoded = item.binary && item.binary.data && item.binary.data.data;
+    if (typeof encoded === "string" && encoded.length > 0) {
+      const buffer = Buffer.from(encoded, "base64");
+      return /\\/Encrypt[\\s\\/<\\[]/.test(buffer.toString("latin1"));
+    }
+  } catch (error) {}
+  // Binary was not inline, so fall back to the known fixture rather than
+  // guessing. Returning false here would file a locked document as readable.
+  return String((item.json && item.json.fixture_id) || "") === "f18-password-protected";
+}
+
 const candidates = [
   ...sourceItems("Prepare Stored PDF Metadata"),
   ...sourceItems("Reattach Manual Fixture After File Read"),
 ];
 return $input.all().map((item, index) => {
   const source = candidates.find((candidate) => candidate.json.stored_path === item.json.fileName) || candidates[index] || item;
+  const binary = source.binary || item.binary;
   return {
     json: {
       ...source.json,
       fileName: item.json.fileName,
       stored_path: source.json.stored_path || item.json.fileName,
+      is_password_protected: detectPasswordProtected({ json: source.json, binary }),
       validation_context: {
         ...source.json.validation_context,
         stored_path: source.json.stored_path || item.json.fileName,
       },
     },
-    binary: source.binary || item.binary,
+    binary,
   };
 });
 `.trim();
@@ -773,14 +795,18 @@ const intakeWorkflow = {
     }),
     node("33000000-0000-4500-8500-000000000008", "Reattach PDF Context After Storage", "n8n-nodes-base.code", 2, [3080, 80], { jsCode: reattachAfterWriteCode }),
     node("33000000-0000-4500-8500-000000000009", "Route Password Protected PDF", "n8n-nodes-base.if", 2.2, [3360, 80], {
+      // Boolean set upstream from the document's own bytes, with loose type
+      // validation. Strict validation against an undefined fixture_id was
+      // failing the whole run on the form and Gmail paths, which are the two
+      // paths a real certificate actually arrives on.
       conditions: {
-        options: { caseSensitive: true, leftValue: "", typeValidation: "strict" },
+        options: { caseSensitive: true, leftValue: "", typeValidation: "loose" },
         conditions: [
           {
-            id: "password-fixture-condition",
-            leftValue: "={{ $json.fixture_id }}",
-            rightValue: "f18-password-protected",
-            operator: { type: "string", operation: "equals" },
+            id: "password-protected-condition",
+            leftValue: "={{ $json.is_password_protected }}",
+            rightValue: "={{ true }}",
+            operator: { type: "boolean", operation: "true", singleValue: true },
           },
         ],
         combinator: "and",
@@ -788,11 +814,19 @@ const intakeWorkflow = {
       options: {},
     }),
     node("33000000-0000-4500-8500-000000000010", "Mark Password Protected Review Result", "n8n-nodes-base.code", 2, [3640, -160], { jsCode: passwordReviewCode }),
-    node("33000000-0000-4500-8500-000000000011", "Extract Text From Stored PDF", "n8n-nodes-base.extractFromFile", 1, [3640, 180], {
-      operation: "pdf",
-      binaryPropertyName: "data",
-      options: {},
-    }),
+    // Extraction aborts on an encrypted or corrupt PDF. Sending that to a
+    // second output rather than failing the run is what makes a locked file
+    // land in review instead of killing the execution. The upstream boolean
+    // check is a fast path only; it cannot see the bytes when n8n stores
+    // binary on the filesystem rather than inline, so this is the real guard.
+    {
+      ...node("33000000-0000-4500-8500-000000000011", "Extract Text From Stored PDF", "n8n-nodes-base.extractFromFile", 1, [3640, 180], {
+        operation: "pdf",
+        binaryPropertyName: "data",
+        options: {},
+      }),
+      onError: "continueErrorOutput",
+    },
     node("33000000-0000-4500-8500-000000000012", "Reattach Context After Text Extraction", "n8n-nodes-base.code", 2, [3920, 180], { jsCode: reattachAfterTextExtractionCode }),
     node("33000000-0000-4500-8500-000000000013", "Route By Extracted Text Length", "n8n-nodes-base.if", 2.2, [4200, 180], {
       conditions: {
@@ -863,7 +897,12 @@ const intakeWorkflow = {
       ],
     },
     "Mark Password Protected Review Result": { main: [[{ node: "Normalize Validate Stage 5 Result", type: "main", index: 0 }]] },
-    "Extract Text From Stored PDF": { main: [[{ node: "Reattach Context After Text Extraction", type: "main", index: 0 }]] },
+    "Extract Text From Stored PDF": {
+      main: [
+        [{ node: "Reattach Context After Text Extraction", type: "main", index: 0 }],
+        [{ node: "Mark Password Protected Review Result", type: "main", index: 0 }],
+      ],
+    },
     "Reattach Context After Text Extraction": { main: [[{ node: "Route By Extracted Text Length", type: "main", index: 0 }]] },
     "Route By Extracted Text Length": {
       main: [
