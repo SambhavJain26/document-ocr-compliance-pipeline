@@ -271,6 +271,14 @@ The staged plan in `build-plan.md` follows the later `coi-demo-build-plan.md` wh
 - Both rewritten and unit-tested offline against every shape: Responses array with an object payload, Responses array with a JSON string payload, a direct object, a JSON string, and null. Re-ran the live chase afterwards: `draft_source` is now `openai` and the body reads "the expiration date of June 26, 2026".
 - Verified after all changes: 18 of 18 Stage 6 watch checks, 8 of 8 Stage 5 storage checks, and the Stage 4 offline validator all pass. Demo reset to 18 vendors with zero certificates, coverage rows, notices, outreach rows and paused vendors.
 
+2026-08-07, recording blocked by dated storage path:
+
+- A demo recording failed on the first upload. `Write Original PDF To Storage` errored with `The file or directory does not exist`, and the intake run stopped there. Nothing else was broken.
+- Cause: certificates are written to `data/certificates/YYYY/MM/DD`, and the n8n write node cannot create parent directories. Confirmed against the node source in the running container: the write operation exposes only `append`, `fileName` and `dataPropertyName`, with no create-directories option. The dated path rolls over at UTC midnight, so a stack that worked on 2026-08-05 failed on 2026-08-07 with no configuration change.
+- Fixed by running `.\scriptseset-demo.ps1`, which creates the current UTC date path. Verified end to end afterwards: fixture filed, PDF present on disk at the dated path, dashboard row rendered, and the container can both read and write the directory through the bind mount.
+- Separately observed that the whole `data/certificates/2026` subtree was empty at one point during this session, including previously written day folders. `reset-demo.ps1` does not delete anything under the storage root, so the cause is not the reset script and is unresolved. It is recoverable in one command, so it does not block recording, but treat a missing dated folder as expected rather than surprising and re-run the reset.
+- Made the trap hard to miss: the demo script now runs the reset as step 2 of the pre-record sequence with an explanation of why, the pre-recording checklist leads with it, and the stall section carries the exact error text and the one-command fix. Sharpened the Stage 5 storage note in `AGENTS.md` and `CLAUDE.md` to say the node cannot create directories and that the path rolls over daily.
+
 ## Open Behaviour Findings
 
 Recorded 2026-07-31 from a read-only review of Stage 6 and Stage 7 behaviour prompted by demo-rehearsal questions. Items 1 and 2 were implemented and verified later the same day; item 3 remains blocked. Item 4 was found and fixed on 2026-08-05. Status is marked on each.

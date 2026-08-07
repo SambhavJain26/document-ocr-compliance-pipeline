@@ -77,9 +77,21 @@ If it says `gpt-5.4-nano`, stop and fix it. Verified on 2026-08-05: the nano tie
 
 The fixtures carry a `SPECIMEN - SYNTHETIC TEST DOCUMENT` watermark on purpose, for copyright reasons. Real client certificates won't have it, so this only affects the demo fixture set.
 
-### 2. Start the stack
+### 2. Start the stack, then run the reset
 
 In Docker Desktop, start the `vendor-coi-chasing` containers. Wait for n8n, postgres and pgweb to all show running.
+
+Then, from the repo root:
+
+```bash
+.\scripts\reset-demo.ps1
+```
+
+**Run this on the day you record, even if the board is already clean.** It is not only a reset. It also creates today's certificate storage folder, and without that folder every upload fails.
+
+Certificates are stored under a dated path, `data/certificates/YYYY/MM/DD`, and n8n's write node cannot create the folder itself. The date rolls over at UTC midnight. So a stack that worked perfectly yesterday will fail on the first upload today, at the `Write Original PDF To Storage` node, with **"The file or directory does not exist"**. Nothing else is broken when that happens, and the fix is this one command.
+
+This has already interrupted one recording. If you stage the board one day and record the next, run the reset again before you record.
 
 ### 3. Check all five workflows are Active
 
@@ -529,6 +541,10 @@ Say one of these and keep moving. Don't apologize or troubleshoot on camera.
 **A workflow errors on camera**
 > "That's what the execution history is for. It caught it, it kept the original PDF, and nothing got filed from a failed run. Let me open the run and show you."
 
+**An upload fails at `Write Original PDF To Storage`**
+
+The error reads "The file or directory does not exist". This is the dated storage folder, not a real fault. Stop recording, run `.\scripts\reset-demo.ps1`, and re-stage. It takes about a second. Do not try to narrate around it, because every upload will keep failing until the folder exists.
+
 **Gmail OAuth isn't connected at all**
 
 Record Scenes 2 through 6 and 8 through 10 as written. They don't touch Gmail. For Scene 1, open the upload form instead of the mailbox and change the first line to "A vendor sends you their insurance certificate, or drops it on a form like this one." Then either cut Scene 7 and note in the description that the approval step is covered in a follow-up, or re-record it once OAuth is connected and edit it in. Don't fake it, and don't describe the approval gate without showing it. The click is the whole point of that scene.
@@ -631,6 +647,7 @@ Paste as timestamps. Recompute these against your final edit; they follow the sc
 
 ## Pre-recording checklist
 
+- [ ] `.\scripts\reset-demo.ps1` run **today**, so today's dated storage folder exists
 - [ ] `model_id` is `gpt-5.6-luna` in `client_config`
 - [ ] All five URLs return 200, especially `http://localhost:5678/form/coi-intake`
 - [ ] Containers running in Docker Desktop
