@@ -123,24 +123,45 @@ Open `http://localhost:5678/form/coi-intake` and upload these seven from `fixtur
 
 **Hold back** `f02-expiring-20-days.pdf`. That's the one you upload live in Scene 4. Its vendor, Blue Ridge HVAC, is untouched by everything above.
 
+### 4b. Put the Scene 1 email in the mailbox
+
+Scene 1 opens on an email arriving. **Nothing else in this prep puts an email in that mailbox**, so you have to send one, and you have to send it before you record.
+
+From any account, send an email to `sambhavn8n@gmail.com` with `fixtures/pdfs/f08-multiple-expiry-dates.pdf` attached. Subject and body do not matter. That fixture belongs to Bright Hall Cleaning Co., which none of the seven staged fixtures touch, so it lands as its own new row.
+
+Then wait about two minutes and check the dashboard. Bright Hall should now have a certificate on it. The Gmail trigger polls once a minute.
+
+Three things to know:
+
+- **Do not open the email before it processes.** The trigger only looks at **unread** messages with an attachment. If you read it first, it can be skipped entirely.
+- Once it has processed, the message stays unread, so you can still open it on camera. That is the point: by the time you record, the row is genuinely already there, and you are showing the email that produced it.
+- If Bright Hall does not appear after three minutes, the Gmail trigger is not picking mail up. Do not burn recording time on it. Use the Gmail fallback at the end of this file, which opens Scene 1 on the upload form instead.
+
+**Honest note:** the Gmail *sending* path is tested and working. The Gmail *intake* trigger has not been verified end to end with a real inbound email on this setup. Scene 1 is the only scene that depends on it. Test it before you record, not during.
+
 ### 5. Confirm what the board actually looks like
 
-Open the dashboard. You should have **exactly one green row**, and it's Apex Plumbing.
+Open the dashboard. Rows now sort best first, so the board reads top to bottom as: green, then amber notes, then expiring, then expired, then Needs review, and vendors with nothing on file at the bottom.
 
-That surprises people, so here it is in full. Verified 2026-08-05:
+You should have **exactly two green rows**: Apex Plumbing and Bright Hall Cleaning. Everything else that filed carries at least one amber note. That surprises people, so here it is in full, in the order it appears. Verified 2026-08-07:
 
-| Vendor | Status | Tone | Notes shown |
-|---|---|---|---|
-| Apex Plumbing | Current until Mar 30, 2027 | green | none |
-| Cedar Path Janitorial | Current until Jul 1, 2027 | amber | no workers' comp line |
-| Clearway Pest Control | Current until Jan 1, 2027 | amber | limit below minimum, no WC line |
-| Evergreen Appliance Repair | Current until Apr 1, 2027 | amber | no workers' comp line |
-| Greenline Groundskeeping | Current until May 1, 2027 | amber | holder mismatch, no WC line |
-| Circuit Square Electric | Expired *(n)* days ago | red | no WC line, no cancellation wording |
-| Summit Shield Roofing | Needs review | red | dates inverted, and others |
-| The other 11 | No certificate on file | grey | |
+| # | Vendor | Status | Tone | Notes shown |
+|---|---|---|---|---|
+| 1 | Apex Plumbing | Current until Mar 30, 2027 | green | none |
+| 2 | Bright Hall Cleaning | Current until Sep 15, 2026 | green | none |
+| 3 | Cedar Path Janitorial | Current until Jul 1, 2027 | amber | no workers' comp line |
+| 4 | Greenline Groundskeeping | Current until May 1, 2027 | amber | holder mismatch, no WC line |
+| 5 | Evergreen Appliance Repair | Current until Apr 1, 2027 | amber | no workers' comp line |
+| 6 | Clearway Pest Control | Current until Jan 1, 2027 | amber | limit below minimum, no WC line |
+| 7 | Circuit Square Electric | Expired *(n)* days ago | red | no WC line, no cancellation wording |
+| 8 | Summit Shield Roofing | Needs review | red | low confidence, dates inverted, others |
+| 9+ | The other 10 | No certificate on file | grey | |
 
-Most of the amber is the missing workers' compensation line. Only one seeded vendor is marked WC-exempt (Mason Creek Handyman), so a GL-only certificate raises a note on everybody else. That's correct behavior and it's fine on camera, but don't call a row "green" in narration unless it's Apex.
+Bright Hall is there because it is the Scene 1 email from step 4b. If you skipped that step, you will have one green row instead of two, and Scene 1 has nothing to show.
+
+Most of the amber is the missing workers' compensation line. Only one seeded vendor is marked WC-exempt (Mason Creek Handyman), so a GL-only certificate raises a note on everybody else. That's correct behavior and fine on camera, but don't call a row "green" in narration unless it's Apex or Bright Hall.
+
+After Scene 4's live upload, Blue Ridge HVAC appears between the amber rows and Circuit Square, reading "Expires in *(n)* days".
 
 ### 6. Check the two refusals, off camera
 
@@ -197,9 +218,16 @@ Clearing the board back to 18 blank rows is the one thing with no path through t
 
 **Workflow label:** COI Intake
 
-**On screen:** Gmail, an unread message with a PDF attached. Then the dashboard.
+**Before this scene:** you sent the Scene 1 email in prep step 4b, waited, and confirmed Bright Hall Cleaning Co. now has a certificate on the dashboard. The email is still unread.
 
-**You do:** Open the message. Show the attachment. Don't download it. Cut to the dashboard and let the row fill in.
+**On screen:** Gmail, then the dashboard.
+
+**You do:**
+
+1. Open Gmail for `sambhavn8n@gmail.com`. The email you sent yourself is sitting there unread with a PDF attached.
+2. Click it open. Let the attachment name show. Do not download or preview it.
+3. Switch to the dashboard tab, `http://localhost:5678/webhook/coi`.
+4. Point at the Bright Hall Cleaning Co. row, which already has a carrier, a policy number and a date on it.
 
 **You say:**
 
@@ -209,7 +237,9 @@ Let the row sit for a beat.
 
 > "That's the whole idea. The rest of this is how it works, and which piece is responsible for what."
 
-**Why this scene is here:** The first fifteen seconds decide whether anyone watches the other nine minutes. Show the outcome before any explanation.
+**Watch out for:** the row must already be populated before you start filming. You are not waiting for it live in this scene. If you try to time it live and the poll has not fired, you will be sitting in silence.
+
+**Why this scene is here:** the first fifteen seconds decide whether anyone watches the other nine minutes. Show the outcome before any explanation.
 
 *6-minute cut: keep, first line only.*
 
@@ -219,9 +249,13 @@ Let the row sit for a beat.
 
 **Workflow label:** the workflow list
 
-**On screen:** The n8n Workflows page, five rows showing Active.
+**On screen:** the n8n Workflows page.
 
-**You do:** Sit on the list. Move down the rows as you name them.
+**You do:**
+
+1. Go to `http://localhost:5678/home/workflows`.
+2. Sit still on the list for a second so the viewer can read it. All five show **Active**.
+3. Move your cursor down the five names as you say each one.
 
 **You say:**
 
@@ -237,7 +271,9 @@ Move down the rows.
 
 > "Everything after this is one of those five doing something, and I'll tell you which."
 
-**Why this scene is here:** This carries the positioning. If a viewer takes one thing away, it should be this.
+**Watch out for:** if a sixth workflow is visible, it is the non-running harness. Scroll it out of frame rather than explaining it.
+
+**Why this scene is here:** this carries the positioning. If a viewer takes one thing away, it should be this.
 
 *6-minute cut: keep the first two lines and the list. Drop the per-workflow narration.*
 
@@ -247,9 +283,13 @@ Move down the rows.
 
 **Workflow label:** COI Dashboard
 
-**On screen:** The dashboard, scrolled to the top.
+**On screen:** the dashboard, scrolled to the top.
 
-**You do:** Let the rows sit for three seconds before speaking. Then point at the status column and slow down.
+**You do:**
+
+1. Switch to the dashboard tab and scroll to the very top.
+2. Say nothing for three seconds. Let them read.
+3. Move your cursor slowly down the Status column while you talk.
 
 **You say:**
 
@@ -265,7 +305,7 @@ Short pause.
 
 > "Every one of those is a fact printed on a document. Not one of them is a judgment about insurance."
 
-**Why this scene is here:** The honesty boundary, stated early, in the viewer's own interest rather than as a disclaimer.
+**Why this scene is here:** the honesty boundary, stated early, in the viewer's own interest rather than as a disclaimer.
 
 *6-minute cut: keep the first line and the status paragraph.*
 
@@ -275,14 +315,19 @@ Short pause.
 
 **Workflow label:** COI Intake
 
-**On screen:** The upload form, then n8n Executions, then the dashboard.
+**Before this scene:** `f02-expiring-20-days.pdf` has not been uploaded yet. Blue Ridge HVAC Co. still reads "No certificate on file", near the bottom of the board.
+
+**On screen:** the upload form, then n8n Executions, then the dashboard.
 
 **You do:**
 
-1. Drag `f02-expiring-20-days.pdf` onto the form. Submit.
-2. Switch to COI Intake, Executions tab, open the run. Let the node path light up.
-3. Point at `Write Original PDF To Storage`, then the extraction nodes, then `Normalize Validate Stage 5 Result`.
-4. Switch to the dashboard. It refreshes every five seconds.
+1. Switch to the form tab, `http://localhost:5678/form/coi-intake`.
+2. Drag `fixtures/pdfs/f02-expiring-20-days.pdf` onto the file field. Click **Submit**. You get a short confirmation.
+3. Switch to n8n. Open **COI Intake**, then the **Executions** tab at the top of the workflow. The newest run is at the top of the list. Click it.
+4. The canvas opens with the path it took lit up. Point at **Write Original PDF To Storage**.
+5. Point at **Extract Text From Stored PDF** and the two **OpenAI Extract** nodes.
+6. Point at **Normalize Validate Stage 5 Result**.
+7. Switch to the dashboard. It refreshes itself every five seconds. Blue Ridge HVAC has moved up the board with a date on it.
 
 **You say:**
 
@@ -314,9 +359,12 @@ Switch to the dashboard.
 
 > "And there it is. Carrier, policy number, limit, expiration date, counting down."
 
-**Trap to avoid:** don't say a specific number of days. The fixture dates are fixed, so the countdown shifts by one every day. Let the screen show the number.
+**Watch out for:**
 
-**Why this scene is here:** This is the mechanism. Storage-before-reading and the reading/deciding split are the two things that earn trust.
+- The run takes roughly ten to twenty seconds. Do not cut to Executions instantly. Talk through the first line while it finishes.
+- Do not say a number of days. The fixture dates are fixed, so the countdown shifts by one every day. Let the screen show it.
+
+**Why this scene is here:** this is the mechanism. Storage-before-reading and the reading/deciding split are the two things that earn trust.
 
 *6-minute cut: keep the upload, the storage point, and the result. Cut the extraction paragraph, shorten the validation point to its first two sentences.*
 
@@ -326,15 +374,23 @@ Switch to the dashboard.
 
 **Workflow label:** decisions from COI Intake, rendered by COI Dashboard
 
-**On screen:** The dashboard.
+**On screen:** the dashboard.
 
-**You do:** Move down the rows deliberately. Point at Apex, then the row you just created, then Circuit Square, then Summit Shield, then an amber note.
+**Board order, top to bottom:** clean rows first, then rows carrying a note, then anything expiring, then expired, then Needs review, and vendors with nothing on file last. So you are walking down the board from settled to unsettled, which is the order you narrate in.
+
+**You do:**
+
+1. Point at **Apex Plumbing Services LLC** at the top. Green, no notes.
+2. Point at **Blue Ridge HVAC Co.**, the row you created in Scene 4.
+3. Scroll down to **Circuit Square Electric LLC**, the red expired row.
+4. Point at **Summit Shield Roofing Inc.**, the Needs review row.
+5. Point at the small amber note under **Clearway Pest Control LLC**, which reads that a limit is below the minimum.
 
 **You say:**
 
 > "The whole board is really four situations."
 
-Point at Apex, then the new row.
+Point at Apex, then Blue Ridge.
 
 > "Current, with a date on it. Nothing to do. Running out soon, which is the one that used to depend on somebody remembering."
 
@@ -346,11 +402,13 @@ Point at Summit Shield.
 
 > "This one's waiting for a person. The dates were inverted, expiration before effective. It could have picked one. It doesn't guess. A holder name that isn't yours, a locked file, a vendor name one keystroke from one you already have, all of that goes to review instead of quietly becoming a number in a column."
 
-Point at an amber note.
+Point at the amber note.
 
 > "Smaller problems become notes, not alarms. This one came in under your limit for that trade. Filed, visible, not a crisis. Sorting by how much something matters is most of the work."
 
-**Why this scene is here:** Shows judgment being deferred to a human, which is the thing that makes automation safe to hire.
+**Watch out for:** only Apex and Bright Hall are truly green. Every other filed row carries an amber note, usually about a missing workers' compensation line, which is correct behavior. Do not call any other row green.
+
+**Why this scene is here:** shows judgment being deferred to a human, which is the thing that makes automation safe to hire.
 
 *6-minute cut: keep current, lapsed and review. Drop the notes paragraph.*
 
@@ -360,9 +418,14 @@ Point at an amber note.
 
 **Workflow label:** Source Document Route
 
-**On screen:** A source link on a row, then the PDF.
+**On screen:** the dashboard, then a PDF in a new tab.
 
-**You do:** Click the source link on any filed row. Let the PDF open. Hold three full seconds before speaking. Close the tab, return to the dashboard.
+**You do:**
+
+1. On the **Apex Plumbing Services LLC** row, find the source link in the last column. It reads **Open PDF**.
+2. Click it. The certificate opens in a new browser tab.
+3. Hold on the open PDF for three full seconds before you say anything.
+4. Close the tab and return to the dashboard.
 
 **You say:**
 
@@ -370,7 +433,9 @@ Point at an amber note.
 
 > "Something read this and put facts in a table. Checking one against the source is a click, not a hunt through your inbox. You never have to take an automation's word for anything."
 
-**Why this scene is here:** Answers the trust objection before it gets asked.
+**Watch out for:** only rows with a filed certificate have a link. Grey "No certificate on file" rows do not, so click a row near the top.
+
+**Why this scene is here:** answers the trust objection before it gets asked.
 
 *6-minute cut: keep.*
 
@@ -380,14 +445,23 @@ Point at an amber note.
 
 **Workflow label:** Daily Watch and Chase
 
-**On screen:** The workflow, then Gmail, then the outreach log in pgweb.
+**Before this scene, off camera:**
+
+1. Count the rows on your dashboard that are either grey ("No certificate on file") or red. Write that number down. That is what the watch is about to find.
+2. Open **Daily Watch and Chase** in n8n and click **Execute workflow** at the bottom of the canvas.
+3. Wait for the approval email to arrive in `sambhavn8n@gmail.com`. It takes under a minute. Leave it unopened.
+4. Now start recording.
+
+**On screen:** the workflow canvas, then Gmail, then pgweb.
 
 **You do:**
 
-1. Open Daily Watch and Chase. Point at the schedule trigger, then the drafting node, then the approval node.
-2. Switch to Gmail and open the approval email. **It should already be waiting** because you clicked Execute a minute before recording, off camera.
-3. Click **Approve**.
-4. Show the sent message, then the `outreach_log` row in pgweb.
+1. Show the **Daily Watch and Chase** canvas. Point at **Schedule Trigger - Daily Watch 08:00** on the left.
+2. Point at **OpenAI Draft Stage 6 Chase Email** in the middle.
+3. Point at **Gmail Approval - Send and Wait**.
+4. Switch to Gmail and open the approval email that is already waiting.
+5. Click **Approve** in the email.
+6. Switch to pgweb at `http://localhost:8081/?session=coi-only` and open the outreach log view. Show the row: vendor, recipient, sent time, follow-up date.
 
 **You say:**
 
@@ -397,9 +471,9 @@ Point at the schedule trigger.
 
 > "This runs once a day. It sorts every vendor: never sent anything, lapsed, running out in fourteen days, thirty, sixty. The ones who've never sent anything come first, because they've got no date to remind anyone they exist."
 
-Look at the board, or say the number you counted in step 7 of the prep.
+Say the number you counted.
 
-> "On this board it found thirteen. Twelve vendors with nothing on file at all, and one whose certificate has lapsed."
+> "On this board it found [your number]. Most of them are vendors with nothing on file at all, plus the one whose certificate has lapsed."
 
 Point at the drafting node.
 
@@ -409,7 +483,7 @@ Point at the approval node.
 
 > "Then it stops."
 
-Open the approval email in Gmail.
+Open the approval email.
 
 > "You get this first. The vendor, the reason, who it's going to, and the exact message that would go out."
 
@@ -417,13 +491,16 @@ Click Approve.
 
 > "To be precise about what I just did: I approved that a reminder gets sent. I didn't approve the vendor for anything. And if nobody clicks within twenty-four hours, it expires instead of sending."
 
-Show the sent message and the log row.
+Show the outreach log row.
 
 > "Your vendor can reply with the certificate attached, or use the upload link. Either way it lands back in intake, and the send is on the record. Ignore two requests and it stops chasing and hands the vendor to you, rather than emailing somebody forever."
 
-**Trap to avoid:** there are 12 more approval emails queued behind this one. Don't open the mailbox again on camera after approving. End the scene on the log row.
+**Watch out for:**
 
-**Why this scene is here:** The approval click is the emotional centre of the video. It's the moment a stranger's automation becomes safe to hire.
+- Do not say "thirteen" or any fixed number. Say the number you actually counted, because it depends on how the board is staged that day.
+- There are more approval emails queued behind the first one. Do not go back to the inbox on camera after approving. End the scene on the outreach log.
+
+**Why this scene is here:** the approval click is the emotional centre of the video. It is the moment a stranger's automation becomes safe to hire.
 
 *6-minute cut: keep the schedule line, the count, the approval email, the click and the log. Drop the drafting node.*
 
@@ -433,19 +510,29 @@ Show the sent message and the log row.
 
 **Workflow label:** none. Database and execution history.
 
-**On screen:** pgweb showing the `coi_pgweb` views, then n8n's execution history.
+**On screen:** pgweb, then n8n execution history.
 
-**You do:** Show the views. Then the execution history.
+**You do:**
+
+1. In pgweb at `http://localhost:8081/?session=coi-only`, show the list of views on the left: vendors, certificates, coverages, outreach log.
+2. Click one or two so the viewer sees real rows, not empty tables.
+3. Switch to n8n and open **Overview**, then **Executions**, showing the full run history across workflows.
 
 **You say:**
 
 > "Worth being concrete about where this sits, because it's the difference between this and buying software."
 
+Show the views.
+
 > "Vendors, certificates, coverage lines, reminder history. An ordinary database, on your own server. Not my account, no shared instance, nobody else's data in it. And this is every run, with what happened and when."
+
+Show the execution history.
 
 > "It all exports. The workflows are files, the database takes a standard dump, the certificates are PDFs in dated folders. Handing this to another developer is a folder and an afternoon. Nothing here holds your data, because there's nothing of mine in the middle of it."
 
-**Why this scene is here:** Separates a build from a subscription. It's also the answer to "what if you disappear", asked before they have to.
+**Watch out for:** pgweb must be showing only the `coi_pgweb` views. If n8n internal tables are visible, stop and run `.\scripts\apply-pgweb-viewer.ps1`, then hard-refresh.
+
+**Why this scene is here:** separates a build from a subscription, and answers "what if you disappear" before they have to ask.
 
 *6-minute cut: keep the first two lines.*
 
@@ -453,9 +540,13 @@ Show the sent message and the log row.
 
 ## Scene 9: What it won't do (7:40 - 8:40)
 
-**On screen:** Dashboard, static. Then the forbidden-word check in the verify script, briefly.
+**On screen:** the dashboard, then a code editor.
 
-**You do:** Stay still. Show the check for a couple of seconds.
+**You do:**
+
+1. Stay on the dashboard, still, for the first paragraph.
+2. Open `scripts/verify-stage-7-dashboard.ps1` in your editor and scroll to the line listing the four blocked words. Show it for two or three seconds. Do not read the code aloud.
+3. Return to the dashboard for the last line.
 
 **You say:**
 
@@ -467,9 +558,13 @@ Show the check.
 
 > "Four words are blocked from anything this dashboard renders. If one shows up in the page, the build fails and it doesn't ship."
 
+Return to the dashboard.
+
 > "And two statuses can only be set by a person: cancelled, and non-renewed. Nothing in a certificate tells you either one, so a manager sets those by hand instead of an automation pretending it found something."
 
-**Why this scene is here:** Naming your own limits before the viewer finds them is the fastest credibility available with no track record.
+**Watch out for:** have the file already open in a tab before recording. Hunting for it on camera kills the pace.
+
+**Why this scene is here:** naming your own limits before the viewer finds them is the fastest credibility available with no track record.
 
 *6-minute cut: keep the first paragraph and the two-statuses line.*
 
@@ -477,9 +572,9 @@ Show the check.
 
 ## Scene 10: Where your own paperwork stands (8:40 - 9:45)
 
-**On screen:** Dashboard.
+**On screen:** the dashboard.
 
-**You do:** Nothing. Let it sit.
+**You do:** nothing. Sit on the board and talk.
 
 **You say:**
 
@@ -493,7 +588,7 @@ Short pause.
 
 > "Vendor documents only, nothing with resident information in it, and I delete the files when I send the page back."
 
-**Why this scene is here:** The smallest possible first commitment. No credentials, no integration, no risk.
+**Why this scene is here:** the smallest possible first commitment. No credentials, no integration, no risk.
 
 ---
 
@@ -654,7 +749,8 @@ Paste as timestamps. Recompute these against your final edit; they follow the sc
 - [ ] All five workflows Active, list tidy enough to film
 - [ ] Dashboard loads and auto-refreshes
 - [ ] Seven fixtures uploaded one at a time, board checked against the table above
-- [ ] Exactly one green row, and it's Apex Plumbing
+- [ ] Scene 1 email sent to the demo mailbox and Bright Hall Cleaning now shows a certificate
+- [ ] Exactly two green rows: Apex Plumbing and Bright Hall Cleaning
 - [ ] Both refusals checked off camera (`f11`, `f18`), neither changed the board
 - [ ] `f02-expiring-20-days.pdf` held back for Scene 4
 - [ ] Grey rows plus red rows counted, so Scene 7 says the right number
