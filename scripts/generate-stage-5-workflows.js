@@ -577,99 +577,10 @@ function openAiNode(id, name, position, branch) {
   );
 }
 
-const intakeStickies = [
-  sticky(
-    "aa000000-0000-4500-8500-000000000001",
-    [-80, -380],
-    1400,
-    1300,
-    [
-      "## Three ways a certificate arrives",
-      "",
-      "**Gmail** polls every minute for unread mail carrying an attachment. No label or sender filter.",
-      "**Upload form** at `/form/coi-intake` for anything handed over outside email.",
-      "**Manual trigger** replays a named fixture, for testing only.",
-      "",
-      "All three converge at **Route Intake Item Type**. Past that point behaviour is identical, so a form upload is not a lesser citizen than an email.",
-      "",
-      "IMAP is a disabled fallback kept for non-Google mailboxes.",
-    ].join("\n"),
-  ),
-  sticky(
-    "aa000000-0000-4500-8500-000000000002",
-    [1330, -380],
-    620,
-    640,
-    [
-      "## First refusal",
-      "",
-      "Anything that is not a PDF stops here and becomes a manager notice.",
-      "",
-      "No vendor record is invented from a document that is not a certificate. A clean run that creates nothing is the correct result.",
-    ].join("\n"),
-    3,
-  ),
-  sticky(
-    "aa000000-0000-4500-8500-000000000006",
-    [1955, -140],
-    490,
-    340,
-    [
-      "## Test path only",
-      "",
-      "Reads a fixture PDF from the read-only `fixtures/` mount. Only the manual trigger reaches these two nodes.",
-      "",
-      "Gmail and form intake already carry their file, so they skip straight past.",
-    ].join("\n"),
-    7,
-  ),
-  sticky(
-    "aa000000-0000-4500-8500-000000000003",
-    [2460, -140],
-    840,
-    460,
-    [
-      "## Saved before it is read",
-      "",
-      "The original PDF is written to disk **before** anything tries to interpret it.",
-      "",
-      "If every later step failed, the document would still exist and still be linked from its row. This ordering is what makes the source link on the dashboard trustworthy.",
-    ].join("\n"),
-    4,
-  ),
-  sticky(
-    "aa000000-0000-4500-8500-000000000004",
-    [3300, -320],
-    1940,
-    900,
-    [
-      "## Reading: text first, vision fallback",
-      "",
-      "Password-protected files skip extraction entirely and go straight to review, because a locked file would otherwise take the whole run down.",
-      "",
-      "**Enough text**, so read the text layer.",
-      "**Too little text**, meaning a scan or a phone photo, so the PDF itself is sent to be read visually.",
-      "",
-      "Both paths return the same shape, including the model's own HIGH / MEDIUM / LOW confidence rating.",
-    ].join("\n"),
-  ),
-  sticky(
-    "aa000000-0000-4500-8500-000000000005",
-    [5270, -140],
-    700,
-    460,
-    [
-      "## Fixed rules decide, not the model",
-      "",
-      "The model only transcribes what the page says. Every consequential decision happens here, in code that runs identically every time.",
-      "",
-      "Hard flag, so review. Soft flag, so filed with a note. Clean, so filed as current.",
-      "",
-      "Rules live in `scripts/lib/coi-stage-4-validator.js`.",
-    ].join("\n"),
-    4,
-  ),
-];
+// Sticky notes removed by request. The sticky() helper stays defined above
+// for any generator that reintroduces canvas notes later; keep using it
+// rather than hand-adding notes to the generated JSON.
+const intakeStickies = [];
 
 const intakeWorkflow = {
   id: "stage-5-intake-workflow",
@@ -931,20 +842,6 @@ const sourceWorkflow = {
   id: "stage-5-source-document-route",
   name: "Source Document Route",
   nodes: [
-    sticky(
-      "aa000000-0000-4500-8500-000000000011",
-      [-80, -300],
-      1420,
-      620,
-      [
-        "## Handing the original back",
-        "",
-        "Every dashboard row links here. The stored path is checked to be inside the allowed storage area **before** the file is read, and a missing file answers cleanly instead of erroring the run.",
-        "",
-        "This is the smallest workflow here and the one that matters most: it is why nobody has to take an extracted date on trust. The document that produced it is one click away.",
-      ].join("\n"),
-      4,
-    ),
     node("66000000-0000-4500-8500-000000000001", "Webhook - Source PDF", "n8n-nodes-base.webhook", 2.1, [0, 0], {
       httpMethod: "GET",
       path: "coi-source/:certificate_id",

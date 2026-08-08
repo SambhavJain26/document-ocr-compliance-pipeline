@@ -4,22 +4,6 @@
   "nodes": [
     {
       "parameters": {
-        "content": "## Replies that are not certificates\n\nThe most common reply to a certificate request is not a certificate. It is \"my agent will send it Monday\", a link to a carrier portal, or a question.\n\nWithout this workflow those replies sit unread in a mailbox nobody watches, and the vendor gets chased again a week later as though they had ignored you. That is the fastest way to sour a working relationship with a tradesperson you depend on.\n\nA reply that **does** carry a PDF is picked up by **COI Intake** instead, through its own Gmail trigger.",
-        "height": 600,
-        "width": 920,
-        "color": 5
-      },
-      "id": "bb000000-0000-4600-8600-000000000011",
-      "name": "Note - 0011",
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        -80,
-        -320
-      ]
-    },
-    {
-      "parameters": {
         "authentication": "oAuth2",
         "event": "messageReceived",
         "simple": false,

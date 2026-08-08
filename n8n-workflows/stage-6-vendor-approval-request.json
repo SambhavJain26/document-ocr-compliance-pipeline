@@ -4,38 +4,6 @@
   "nodes": [
     {
       "parameters": {
-        "content": "## The approval gate\n\nOne execution, one vendor. Daily Watch and Chase calls this once per actionable vendor rather than sending them all through one shared wait, because an n8n Wait node only ever pauses an execution once. This is the workflow n8n's own docs recommend for human-in-the-loop-per-item: give each item its own execution.\n\nNo approver address configured, so the run stores a config notice and emails nobody. That is a deliberate refusal, not a fallback.\n\nOtherwise the execution **pauses here** until a person clicks. The approver sees the vendor, the reason, the intended recipient, the upload destination, and the exact draft.\n\n**No response in 24 hours means it expires rather than sends.** Silence never results in mail going out.\n\nClicking approve releases this one specific email. It is not an approval of the vendor.",
-        "height": 920,
-        "width": 1520,
-        "color": 4
-      },
-      "id": "cc000000-0000-4600-8600-000000000001",
-      "name": "Note - 0001",
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        -80,
-        -400
-      ]
-    },
-    {
-      "parameters": {
-        "content": "## Logged either way\n\n**Approved**, so sent from the office's own mailbox, then send time, recipient, body and follow-up date are recorded.\n**Declined**, so logged and nothing is sent.\n\nAfter two ignored requests the escalation pre-pass in Daily Watch and Chase hands the vendor to a person and pauses automated chasing. It will not email a vendor indefinitely.\n\nNote: `stage_6_outbound_test_mode` redirects real sends to a test address while it is true. Switch it off deliberately before live use.",
-        "height": 700,
-        "width": 760,
-        "color": 5
-      },
-      "id": "cc000000-0000-4600-8600-000000000002",
-      "name": "Note - 0002",
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        1500,
-        -360
-      ]
-    },
-    {
-      "parameters": {
         "inputSource": "passthrough"
       },
       "id": "75000000-0000-4600-8600-000000000001",

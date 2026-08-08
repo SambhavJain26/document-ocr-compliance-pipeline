@@ -4,22 +4,6 @@
   "nodes": [
     {
       "parameters": {
-        "content": "## A view, not an application\n\nNo accounts, no sessions, no storage of its own. It reads the current state from Postgres on request and renders it. Closing the page loses nothing.\n\nTwo webhook nodes feed the same three nodes, so the register has both a short URL and a stable one.\n\nOne row per vendor rather than one per certificate, because the question the page answers is \"where does this vendor stand today\".\n\nFour words are blocked from anything this page renders. The build node throws rather than emit one, and `verify-stage-7-dashboard.ps1` fails the build if any appear. Enforced twice rather than merely intended.",
-        "height": 680,
-        "width": 1280,
-        "color": 4
-      },
-      "id": "cc000000-0000-4700-8700-000000000001",
-      "name": "Note - 0001",
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        -80,
-        -320
-      ]
-    },
-    {
-      "parameters": {
         "httpMethod": "GET",
         "path": "coi",
         "authentication": "none",

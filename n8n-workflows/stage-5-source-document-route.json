@@ -4,22 +4,6 @@
   "nodes": [
     {
       "parameters": {
-        "content": "## Handing the original back\n\nEvery dashboard row links here. The stored path is checked to be inside the allowed storage area **before** the file is read, and a missing file answers cleanly instead of erroring the run.\n\nThis is the smallest workflow here and the one that matters most: it is why nobody has to take an extracted date on trust. The document that produced it is one click away.",
-        "height": 620,
-        "width": 1420,
-        "color": 4
-      },
-      "id": "aa000000-0000-4500-8500-000000000011",
-      "name": "Note - 0011",
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        -80,
-        -300
-      ]
-    },
-    {
-      "parameters": {
         "httpMethod": "GET",
         "path": "coi-source/:certificate_id",
         "authentication": "none",

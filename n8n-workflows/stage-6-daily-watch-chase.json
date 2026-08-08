@@ -3,54 +3,6 @@
   "name": "Daily Watch and Chase",
   "nodes": [
     {
-      "parameters": {
-        "content": "## Runs once a day at 08:00\n\nThis is the half of the system that notices **nothing happening**. An inbox trigger only ever fires on arrivals; it cannot detect an absence, and absence is the actual failure this product exists to catch.\n\nEscalation runs **first**, so a vendor who has already ignored two requests is taken out of the loop before any new chase is considered.\n\nThen vendors are sorted into buckets: never received, expired, 14d, 30d, 60d, re-attestation. Vendors with no certificate come first, because they have no date to remind anyone.",
-        "height": 700,
-        "width": 900,
-        "color": 5
-      },
-      "id": "bb000000-0000-4600-8600-000000000001",
-      "name": "Note - 0001",
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        -80,
-        -320
-      ]
-    },
-    {
-      "parameters": {
-        "content": "## Draft, then log before sending\n\nThe model writes a short request naming the vendor, policy number and expiry date. If it comes back empty, over 120 words, or containing a forbidden word, it is discarded and a fixed template is used instead.\n\nThe upload link is appended **after** those checks, so the model cannot invent a destination.\n\n**Record Pending Outreach** writes the row before anything is sent, so a reminder can never go out without a record of it existing.",
-        "height": 700,
-        "width": 880,
-        "color": 5
-      },
-      "id": "bb000000-0000-4600-8600-000000000002",
-      "name": "Note - 0002",
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        860,
-        -320
-      ]
-    },
-    {
-      "parameters": {
-        "content": "## One vendor, one execution\n\nEach actionable vendor is dispatched to **Vendor Approval Request** through Execute Workflow, called once per item.\n\nThis is not a style choice. An n8n Wait node can only pause an execution once, ever. Earlier builds sent every vendor's draft into one Gmail Send-and-Wait call as a single array; the first vendor got a real pause, and every vendor after them was resolved in the same resume with no data, which read as declined without ever generating an email. Splitting each vendor into its own execution gives each one its own genuine pause, so approving vendor one is what causes vendor two's email to go out next, not a side effect of the same click.\n\nSee **Vendor Approval Request** for the approval gate itself.",
-        "height": 880,
-        "width": 760,
-        "color": 4
-      },
-      "id": "bb000000-0000-4600-8600-000000000003",
-      "name": "Note - 0003",
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        1760,
-        -400
-      ]
-    },
-    {
       "parameters": {},
       "id": "71000000-0000-4600-8600-000000000001",
       "name": "Manual Trigger - Run Stage 6 Watch",

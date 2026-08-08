@@ -431,24 +431,6 @@ const dashboardWorkflow = {
   id: "stage-7-dashboard-demo-view",
   name: "COI Dashboard",
   nodes: [
-    sticky(
-      "cc000000-0000-4700-8700-000000000001",
-      [-80, -320],
-      1280,
-      680,
-      [
-        "## A view, not an application",
-        "",
-        "No accounts, no sessions, no storage of its own. It reads the current state from Postgres on request and renders it. Closing the page loses nothing.",
-        "",
-        "Two webhook nodes feed the same three nodes, so the register has both a short URL and a stable one.",
-        "",
-        "One row per vendor rather than one per certificate, because the question the page answers is \"where does this vendor stand today\".",
-        "",
-        "Four words are blocked from anything this page renders. The build node throws rather than emit one, and `verify-stage-7-dashboard.ps1` fails the build if any appear. Enforced twice rather than merely intended.",
-      ].join("\n"),
-      4,
-    ),
     node("91000000-0000-4700-8700-000000000001", "Webhook - COI Dashboard", "n8n-nodes-base.webhook", 2.1, [0, 0], {
       httpMethod: "GET",
       path: "coi",
