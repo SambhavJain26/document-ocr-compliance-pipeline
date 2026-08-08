@@ -36,9 +36,9 @@
     },
     {
       "parameters": {
-        "content": "## The approval gate\n\nNo approver address configured, so the run stores a config notice and emails nobody. That is a deliberate refusal, not a fallback.\n\nOtherwise the execution **pauses here** until a person clicks. The approver sees the vendor, the reason, the intended recipient, the upload destination, and the exact draft.\n\n**No response in 24 hours means it expires rather than sends.** Silence never results in mail going out.\n\nClicking approve releases one specific email. It is not an approval of the vendor.",
+        "content": "## One vendor, one execution\n\nEach actionable vendor is dispatched to **Vendor Approval Request** through Execute Workflow, called once per item.\n\nThis is not a style choice. An n8n Wait node can only pause an execution once, ever. Earlier builds sent every vendor's draft into one Gmail Send-and-Wait call as a single array; the first vendor got a real pause, and every vendor after them was resolved in the same resume with no data, which read as declined without ever generating an email. Splitting each vendor into its own execution gives each one its own genuine pause, so approving vendor one is what causes vendor two's email to go out next, not a side effect of the same click.\n\nSee **Vendor Approval Request** for the approval gate itself.",
         "height": 880,
-        "width": 1480,
+        "width": 760,
         "color": 4
       },
       "id": "bb000000-0000-4600-8600-000000000003",
@@ -48,22 +48,6 @@
       "position": [
         1760,
         -400
-      ]
-    },
-    {
-      "parameters": {
-        "content": "## Logged either way\n\n**Approved**, so sent from the office's own mailbox, then send time, recipient, body and follow-up date are recorded.\n**Declined**, so logged and nothing is sent.\n\nAfter two ignored requests the escalation pre-pass hands the vendor to a person and pauses automated chasing. It will not email a vendor indefinitely.\n\nNote: `stage_6_outbound_test_mode` redirects real sends to a test address while it is true. Switch it off deliberately before live use.",
-        "height": 700,
-        "width": 860,
-        "color": 5
-      },
-      "id": "bb000000-0000-4600-8600-000000000004",
-      "name": "Note - 0004",
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        3260,
-        -360
       ]
     },
     {
@@ -239,280 +223,25 @@
     },
     {
       "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict"
-          },
-          "conditions": [
-            {
-              "id": "approval-channel-email",
-              "leftValue": "={{ $json.approval_channel }}",
-              "rightValue": "email",
-              "operator": {
-                "type": "string",
-                "operation": "equals"
-              }
-            },
-            {
-              "id": "approver-configured",
-              "leftValue": "={{ Boolean($json.approver_email) }}",
-              "rightValue": true,
-              "operator": {
-                "type": "boolean",
-                "operation": "true",
-                "singleValue": true
-              }
-            },
-            {
-              "id": "actual-recipient-configured",
-              "leftValue": "={{ Boolean($json.actual_recipient) }}",
-              "rightValue": true,
-              "operator": {
-                "type": "boolean",
-                "operation": "true",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "and"
+        "source": "database",
+        "workflowId": {
+          "__rl": true,
+          "value": "stage-6-vendor-approval-request",
+          "mode": "id"
         },
-        "options": {}
+        "mode": "each",
+        "options": {
+          "waitForSubWorkflow": true
+        }
       },
-      "id": "73000000-0000-4600-8600-000000000005",
-      "name": "Route Email Approval Configured",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
+      "id": "73000000-0000-4600-8600-000000000009",
+      "name": "Call Stage 6 Vendor Approval",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.1,
       "position": [
         2100,
         0
       ]
-    },
-    {
-      "parameters": {
-        "jsCode": "return $input.all().map((item) => ({\n  json: {\n    source: \"email\",\n    source_ref: \"stage-6-config:\" + item.json.issue_key,\n    original_filename: null,\n    notice_code: \"STAGE_6_CONFIG_NOTICE\",\n    severity: \"hard\",\n    message: item.json.approval_channel === \"telegram\"\n      ? \"Stage 6 Telegram approval was requested, but Telegram approval is not configured in the demo workflow.\"\n      : \"Stage 6 email approval cannot run until approver and actual recipient addresses are configured.\",\n    details: {\n      vendor_id: item.json.vendor_id,\n      vendor_legal_name: item.json.vendor_legal_name,\n      approval_channel: item.json.approval_channel,\n      approver_email: item.json.approver_email,\n      actual_recipient: item.json.actual_recipient,\n    },\n    raw_payload: item.json,\n  },\n}));"
-      },
-      "id": "73000000-0000-4600-8600-000000000006",
-      "name": "Store Stage 6 Config Notice Payload",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        2400,
-        260
-      ]
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "SELECT stage_6_store_config_notice($1::jsonb) AS config_notice_result;",
-        "options": {
-          "queryReplacement": "={{ JSON.stringify($json) }}"
-        }
-      },
-      "id": "73000000-0000-4600-8600-000000000007",
-      "name": "Store Stage 6 Config Notice",
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        2700,
-        260
-      ],
-      "credentials": {
-        "postgres": {
-          "id": "Postgres account",
-          "name": "Postgres account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "resource": "message",
-        "operation": "sendAndWait",
-        "sendTo": "={{ $json.approver_email }}",
-        "subject": "={{ $json.approval_subject }}",
-        "message": "={{ $json.approval_message }}",
-        "responseType": "approval",
-        "approvalOptions": {
-          "values": {
-            "approvalType": "double",
-            "approveLabel": "Approve",
-            "disapproveLabel": "Decline",
-            "buttonApprovalStyle": "primary",
-            "buttonDisapprovalStyle": "secondary"
-          }
-        },
-        "options": {
-          "limitWaitTime": {
-            "values": {
-              "limitType": "afterTimeInterval",
-              "resumeAmount": 24,
-              "resumeUnit": "hours"
-            }
-          },
-          "appendAttribution": false
-        }
-      },
-      "id": "74000000-0000-4600-8600-000000000001",
-      "name": "Gmail Approval - Send and Wait",
-      "type": "n8n-nodes-base.gmail",
-      "typeVersion": 2.1,
-      "position": [
-        2400,
-        -80
-      ],
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "Gmail account",
-          "name": "Gmail account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "const approvalItems = $input.all();\nconst contextItems = $items(\"Prepare Approval Email Payload\");\n\nreturn contextItems.map((item, index) => {\n  const approval = approvalItems[index]?.json || {};\n  const approved = approval?.data?.approved === true || approval?.approved === true || approval?.data?.approved === \"true\";\n  return {\n    json: {\n      ...item.json,\n      approval_response: approval,\n      approved,\n    },\n  };\n});"
-      },
-      "id": "74000000-0000-4600-8600-000000000002",
-      "name": "Recover Approval Result Context",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        2700,
-        -80
-      ]
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict"
-          },
-          "conditions": [
-            {
-              "id": "approval-result-approved",
-              "leftValue": "={{ $json.approved }}",
-              "rightValue": true,
-              "operator": {
-                "type": "boolean",
-                "operation": "true",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "id": "74000000-0000-4600-8600-000000000003",
-      "name": "Route Approved Stage 6 Email",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        3000,
-        -80
-      ]
-    },
-    {
-      "parameters": {
-        "resource": "message",
-        "operation": "send",
-        "sendTo": "={{ $json.actual_recipient }}",
-        "subject": "={{ $json.drafted_subject }}",
-        "emailType": "html",
-        "message": "={{ $json.drafted_body_html }}",
-        "options": {
-          "ccList": "={{ $json.send_mode === 'test_override' ? '' : ($json.cc_recipient || '') }}",
-          "appendAttribution": false
-        }
-      },
-      "id": "74000000-0000-4600-8600-000000000004",
-      "name": "Gmail Send Approved Stage 6 Chase",
-      "type": "n8n-nodes-base.gmail",
-      "typeVersion": 2.1,
-      "position": [
-        3300,
-        -200
-      ],
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "Gmail account",
-          "name": "Gmail account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "const sendItems = $input.all();\nconst approvalItems = $items(\"Recover Approval Result Context\");\n\nreturn approvalItems.map((item, index) => ({\n  json: {\n    outreach_id: item.json.outreach_id,\n    actual_recipient: item.json.actual_recipient,\n    follow_up_days: item.json.follow_up_days,\n    approval_response: item.json.approval_response || {},\n    send_response: sendItems[index]?.json || {},\n  },\n}));"
-      },
-      "id": "74000000-0000-4600-8600-000000000005",
-      "name": "Build Sent Outreach Log Payload",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        3600,
-        -200
-      ]
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "SELECT stage_6_mark_outreach_sent($1::jsonb) AS sent_result;",
-        "options": {
-          "queryReplacement": "={{ JSON.stringify($json) }}"
-        }
-      },
-      "id": "74000000-0000-4600-8600-000000000006",
-      "name": "Mark Outreach Sent",
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        3900,
-        -200
-      ],
-      "credentials": {
-        "postgres": {
-          "id": "Postgres account",
-          "name": "Postgres account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "return $input.all().map((item) => ({\n  json: {\n    outreach_id: item.json.outreach_id,\n    approval_response: item.json.approval_response || {},\n  },\n}));"
-      },
-      "id": "74000000-0000-4600-8600-000000000007",
-      "name": "Build Declined Outreach Log Payload",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        3300,
-        60
-      ]
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "SELECT stage_6_mark_outreach_declined($1::jsonb) AS decline_result;",
-        "options": {
-          "queryReplacement": "={{ JSON.stringify($json) }}"
-        }
-      },
-      "id": "74000000-0000-4600-8600-000000000008",
-      "name": "Mark Outreach Declined",
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        3600,
-        60
-      ],
-      "credentials": {
-        "postgres": {
-          "id": "Postgres account",
-          "name": "Postgres account"
-        }
-      }
     }
   ],
   "connections": {
@@ -597,109 +326,7 @@
       "main": [
         [
           {
-            "node": "Route Email Approval Configured",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Route Email Approval Configured": {
-      "main": [
-        [
-          {
-            "node": "Gmail Approval - Send and Wait",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Store Stage 6 Config Notice Payload",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Store Stage 6 Config Notice Payload": {
-      "main": [
-        [
-          {
-            "node": "Store Stage 6 Config Notice",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Gmail Approval - Send and Wait": {
-      "main": [
-        [
-          {
-            "node": "Recover Approval Result Context",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Recover Approval Result Context": {
-      "main": [
-        [
-          {
-            "node": "Route Approved Stage 6 Email",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Route Approved Stage 6 Email": {
-      "main": [
-        [
-          {
-            "node": "Gmail Send Approved Stage 6 Chase",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Build Declined Outreach Log Payload",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Gmail Send Approved Stage 6 Chase": {
-      "main": [
-        [
-          {
-            "node": "Build Sent Outreach Log Payload",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Build Sent Outreach Log Payload": {
-      "main": [
-        [
-          {
-            "node": "Mark Outreach Sent",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Build Declined Outreach Log Payload": {
-      "main": [
-        [
-          {
-            "node": "Mark Outreach Declined",
+            "node": "Call Stage 6 Vendor Approval",
             "type": "main",
             "index": 0
           }

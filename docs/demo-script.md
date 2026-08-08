@@ -49,19 +49,23 @@ Say **the intake workflow**, **the daily watch**, **your mailbox**, **your datab
 
 ---
 
-## The five workflows
+## The five workflows on camera
 
-Every scene names one of these. Burn a small, muted label into the top left of the recording naming the workflow currently responsible, and change it as the video moves between them. This single production decision is what turns a screen recording into a map.
+Every scene names one of these five. Burn a small, muted label into the top left of the recording naming the workflow currently responsible, and change it as the video moves between them. This single production decision is what turns a screen recording into a map.
 
 | Name in n8n | Responsible for | Started by |
 |---|---|---|
 | **COI Intake** | Everything that happens to an arriving certificate: storing the original, reading it, checking it, filing the result | Gmail trigger, the upload form, or a manual run |
 | **Source Document Route** | Handing the original PDF back when someone clicks the link on a row | The source PDF webhook |
-| **Daily Watch and Chase** | Finding paperwork that's missing or running out, drafting the reminder, holding it for a person, sending and logging it | Schedule trigger at 08:00 |
+| **Daily Watch and Chase** | Finding paperwork that's missing or running out, drafting the reminder, and dispatching each vendor for approval | Schedule trigger at 08:00 |
 | **Non-PDF Reply Notice** | Vendor replies that aren't certificates, so a text answer or a portal link becomes a manager notice instead of nothing | Gmail trigger on replies |
 | **COI Dashboard** | Rendering the register as a web page. A view, not an application | The dashboard webhook |
 
-**A sixth exists and doesn't run.** `Extraction and Validation Core` is the harness the checking rules were built in. Worth knowing if a technical viewer asks why the checks behave identically everywhere. Keep it off camera.
+**Two more exist in the workflow list and don't get their own scene.**
+
+`Extraction and Validation Core` doesn't run at all — it's the harness the checking rules were built in. Worth knowing if a technical viewer asks why the checks behave identically everywhere. Keep it off camera.
+
+`Vendor Approval Request` genuinely runs, every time. Daily Watch and Chase calls it once per actionable vendor, and it's where the Gmail approval gate actually lives. It's split out on purpose: an n8n Wait node can only pause an execution once, so giving every vendor their own paperwork request run as one shared execution meant only the first vendor ever got a real pause — everyone else was silently marked declined a few milliseconds after the first click, without ever getting an email. Calling a separate workflow once per vendor gives each one its own genuine execution and its own genuine pause. You don't need to explain this on camera; Scene 7 shows the result of it (multiple approval emails, each independently clickable) without naming the mechanism.
 
 ---
 
@@ -93,15 +97,15 @@ Certificates are stored under a dated path, `data/certificates/YYYY/MM/DD`, and 
 
 This has already interrupted one recording. If you stage the board one day and record the next, run the reset again before you record.
 
-### 3. Check all five workflows are Active
+### 3. Check all six workflows are Active
 
-Open `http://localhost:5678/home/workflows`. All five must show **Active**:
+Open `http://localhost:5678/home/workflows`. Six rows now, and all six must show **Active**:
 
-COI Intake · Source Document Route · Daily Watch and Chase · Non-PDF Reply Notice · COI Dashboard
+COI Intake · Source Document Route · Daily Watch and Chase · Vendor Approval Request · Non-PDF Reply Notice · COI Dashboard
 
-An inactive Daily Watch and Chase is the most likely reason no approval email turns up later. If anything is inactive, toggle it on and restart n8n from Docker Desktop.
+An inactive Daily Watch and Chase or Vendor Approval Request is the most likely reason no approval email turns up later — Daily Watch and Chase calls Vendor Approval Request once per vendor, and that call fails outright if the target isn't active. If anything is inactive, toggle it on and restart n8n from Docker Desktop.
 
-This screen is Scene 2, so tidy it now. Sort it so the five sit together and nothing half-built is visible.
+This screen is Scene 2, so tidy it now. Sort it so the five on-camera workflows sit together; `Vendor Approval Request` never gets its own scene, so keep it out of the way rather than centred.
 
 ### 4. Stage the board
 
@@ -180,7 +184,7 @@ For both, open the **Executions** tab on COI Intake and confirm the run finished
 
 **Do not expect one approval email.** With the board staged as above, the daily watch finds **13 things to chase**: 12 vendors with no certificate on file at all, plus Circuit Square, whose certificate has lapsed.
 
-The approval step pauses the execution on each one in turn. You approve the first, it sends, and the next approval email arrives behind it. For the video you only ever show the first. The rest can sit unapproved and expire on their own after 24 hours.
+Every one of those gets dispatched to its own **Vendor Approval Request** run, and those runs go out together, not one after another. So the correct expectation is: 13 approval emails, arriving within a few seconds of each other, all sitting unread at once. Approving or ignoring one has no effect on the rest — each is a fully separate execution with its own 24-hour expiry. For the video you only ever open and click the one you chose in Scene 7's prep. The rest can sit unapproved and expire on their own.
 
 Count the grey rows on your dashboard before recording. Grey rows plus red rows is the number the watch will find, and Scene 7 says that number out loud.
 
@@ -190,7 +194,7 @@ Scenes 1 and 7 need working Gmail OAuth in n8n. Scene 1 shows a certificate arri
 
 The demo mailbox is `sambhavn8n@gmail.com`, and it is both the approver and the test recipient. Two things to check:
 
-- **The n8n credential must be named exactly `Gmail account`.** All four Gmail nodes reference it by that name. A credential under a different name leaves them unbound, and the symptom is an approval email that simply never arrives, with no obvious error.
+- **The n8n credential must be named exactly `Gmail account`.** Four Gmail nodes reference it by that name, spread across three workflows: two in COI Intake and Non-PDF Reply Notice, and two in Vendor Approval Request (the approval send and the approved send). A credential under a different name leaves them unbound, and the symptom is an approval email that simply never arrives, with no obvious error.
 - **`stage_6_approver_email` and `stage_6_test_recipient_email` must both be set** in `client_config`. If either is blank, the run stores a config notice and emails nobody, which is deliberate but will look like nothing happened.
 
 Approver and recipient being the same address is fine. It means the approval request and the resulting vendor email both land in the same inbox, so searching All Mail by exact subject is clearer than watching the Primary tab.
@@ -254,8 +258,8 @@ Let the row sit for a beat.
 **You do:**
 
 1. Go to `http://localhost:5678/home/workflows`.
-2. Sit still on the list for a second so the viewer can read it. All five show **Active**.
-3. Move your cursor down the five names as you say each one.
+2. Sit still on the list for a second so the viewer can read it. The five you're about to name show **Active**; ignore any other rows.
+3. Move your cursor down the five names as you say each one, skipping past `Vendor Approval Request` and `Extraction and Validation Core` if either is in view. Neither gets its own explanation on camera.
 
 **You say:**
 
@@ -271,7 +275,7 @@ Move down the rows.
 
 > "Everything after this is one of those five doing something, and I'll tell you which."
 
-**Watch out for:** if a sixth workflow is visible, it is the non-running harness. Scroll it out of frame rather than explaining it.
+**Watch out for:** the list now shows six or seven rows, not five. `Vendor Approval Request` is real and runs every time Daily Watch and Chase does, and `Extraction and Validation Core` doesn't run at all. Scroll so the five named ones sit together and neither extra row needs explaining.
 
 **Why this scene is here:** this carries the positioning. If a viewer takes one thing away, it should be this.
 
@@ -443,14 +447,15 @@ Point at the amber note.
 
 ## Scene 7: When nothing arrives (5:20 - 6:50)
 
-**Workflow label:** Daily Watch and Chase
+**Workflow label:** Daily Watch and Chase → Vendor Approval Request
 
 **Before this scene, off camera:**
 
-1. Count the rows on your dashboard that are either grey ("No certificate on file") or red. Write that number down. That is what the watch is about to find.
+1. Count the rows on your dashboard that are either grey ("No certificate on file") or red. Write that number down. That is roughly how many approval emails are about to land.
 2. Open **Daily Watch and Chase** in n8n and click **Execute workflow** at the bottom of the canvas.
-3. Wait for the approval email to arrive in `sambhavn8n@gmail.com`. It takes under a minute. Leave it unopened.
-4. Now start recording.
+3. Wait for the approval emails to arrive in `sambhavn8n@gmail.com`. They arrive together, within a few seconds of each other, not one at a time — every actionable vendor gets its own request at once. Leave them unopened.
+4. Decide which single vendor's email you'll click on camera, and note its subject line ("Approve certificate request: [vendor]"). You don't need to touch the others; leaving them unclicked is fine; each expires safely on its own after 24 hours.
+5. Now start recording.
 
 **On screen:** the workflow canvas, then Gmail, then pgweb.
 
@@ -458,10 +463,10 @@ Point at the amber note.
 
 1. Show the **Daily Watch and Chase** canvas. Point at **Schedule Trigger - Daily Watch 08:00** on the left.
 2. Point at **OpenAI Draft Stage 6 Chase Email** in the middle.
-3. Point at **Gmail Approval - Send and Wait**.
-4. Switch to Gmail and open the approval email that is already waiting.
-5. Click **Approve** in the email.
-6. Switch to pgweb at `http://localhost:8081/?session=coi-only` and open the outreach log view. Show the row: vendor, recipient, sent time, follow-up date.
+3. Point at **Call Stage 6 Vendor Approval**, the last node on this canvas.
+4. Switch to Gmail. Open the one approval email you chose in prep. Don't linger on how many others are sitting there.
+5. Click **Approve** in that email.
+6. Switch to pgweb at `http://localhost:8081/?session=coi-only` and open the outreach log view. Point at the one row matching the vendor you approved.
 
 **You say:**
 
@@ -479,17 +484,17 @@ Point at the drafting node.
 
 > "For each one it drafts a short email with the vendor, the policy number and the date, and makes no claims about insurance."
 
-Point at the approval node.
+Point at the handoff node.
 
-> "Then it stops."
+> "Then each vendor gets handed to its own approval step, so nobody's waiting behind somebody else's decision."
 
-Open the approval email.
+Switch to Gmail, open the chosen email.
 
-> "You get this first. The vendor, the reason, who it's going to, and the exact message that would go out."
+> "Here's one of them. The vendor, the reason, who it's going to, and the exact message that would go out."
 
 Click Approve.
 
-> "To be precise about what I just did: I approved that a reminder gets sent. I didn't approve the vendor for anything. And if nobody clicks within twenty-four hours, it expires instead of sending."
+> "To be precise about what I just did: I approved that this one reminder gets sent. I didn't approve the vendor for anything, and I didn't touch any of the others sitting in this inbox. If nobody clicks within twenty-four hours, a request just expires instead of sending."
 
 Show the outreach log row.
 
@@ -498,11 +503,12 @@ Show the outreach log row.
 **Watch out for:**
 
 - Do not say "thirteen" or any fixed number. Say the number you actually counted, because it depends on how the board is staged that day.
-- There are more approval emails queued behind the first one. Do not go back to the inbox on camera after approving. End the scene on the outreach log.
+- Your inbox will show several unread approval requests at once, not a slow trickle. That's correct. Don't apologize for it or explain the mechanics on camera — just open the one you picked in prep and ignore the rest.
+- Approving one has no effect on the others. If you want proof of that rather than just claiming it, you can show a second, untouched request still sitting in the inbox after you approve the first — but that's optional and not written into the main narration.
 
 **Why this scene is here:** the approval click is the emotional centre of the video. It is the moment a stranger's automation becomes safe to hire.
 
-*6-minute cut: keep the schedule line, the count, the approval email, the click and the log. Drop the drafting node.*
+*6-minute cut: keep the schedule line, the count, the approval email, the click and the log. Drop the drafting node and the handoff line.*
 
 ---
 
@@ -746,7 +752,7 @@ Paste as timestamps. Recompute these against your final edit; they follow the sc
 - [ ] `model_id` is `gpt-5.6-luna` in `client_config`
 - [ ] All five URLs return 200, especially `http://localhost:5678/form/coi-intake`
 - [ ] Containers running in Docker Desktop
-- [ ] All five workflows Active, list tidy enough to film
+- [ ] All six workflows Active, including `Vendor Approval Request`; the five on-camera ones sit tidy in the list for filming
 - [ ] Dashboard loads and auto-refreshes
 - [ ] Seven fixtures uploaded one at a time, board checked against the table above
 - [ ] Scene 1 email sent to the demo mailbox and Bright Hall Cleaning now shows a certificate
@@ -754,12 +760,12 @@ Paste as timestamps. Recompute these against your final edit; they follow the sc
 - [ ] Both refusals checked off camera (`f11`, `f18`), neither changed the board
 - [ ] `f02-expiring-20-days.pdf` held back for Scene 4
 - [ ] Grey rows plus red rows counted, so Scene 7 says the right number
-- [ ] Daily Watch and Chase executed off camera, approval email waiting
+- [ ] Daily Watch and Chase executed off camera; approval emails waiting, and you've picked which one you'll click on camera
 - [ ] Gmail OAuth connected for `sambhavn8n@gmail.com`, or the fallback plan chosen
 - [ ] n8n Gmail credential named exactly `Gmail account`
 - [ ] `stage_6_approver_email` and `stage_6_test_recipient_email` both set to the demo mailbox
 - [ ] pgweb showing only `coi_pgweb` views
-- [ ] Workflow label overlay prepared for all five names
+- [ ] Workflow label overlay prepared for all five on-camera names
 - [ ] No day counts spoken in narration
 - [ ] "Synthetic test data" label ready for the first ten seconds
 - [ ] Every scene read aloud once

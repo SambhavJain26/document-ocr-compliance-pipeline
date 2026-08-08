@@ -2,6 +2,7 @@ $ErrorActionPreference = "Stop"
 
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $dailyWorkflowPath = Join-Path $repoRoot "n8n-workflows\stage-6-daily-watch-chase.json"
+$vendorApprovalWorkflowPath = Join-Path $repoRoot "n8n-workflows\stage-6-vendor-approval-request.json"
 $replyWorkflowPath = Join-Path $repoRoot "n8n-workflows\stage-6-non-pdf-reply-notice.json"
 
 function Assert-Stage6Condition {
@@ -77,6 +78,7 @@ Push-Location $repoRoot
 try {
   & .\scripts\generate-stage-6-workflows.ps1 | Out-Host
   Get-Content -Raw $dailyWorkflowPath | ConvertFrom-Json | Out-Null
+  Get-Content -Raw $vendorApprovalWorkflowPath | ConvertFrom-Json | Out-Null
   Get-Content -Raw $replyWorkflowPath | ConvertFrom-Json | Out-Null
   docker compose config --quiet
   Write-Host "Stage 6 workflow JSON and Docker Compose config parse."
@@ -99,11 +101,17 @@ try {
   Wait-Stage6N8n
 
   $dailyWorkflowId = "stage-6-daily-watch-chase"
+  $vendorApprovalWorkflowId = "stage-6-vendor-approval-request"
   $replyWorkflowId = "stage-6-non-pdf-reply-notice"
 
+  # Vendor Approval Request must exist before the daily watch runs: Daily
+  # Watch and Chase calls it once per actionable vendor via Execute Workflow,
+  # and that call fails if the target workflow is not importable by ID yet.
+  Import-Stage6Workflow -Path $vendorApprovalWorkflowPath -WorkflowId $vendorApprovalWorkflowId -WorkflowName "Vendor Approval Request"
   Import-Stage6Workflow -Path $dailyWorkflowPath -WorkflowId $dailyWorkflowId -WorkflowName "Daily Watch and Chase"
   Import-Stage6Workflow -Path $replyWorkflowPath -WorkflowId $replyWorkflowId -WorkflowName "Non-PDF Reply Notice"
 
+  docker compose run --rm --no-deps n8n update:workflow --id=$vendorApprovalWorkflowId --active=true | Out-Host
   docker compose run --rm --no-deps n8n update:workflow --id=$dailyWorkflowId --active=true | Out-Host
   docker compose run --rm --no-deps n8n update:workflow --id=$replyWorkflowId --active=true | Out-Host
 

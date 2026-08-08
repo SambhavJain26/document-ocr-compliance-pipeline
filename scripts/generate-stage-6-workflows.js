@@ -6,6 +6,7 @@ const path = require("node:path");
 const repoRoot = path.resolve(__dirname, "..");
 const dailyPath = path.join(repoRoot, "n8n-workflows", "stage-6-daily-watch-chase.json");
 const replyPath = path.join(repoRoot, "n8n-workflows", "stage-6-non-pdf-reply-notice.json");
+const vendorApprovalPath = path.join(repoRoot, "n8n-workflows", "stage-6-vendor-approval-request.json");
 
 function sticky(id, position, width, height, content, color = 5) {
   return {
@@ -253,7 +254,7 @@ return pendingItems.map((item, index) => {
 
 const recoverApprovalCode = `
 const approvalItems = $input.all();
-const contextItems = $items("Prepare Approval Email Payload");
+const contextItems = $items("Vendor Approval Request Trigger");
 
 return contextItems.map((item, index) => {
   const approval = approvalItems[index]?.json || {};
@@ -269,16 +270,25 @@ return contextItems.map((item, index) => {
 `.trim();
 
 const buildSentLogPayloadCode = `
+// $items(nodeName) returns every item that node ever produced, regardless of
+// which branch of a later IF node they went down. Looking context up from
+// "Recover Approval Result Context" pulled back items that were never
+// actually approved and never reached this node, and paired them with
+// send_response by array index against sendItems, a shorter array of only the
+// truly-sent items. That silently marked declined vendors as sent in
+// outreach_log. Source context from the IF node's own true-branch output
+// instead (output index 0), which only ever contains items that took this
+// path, so it lines up 1:1 with sendItems by construction, not by luck.
 const sendItems = $input.all();
-const approvalItems = $items("Recover Approval Result Context");
+const approvalItems = $items("Route Approved Stage 6 Email", 0, 0);
 
-return approvalItems.map((item, index) => ({
+return sendItems.map((item, index) => ({
   json: {
-    outreach_id: item.json.outreach_id,
-    actual_recipient: item.json.actual_recipient,
-    follow_up_days: item.json.follow_up_days,
-    approval_response: item.json.approval_response || {},
-    send_response: sendItems[index]?.json || {},
+    outreach_id: approvalItems[index]?.json.outreach_id,
+    actual_recipient: approvalItems[index]?.json.actual_recipient,
+    follow_up_days: approvalItems[index]?.json.follow_up_days,
+    approval_response: approvalItems[index]?.json.approval_response || {},
+    send_response: item.json || {},
   },
 }));
 `.trim();
@@ -439,36 +449,18 @@ const dailyWorkflow = {
     sticky(
       "bb000000-0000-4600-8600-000000000003",
       [1760, -400],
-      1480,
+      760,
       880,
       [
-        "## The approval gate",
+        "## One vendor, one execution",
         "",
-        "No approver address configured, so the run stores a config notice and emails nobody. That is a deliberate refusal, not a fallback.",
+        "Each actionable vendor is dispatched to **Vendor Approval Request** through Execute Workflow, called once per item.",
         "",
-        "Otherwise the execution **pauses here** until a person clicks. The approver sees the vendor, the reason, the intended recipient, the upload destination, and the exact draft.",
+        "This is not a style choice. An n8n Wait node can only pause an execution once, ever. Earlier builds sent every vendor's draft into one Gmail Send-and-Wait call as a single array; the first vendor got a real pause, and every vendor after them was resolved in the same resume with no data, which read as declined without ever generating an email. Splitting each vendor into its own execution gives each one its own genuine pause, so approving vendor one is what causes vendor two's email to go out next, not a side effect of the same click.",
         "",
-        "**No response in 24 hours means it expires rather than sends.** Silence never results in mail going out.",
-        "",
-        "Clicking approve releases one specific email. It is not an approval of the vendor.",
+        "See **Vendor Approval Request** for the approval gate itself.",
       ].join("\n"),
       4,
-    ),
-    sticky(
-      "bb000000-0000-4600-8600-000000000004",
-      [3260, -360],
-      860,
-      700,
-      [
-        "## Logged either way",
-        "",
-        "**Approved**, so sent from the office's own mailbox, then send time, recipient, body and follow-up date are recorded.",
-        "**Declined**, so logged and nothing is sent.",
-        "",
-        "After two ignored requests the escalation pre-pass hands the vendor to a person and pauses automated chasing. It will not email a vendor indefinitely.",
-        "",
-        "Note: `stage_6_outbound_test_mode` redirects real sends to a test address while it is true. Switch it off deliberately before live use.",
-      ].join("\n"),
     ),
     node("71000000-0000-4600-8600-000000000001", "Manual Trigger - Run Stage 6 Watch", "n8n-nodes-base.manualTrigger", 1, [0, -120]),
     node("71000000-0000-4600-8600-000000000002", "Schedule Trigger - Daily Watch 08:00", "n8n-nodes-base.scheduleTrigger", 1.2, [0, 120], {
@@ -502,7 +494,89 @@ const dailyWorkflow = {
       },
     }, postgresCreds()),
     node("73000000-0000-4600-8600-000000000004", "Prepare Approval Email Payload", "n8n-nodes-base.code", 2, [1800, 0], { jsCode: prepareApprovalCode }),
-    node("73000000-0000-4600-8600-000000000005", "Route Email Approval Configured", "n8n-nodes-base.if", 2.2, [2100, 0], {
+    // Calls Vendor Approval Request once per actionable vendor. "each" makes
+    // every call its own n8n execution, so every vendor gets its own genuine
+    // Gmail wait/resume instead of sharing one. waitForSubWorkflow keeps this
+    // workflow's own execution history showing one row per day rather than
+    // fragmenting into an entry per vendor.
+    node("73000000-0000-4600-8600-000000000009", "Call Stage 6 Vendor Approval", "n8n-nodes-base.executeWorkflow", 1.1, [2100, 0], {
+      source: "database",
+      workflowId: { __rl: true, value: "stage-6-vendor-approval-request", mode: "id" },
+      mode: "each",
+      options: { waitForSubWorkflow: true },
+    }),
+  ],
+  connections: {
+    "Manual Trigger - Run Stage 6 Watch": { main: [[{ node: "Escalate Stage 6 Overdue Outreach", type: "main", index: 0 }]] },
+    "Schedule Trigger - Daily Watch 08:00": { main: [[{ node: "Escalate Stage 6 Overdue Outreach", type: "main", index: 0 }]] },
+    "Escalate Stage 6 Overdue Outreach": { main: [[{ node: "Load Stage 6 Actionable Vendors", type: "main", index: 0 }]] },
+    "Load Stage 6 Actionable Vendors": { main: [[{ node: "OpenAI Draft Stage 6 Chase Email", type: "main", index: 0 }]] },
+    "OpenAI Draft Stage 6 Chase Email": { main: [[{ node: "Prepare Stage 6 Draft Payload", type: "main", index: 0 }]] },
+    "Prepare Stage 6 Draft Payload": { main: [[{ node: "Record Pending Outreach", type: "main", index: 0 }]] },
+    // Record Pending Outreach still runs once for every actionable vendor, so
+    // the full day's queue is visible in outreach_log immediately, before any
+    // approval email exists for any of them.
+    "Record Pending Outreach": { main: [[{ node: "Prepare Approval Email Payload", type: "main", index: 0 }]] },
+    "Prepare Approval Email Payload": { main: [[{ node: "Call Stage 6 Vendor Approval", type: "main", index: 0 }]] },
+  },
+  settings: { executionOrder: "v1" },
+  staticData: null,
+  pinData: {},
+  tags: [],
+  triggerCount: 1,
+  updatedAt: "2026-07-30T00:00:00.000Z",
+  versionId: "stage-6-generated",
+};
+
+// Called once per actionable vendor by Daily Watch and Chase's Call Stage 6
+// Vendor Approval node. Every call is its own n8n execution, which is what
+// lets each vendor pause independently on the Gmail wait node. Everything
+// this workflow needs about the vendor arrives as the trigger's input; it
+// writes its own outcome to Postgres and does not report back to the caller.
+const vendorApprovalWorkflow = {
+  id: "stage-6-vendor-approval-request",
+  name: "Vendor Approval Request",
+  nodes: [
+    sticky(
+      "cc000000-0000-4600-8600-000000000001",
+      [-80, -400],
+      1520,
+      920,
+      [
+        "## The approval gate",
+        "",
+        "One execution, one vendor. Daily Watch and Chase calls this once per actionable vendor rather than sending them all through one shared wait, because an n8n Wait node only ever pauses an execution once. This is the workflow n8n's own docs recommend for human-in-the-loop-per-item: give each item its own execution.",
+        "",
+        "No approver address configured, so the run stores a config notice and emails nobody. That is a deliberate refusal, not a fallback.",
+        "",
+        "Otherwise the execution **pauses here** until a person clicks. The approver sees the vendor, the reason, the intended recipient, the upload destination, and the exact draft.",
+        "",
+        "**No response in 24 hours means it expires rather than sends.** Silence never results in mail going out.",
+        "",
+        "Clicking approve releases this one specific email. It is not an approval of the vendor.",
+      ].join("\n"),
+      4,
+    ),
+    sticky(
+      "cc000000-0000-4600-8600-000000000002",
+      [1500, -360],
+      760,
+      700,
+      [
+        "## Logged either way",
+        "",
+        "**Approved**, so sent from the office's own mailbox, then send time, recipient, body and follow-up date are recorded.",
+        "**Declined**, so logged and nothing is sent.",
+        "",
+        "After two ignored requests the escalation pre-pass in Daily Watch and Chase hands the vendor to a person and pauses automated chasing. It will not email a vendor indefinitely.",
+        "",
+        "Note: `stage_6_outbound_test_mode` redirects real sends to a test address while it is true. Switch it off deliberately before live use.",
+      ].join("\n"),
+    ),
+    node("75000000-0000-4600-8600-000000000001", "Vendor Approval Request Trigger", "n8n-nodes-base.executeWorkflowTrigger", 1.1, [0, 0], {
+      inputSource: "passthrough",
+    }),
+    node("73000000-0000-4600-8600-000000000005", "Route Email Approval Configured", "n8n-nodes-base.if", 2.2, [300, 0], {
       conditions: {
         options: { caseSensitive: true, leftValue: "", typeValidation: "strict" },
         conditions: [
@@ -529,15 +603,15 @@ const dailyWorkflow = {
       },
       options: {},
     }),
-    node("73000000-0000-4600-8600-000000000006", "Store Stage 6 Config Notice Payload", "n8n-nodes-base.code", 2, [2400, 260], { jsCode: buildConfigNoticeCode }),
-    node("73000000-0000-4600-8600-000000000007", "Store Stage 6 Config Notice", "n8n-nodes-base.postgres", 2.6, [2700, 260], {
+    node("73000000-0000-4600-8600-000000000006", "Store Stage 6 Config Notice Payload", "n8n-nodes-base.code", 2, [600, 260], { jsCode: buildConfigNoticeCode }),
+    node("73000000-0000-4600-8600-000000000007", "Store Stage 6 Config Notice", "n8n-nodes-base.postgres", 2.6, [900, 260], {
       operation: "executeQuery",
       query: "SELECT stage_6_store_config_notice($1::jsonb) AS config_notice_result;",
       options: {
         queryReplacement: "={{ JSON.stringify($json) }}",
       },
     }, postgresCreds()),
-    node("74000000-0000-4600-8600-000000000001", "Gmail Approval - Send and Wait", "n8n-nodes-base.gmail", 2.1, [2400, -80], {
+    node("74000000-0000-4600-8600-000000000001", "Gmail Approval - Send and Wait", "n8n-nodes-base.gmail", 2.1, [600, -80], {
       resource: "message",
       operation: "sendAndWait",
       sendTo: "={{ $json.approver_email }}",
@@ -564,8 +638,8 @@ const dailyWorkflow = {
         appendAttribution: false,
       },
     }, gmailCreds()),
-    node("74000000-0000-4600-8600-000000000002", "Recover Approval Result Context", "n8n-nodes-base.code", 2, [2700, -80], { jsCode: recoverApprovalCode }),
-    node("74000000-0000-4600-8600-000000000003", "Route Approved Stage 6 Email", "n8n-nodes-base.if", 2.2, [3000, -80], {
+    node("74000000-0000-4600-8600-000000000002", "Recover Approval Result Context", "n8n-nodes-base.code", 2, [900, -80], { jsCode: recoverApprovalCode }),
+    node("74000000-0000-4600-8600-000000000003", "Route Approved Stage 6 Email", "n8n-nodes-base.if", 2.2, [1200, -80], {
       conditions: {
         options: { caseSensitive: true, leftValue: "", typeValidation: "strict" },
         conditions: [
@@ -580,7 +654,7 @@ const dailyWorkflow = {
       },
       options: {},
     }),
-    node("74000000-0000-4600-8600-000000000004", "Gmail Send Approved Stage 6 Chase", "n8n-nodes-base.gmail", 2.1, [3300, -200], {
+    node("74000000-0000-4600-8600-000000000004", "Gmail Send Approved Stage 6 Chase", "n8n-nodes-base.gmail", 2.1, [1500, -200], {
       resource: "message",
       operation: "send",
       sendTo: "={{ $json.actual_recipient }}",
@@ -592,16 +666,16 @@ const dailyWorkflow = {
         appendAttribution: false,
       },
     }, gmailCreds()),
-    node("74000000-0000-4600-8600-000000000005", "Build Sent Outreach Log Payload", "n8n-nodes-base.code", 2, [3600, -200], { jsCode: buildSentLogPayloadCode }),
-    node("74000000-0000-4600-8600-000000000006", "Mark Outreach Sent", "n8n-nodes-base.postgres", 2.6, [3900, -200], {
+    node("74000000-0000-4600-8600-000000000005", "Build Sent Outreach Log Payload", "n8n-nodes-base.code", 2, [1800, -200], { jsCode: buildSentLogPayloadCode }),
+    node("74000000-0000-4600-8600-000000000006", "Mark Outreach Sent", "n8n-nodes-base.postgres", 2.6, [2100, -200], {
       operation: "executeQuery",
       query: "SELECT stage_6_mark_outreach_sent($1::jsonb) AS sent_result;",
       options: {
         queryReplacement: "={{ JSON.stringify($json) }}",
       },
     }, postgresCreds()),
-    node("74000000-0000-4600-8600-000000000007", "Build Declined Outreach Log Payload", "n8n-nodes-base.code", 2, [3300, 60], { jsCode: buildDeclinePayloadCode }),
-    node("74000000-0000-4600-8600-000000000008", "Mark Outreach Declined", "n8n-nodes-base.postgres", 2.6, [3600, 60], {
+    node("74000000-0000-4600-8600-000000000007", "Build Declined Outreach Log Payload", "n8n-nodes-base.code", 2, [1500, 60], { jsCode: buildDeclinePayloadCode }),
+    node("74000000-0000-4600-8600-000000000008", "Mark Outreach Declined", "n8n-nodes-base.postgres", 2.6, [1800, 60], {
       operation: "executeQuery",
       query: "SELECT stage_6_mark_outreach_declined($1::jsonb) AS decline_result;",
       options: {
@@ -610,14 +684,7 @@ const dailyWorkflow = {
     }, postgresCreds()),
   ],
   connections: {
-    "Manual Trigger - Run Stage 6 Watch": { main: [[{ node: "Escalate Stage 6 Overdue Outreach", type: "main", index: 0 }]] },
-    "Schedule Trigger - Daily Watch 08:00": { main: [[{ node: "Escalate Stage 6 Overdue Outreach", type: "main", index: 0 }]] },
-    "Escalate Stage 6 Overdue Outreach": { main: [[{ node: "Load Stage 6 Actionable Vendors", type: "main", index: 0 }]] },
-    "Load Stage 6 Actionable Vendors": { main: [[{ node: "OpenAI Draft Stage 6 Chase Email", type: "main", index: 0 }]] },
-    "OpenAI Draft Stage 6 Chase Email": { main: [[{ node: "Prepare Stage 6 Draft Payload", type: "main", index: 0 }]] },
-    "Prepare Stage 6 Draft Payload": { main: [[{ node: "Record Pending Outreach", type: "main", index: 0 }]] },
-    "Record Pending Outreach": { main: [[{ node: "Prepare Approval Email Payload", type: "main", index: 0 }]] },
-    "Prepare Approval Email Payload": { main: [[{ node: "Route Email Approval Configured", type: "main", index: 0 }]] },
+    "Vendor Approval Request Trigger": { main: [[{ node: "Route Email Approval Configured", type: "main", index: 0 }]] },
     "Route Email Approval Configured": {
       main: [
         [{ node: "Gmail Approval - Send and Wait", type: "main", index: 0 }],
@@ -641,7 +708,7 @@ const dailyWorkflow = {
   staticData: null,
   pinData: {},
   tags: [],
-  triggerCount: 1,
+  triggerCount: 0,
   updatedAt: "2026-07-30T00:00:00.000Z",
   versionId: "stage-6-generated",
 };
@@ -703,6 +770,8 @@ const replyWorkflow = {
 
 fs.mkdirSync(path.dirname(dailyPath), { recursive: true });
 fs.writeFileSync(dailyPath, `${JSON.stringify(dailyWorkflow, null, 2)}\n`, "utf8");
+fs.writeFileSync(vendorApprovalPath, `${JSON.stringify(vendorApprovalWorkflow, null, 2)}\n`, "utf8");
 fs.writeFileSync(replyPath, `${JSON.stringify(replyWorkflow, null, 2)}\n`, "utf8");
 console.log(`Generated ${path.relative(repoRoot, dailyPath)}`);
+console.log(`Generated ${path.relative(repoRoot, vendorApprovalPath)}`);
 console.log(`Generated ${path.relative(repoRoot, replyPath)}`);

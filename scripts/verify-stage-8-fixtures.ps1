@@ -14,6 +14,7 @@ $workflowSpecs = @(
   @{ Path = "n8n-workflows\stage-5-intake-workflow.json"; Id = "stage-5-intake-workflow"; Name = "COI Intake"; Requires = "gmail" },
   @{ Path = "n8n-workflows\stage-5-source-document-route.json"; Id = "stage-5-source-document-route"; Name = "Source Document Route"; Requires = "" },
   @{ Path = "n8n-workflows\stage-6-daily-watch-chase.json"; Id = "stage-6-daily-watch-chase"; Name = "Daily Watch and Chase"; Requires = "openai" },
+  @{ Path = "n8n-workflows\stage-6-vendor-approval-request.json"; Id = "stage-6-vendor-approval-request"; Name = "Vendor Approval Request"; Requires = "gmail" },
   @{ Path = "n8n-workflows\stage-6-non-pdf-reply-notice.json"; Id = "stage-6-non-pdf-reply-notice"; Name = "Non-PDF Reply Notice"; Requires = "gmail" },
   @{ Path = "n8n-workflows\stage-7-dashboard-demo-view.json"; Id = "stage-7-dashboard-demo-view"; Name = "COI Dashboard"; Requires = "" }
 )
@@ -549,6 +550,10 @@ try {
   Set-Stage8WorkflowActive -WorkflowId "stage-7-dashboard-demo-view" -Required $true
   if ($hasGmail) {
     Set-Stage8WorkflowActive -WorkflowId "stage-5-intake-workflow" -Required $false
+    # Vendor Approval Request must be active before the daily watch runs. Daily
+    # Watch and Chase calls it once per actionable vendor via Execute Workflow,
+    # and that call fails if the target is not importable and active yet.
+    Set-Stage8WorkflowActive -WorkflowId "stage-6-vendor-approval-request" -Required $false
     Set-Stage8WorkflowActive -WorkflowId "stage-6-non-pdf-reply-notice" -Required $false
   }
   else {

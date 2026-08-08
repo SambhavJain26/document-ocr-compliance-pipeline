@@ -64,21 +64,24 @@ The distinction that governs the whole design: it reports what a document says. 
 
 Everything that follows is an elaboration of that sentence. Where a design decision looks strange, it is almost always because it was made to protect that line.
 
-## The Five Workflows
+## The Six Workflows
 
-Everything the system does is one of these five. Nothing runs outside them.
+Everything the system does is one of these six. Nothing runs outside them.
 
 | Workflow, as named in n8n | What it owns | What starts it |
 |---|---|---|
 | **COI Intake** | Everything that happens to an arriving certificate: storing the original, reading it, checking it, filing the result | `Gmail Trigger - COI Intake`, `Form Trigger - Certificate Upload`, or `Manual Trigger - Run Stage 5 Smoke` |
 | **Source Document Route** | Handing the original PDF back when someone clicks the link on a dashboard row | `Webhook - Source PDF` |
-| **Daily Watch and Chase** | Finding paperwork that is missing or running out, drafting the reminder, holding it for a person, sending it, logging it, and escalating when a vendor ignores you | `Schedule Trigger - Daily Watch 08:00`, or `Manual Trigger - Run Stage 6 Watch` |
+| **Daily Watch and Chase** | Finding paperwork that is missing or running out, drafting the reminder, and dispatching each actionable vendor for approval | `Schedule Trigger - Daily Watch 08:00`, or `Manual Trigger - Run Stage 6 Watch` |
+| **Vendor Approval Request** | The approval gate itself, one vendor at a time: holding the draft for a person, sending it, logging it | Called by Daily Watch and Chase, once per actionable vendor |
 | **Non-PDF Reply Notice** | Vendor replies that are not certificates, so a plain text answer or a portal link becomes a manager notice instead of nothing | `Gmail Trigger - Stage 6 Replies` |
 | **COI Dashboard** | Turning the current state of the database into the register web page | `Webhook - COI Dashboard` |
 
 Two of these are event-driven and the important one is not, which is worth understanding because it explains why both exist. The intake workflow reacts to something happening: a document arrived. The daily watch reacts to nothing happening, which is a thing no inbox trigger can ever detect. An email trigger fires on arrivals. It has no way to notice an absence, and absence is the actual failure mode this product exists to catch.
 
-**A sixth export exists and does not run.** `Extraction and Validation Core` is the harness the checking rules were built and tested in. The rules themselves live in `scripts/lib/coi-stage-4-validator.js` and are copied into the intake workflow by a generator script, which is why the checks behave identically wherever they run. If you ever need to change a rule, you change that file and regenerate. You do not edit the workflow.
+**Why the approval gate is its own workflow.** An n8n Wait node can only pause a given execution once, ever. An earlier version of this build sent every actionable vendor into one Gmail Send-and-Wait call as a single array of items, on the reasoning that resuming it once you'd approved the first would move on and send the next. That reasoning was wrong, and the failure was silent: the first vendor got a real pause and a real email; resuming that one resolved the *entire array* in the same instant, and every other vendor came back with no approval data attached, which read as `approved: false` and was logged as declined without ever generating an email a person could see. Splitting the approval step into its own workflow, called once per vendor through Execute Workflow, gives every vendor its own execution and therefore its own genuine pause. This is n8n's own documented pattern for human-in-the-loop-per-item; there is no way to get it inside a single workflow. Daily Watch and Chase still does the sorting and drafting for every vendor in one pass; only the approval-through-send-or-decline segment runs once per vendor.
+
+**A seventh export exists and does not run.** `Extraction and Validation Core` is the harness the checking rules were built and tested in. The rules themselves live in `scripts/lib/coi-stage-4-validator.js` and are copied into the intake workflow by a generator script, which is why the checks behave identically wherever they run. If you ever need to change a rule, you change that file and regenerate. You do not edit the workflow.
 
 Each workflow is named for what it does. The underlying workflow IDs still carry build-stage names (`stage-5-intake-workflow` and so on), which is why scripts and CLI commands refer to those rather than to the display names. The display names can be changed to match an office's own vocabulary without touching behaviour: they are set in the `scripts/generate-stage-*` generators, and changing one is a regenerate and a re-import.
 
@@ -86,7 +89,7 @@ Every node inside these workflows still carries a stage label in its name, for e
 
 ## The Parts Underneath
 
-Distinct from the five workflows above. These are the components the workflows use.
+Distinct from the six workflows above. These are the components the workflows use.
 
 **n8n** runs the workflows and keeps the record of what happened. Its execution history is the audit trail: every run, what it did, when, and which node failed if one did. This matters more than it sounds. When something looks wrong, the question is never "did the system do something odd" but "which run, and at which step", and that is answerable from the history without anyone guessing.
 
@@ -262,7 +265,9 @@ A vendor who replies to a re-attestation request in words rather than with a doc
 
 ## The Chase, And The Approval Gate
 
-**Workflow: Daily Watch and Chase**, continuing from above. This is the longest path in the system, so here it is node by node.
+This spans two workflows now, and the boundary between them is deliberate. **Daily Watch and Chase** does everything that is safe to do for every vendor in one pass. **Vendor Approval Request** does the one thing that genuinely has to happen one vendor at a time: the approval gate.
+
+### Drafting and dispatch, in Daily Watch and Chase
 
 `OpenAI Draft Stage 6 Chase Email` writes a short email, under 120 words, naming the vendor, the policy number and the expiry date, requesting updated paperwork, and making no claims about coverage. Where a producer or agent is on file, the request is addressed to them rather than to the vendor, because the agent is the party who can actually produce the document.
 
@@ -270,13 +275,21 @@ The draft is checked before it is used. If it comes back empty, over the word li
 
 `Prepare Stage 6 Draft Payload` then builds the version that will actually be sent. It appends the vendor-facing link as an anchor reading "certificate upload link", after the word-count and forbidden-word checks have run, so the model cannot invent a destination and the boilerplate does not count against the 120 words.
 
-`Record Pending Outreach` writes the pending row before anything is sent, so a reminder can never go out without a record of it existing. The order matters for the same reason the PDF is stored before it is read: if the send fails halfway, the evidence that it was attempted survives.
+`Record Pending Outreach` writes the pending row before anything is sent, so a reminder can never go out without a record of it existing. The order matters for the same reason the PDF is stored before it is read: if the send fails halfway, the evidence that it was attempted survives. This runs once for every actionable vendor in the batch, so the full day's queue is visible in `outreach_log` immediately, before a single approval email exists.
 
-`Prepare Approval Email Payload` and `Route Email Approval Configured` then check that an approver address is actually set. If it is not, the run goes to `Store Stage 6 Config Notice` instead of emailing anyone. This is a deliberate refusal rather than a fallback. A misconfigured system that sends vendor email to nobody in particular is worse than one that stops and says so.
+`Prepare Approval Email Payload` builds the manager-facing draft: the vendor, the reason, the intended recipient, the upload destination, and the exact message. Then `Call Stage 6 Vendor Approval` hands each vendor, one at a time, to its own run of the **Vendor Approval Request** workflow through n8n's Execute Workflow node, set to call once per item. Daily Watch and Chase's own execution waits for all of those calls to finish before it reports done, but each call is a genuinely separate execution underneath.
 
-`Gmail Approval - Send and Wait` sends the approval request to the manager and then holds the execution open. The manager sees the vendor, the reason, the intended recipient and the exact draft, with two buttons. The approval email shows the raw upload URL on its own line, because the approver is reviewing what is about to be sent and needs to see the destination. Only the vendor-facing email hides it behind anchor text.
+**Why the handoff exists, and why it has to.** An n8n Wait node can only pause a given execution once, ever. Put every vendor's draft into one shared Gmail Send-and-Wait call, and only the first vendor gets a real pause; resuming it resolves the whole batch in the same instant, and every vendor after the first comes back with no approval data, reads as declined, and is logged that way without ever generating an email a person could see. This was a real defect in an earlier version of this build, found by testing it rather than by reasoning about it: outreach_log correctly recorded a pending row for every vendor, but nine of them were marked declined a few dozen milliseconds after the first vendor's real approval, with no message ever sent asking. The fix that actually works, and the one n8n's own documentation recommends for this exact situation, is to give each item its own execution. That is what Vendor Approval Request is for.
 
-Then `Recover Approval Result Context` and `Route Approved Stage 6 Email` decide what happens next:
+### The approval gate itself, in Vendor Approval Request
+
+`Route Email Approval Configured` checks that an approver address is actually set. If it is not, the run goes to `Store Stage 6 Config Notice` instead of emailing anyone. This is a deliberate refusal rather than a fallback. A misconfigured system that sends vendor email to nobody in particular is worse than one that stops and says so.
+
+`Gmail Approval - Send and Wait` sends the approval request to the manager and then holds this execution open. The manager sees the vendor, the reason, the intended recipient and the exact draft, with two buttons. The approval email shows the raw upload URL on its own line, because the approver is reviewing what is about to be sent and needs to see the destination. Only the vendor-facing email hides it behind anchor text.
+
+Because dispatch happens once per vendor rather than once per day, several of these can be waiting at the same time. If the daily watch found thirteen vendors, thirteen approval emails arrive within moments of each other, not one after another. Approving or declining one has no effect on any other; each is its own independent execution with its own independent 24-hour clock.
+
+Then `Recover Approval Result Context` and `Route Approved Stage 6 Email` decide what happens next, for this one vendor:
 
 - **Approved.** `Gmail Send Approved Stage 6 Chase` sends from the office's own mailbox, then `Build Sent Outreach Log Payload` and `Mark Outreach Sent` record the send time, recipient, message body and follow-up date.
 - **Declined.** `Build Declined Outreach Log Payload` and `Mark Outreach Declined` log it and nothing is sent.
@@ -284,7 +297,7 @@ Then `Recover Approval Result Context` and `Route Approved Stage 6 Email` decide
 
 That last behaviour is the one to understand. The failure mode of an approval gate is a manager on holiday and a queue of messages that eventually go out unattended. Here, silence means nothing happens. The vendor will be picked up again on a later run and a person will get another chance to decide, but no message ever leaves because somebody stopped paying attention.
 
-It is worth being precise about what the approval means, because the word does a lot of work in this system and only one of its meanings is correct. Clicking approve releases one specific email. It is not a statement about the vendor, their insurance, or their suitability for work.
+It is worth being precise about what the approval means, because the word does a lot of work in this system and only one of its meanings is correct. Clicking approve releases one specific email, for one specific vendor. It is not a statement about the vendor, their insurance, or their suitability for work, and it has no effect on any other vendor's pending request.
 
 If a follow-up comes due and no newer certificate has arrived, a second request goes out. After two ignored requests, the `Escalate Stage 6 Overdue Outreach` pre-pass on a later day escalates to the manager and pauses automated chasing for that vendor. It will not email a vendor indefinitely. At that point the problem has stopped being administrative and has become a relationship question, which belongs with a person.
 
@@ -391,7 +404,8 @@ Each symptom, and which workflow to open first.
 - **A certificate arrived but no row changed.** Check it was a PDF, then check COI Intake executions for that time. A clean run that creates no certificate is the correct result for a non-certificate document.
 - **A Gmail certificate was missed entirely.** The intake trigger filters on unread with an attachment, polling every minute. A reply opened in Gmail before the trigger polls can be skipped, because it is no longer unread.
 - **A certificate photo was ignored.** If it was sent as a JPG or PNG rather than a PDF, intake filtered it out and created a notice. A photograph saved as a PDF is handled, through the vision branch.
-- **No reminder email appeared.** Confirm Daily Watch and Chase is published and active, and confirm the approver address is set. An inactive workflow has been the cause before, and an unset approver sends the run to `Store Stage 6 Config Notice` instead.
+- **No reminder email appeared.** Confirm both Daily Watch and Chase and Vendor Approval Request are published and active, and confirm the approver address is set. An inactive Vendor Approval Request fails the whole run outright, because Daily Watch and Chase calls it by ID for every actionable vendor. An unset approver sends the run to `Store Stage 6 Config Notice` instead.
+- **Fewer approval emails than actionable vendors.** Each vendor is dispatched to its own execution of Vendor Approval Request, so a partial batch usually means the run is still in progress rather than something being wrong; check n8n's execution list for Vendor Approval Request runs still `waiting`.
 - **More reminders queued than expected.** Check `last_attested_at` on the vendors involved. A vendor with no recorded attestation date is re-attest actionable even with good paperwork on file, which is correct for a vendor imported at onboarding who has not sent anything since, and wrong if their certificate was filed by this system. Filing a certificate records the date automatically.
 - **A vendor is never chased.** Check `chase_paused` for that vendor. Earlier escalation testing has left every vendor but one paused before now, and it is invisible outside the dashboard chase column.
 - **A reminder was approved but the vendor never received it.** Check `stage_6_outbound_test_mode`. While it is true, approved sends are redirected to the test address.
