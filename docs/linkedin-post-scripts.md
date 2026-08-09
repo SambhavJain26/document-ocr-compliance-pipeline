@@ -24,6 +24,8 @@ Every post below has been checked for: zero banned words (compliant, verified, c
 
 **Format:** document carousel, 8 slides. **Framework:** principle, then mechanism, then application. **Pillar:** AI buying literacy. **CTA:** soft.
 
+**Document title (58-char limit):** `What AI should read, and what it should never decide` (52 chars)
+
 **Rebuilt 2026-08-02.** Replaces "What a property manager actually does all day," which taught a property manager nothing they don't already live.
 
 **On the framework.** The plan originally labelled this Problem-Proof. It isn't. Problem-Proof needs a numbered claim on slide 1 and a real artifact as the receipt on the last slide, and this post has neither. Relabelled honestly rather than bolting on a fake number and a screenshot that would have to be invented. The framework files say to adapt the structures, not to satisfy their labels.
@@ -257,6 +259,8 @@ Timings are cumulative. Read at an unhurried pace, roughly 130 words per minute.
 
 **Format:** document carousel, 7 slides. **Framework:** Problem-Proof through slide 3, then a reframe close. **Pillar:** AI buying literacy. **CTA:** none.
 
+**Document title (58-char limit):** `What it actually costs to have AI read a document` (49 chars)
+
 **Rebuilt 2026-08-02.** Replaces "The four-minute problem," which did arithmetic on something the reader already knows better than I do, and was a business case for hiring me wearing a teardown costume.
 
 ### The post copy that sits above the document
@@ -345,6 +349,8 @@ The honest, defensible position if someone pushes in the comments: the model cos
 ## Post 7. Twelve things that can be wrong when a COI arrives
 
 **Format:** document carousel, 11 slides. **Framework:** Value-Stack. **Pillar:** honest limitation. **CTA:** none.
+
+**Document title (58-char limit):** `Twelve things that can be wrong when a COI arrives` (50 chars). Reused from the cover slide rather than written separately, so the title and the first thing the reader sees say the same thing.
 
 **Revised 2026-08-03.** Two changes, both found while building the carousel.
 
@@ -476,6 +482,8 @@ Do not restore severity language to the group labels without restoring slide 2 w
 ## Post 13. The questions to ask anyone selling you automation
 
 **Format:** document carousel, 8 slides. **Framework:** Problem-Proof, with a question hook in place of the numbered claim. **Pillar:** AI buying literacy. **CTA:** soft.
+
+**Document title (58-char limit):** `The questions to ask anyone selling you automation` (50 chars)
 
 **Reframed 2026-08-02.** The material was right and the subject was wrong. Written as my operating model it made the reader a spectator. It is now a purchasing tool, and my build is the worked answer rather than the topic.
 
