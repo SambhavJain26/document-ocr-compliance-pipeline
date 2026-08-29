@@ -789,11 +789,29 @@ Both are screen recordings, no face, no music, no intro card. Both use Hook / Bo
 
 ## Post 9. It drafted the email, then stopped and waited
 
-**Format:** video clip cut from the demo recording, 35 to 45 seconds. **Pillar:** AI buying literacy. **CTA:** none.
+**Format:** video clip cut from the demo recording, 35 to 50 seconds. **Pillar:** AI buying literacy. **CTA:** none.
 
-**Re-topiced 2026-08-06.** Was "The boxes on a certificate that matter," which required footage of a certificate being walked box by box. That footage does not exist and is not being recorded. Nothing here is shot separately: this is a cut from the main demo, using the audio already on it.
+**Re-cut 2026-08-09 against the recording that actually exists.** The earlier version of this section keyed its in and out points to lines from `demo-script.md`. That script was not followed on the day, so those lines are not in the footage. Everything below is anchored to what is visibly on screen instead, which is the only reliable way to cut a video somebody has already made.
 
-The certificate-boxes lesson is not lost, only unplaced. It is genuinely valuable insurance literacy and it wants a format that can hold an annotated image. It is preserved under "The lesson this replaced" at the foot of this section rather than deleted.
+### What the demo recording actually contains
+
+Recorded order, as filmed:
+
+1. The dashboard
+2. Sending an email as a vendor, certificate attached
+3. Opening that certificate to explain what it is and what is on it
+4. The dashboard again, with the certificate now filed
+5. Clicking **Open PDF** to show the same document came back
+6. The COI Intake execution, showing only the model node's output
+7. Daily Watch and Chase, triggered by hand, drafting the emails
+8. The Vendor Approval Request execution, showing the approval emails have gone
+9. Gmail, showing those same approval emails
+10. Approving one of them
+11. The vendor receiving the certificate request
+12. Clicking the form link and submitting a certificate
+13. The dashboard, showing the new record
+
+**This clip is beats 8 through 11.** That range is better material than the one I originally specced, because it shows the whole gate rather than just the click: several requests waiting, one released, and the consequence of releasing it.
 
 ### The post copy
 
@@ -811,35 +829,40 @@ The certificate-boxes lesson is not lost, only unplaced. It is genuinely valuabl
 
 *Word count: 152. Em dashes: 0. First 210 characters end inside "A daily check found the vendors whose insur", with the pause established and the mechanism still ahead.*
 
-### The clip
+*Unchanged from the previous version, and still accurate. The 24-hour expiry is a true property of the build that the video does not happen to show; stating it in copy is fine, and the clip is not claimed as evidence for it.*
 
-**Source:** the demo recording, Scene 7 ("When nothing arrives"), which the demo script places at roughly 5:20 to 6:50.
+### The clip, cut on visual beats
 
-**Do not trust that timestamp.** Cut by finding the beat, not by seeking to a predicted time, because the real recording will drift from the script's planned timings. The beat you want:
+**In point:** the first frame where the Gmail inbox is visible with more than one approval request sitting in it. Not the workflow execution before it. A viewer with no context needs an inbox, not a canvas.
 
-- **In point:** the moment the screen switches to Gmail and the approval email opens. In the script this is "Here's one of them. The vendor, the reason, who it's going to, and the exact message that would go out."
-- **Out point:** the end of the line "If nobody clicks within twenty-four hours, a request just expires instead of sending."
+**Out point:** the vendor-side email being visible on screen. Stop before the form link is clicked. That click belongs to a different story and it dilutes this one.
 
-That segment already contains the click on **Approve**, which is the only thing this clip has to show. It should land between 35 and 45 seconds. If it runs longer, trim from the front, not the back. The click and the sentence after it are the payload.
+**Target 35 to 50 seconds.** If the range runs longer, cut inside it rather than trimming the ends: the two things that must survive are several requests visibly waiting, and exactly one of them being approved.
 
-**Do not include the outreach log.** It is the next beat in the demo and it weakens a standalone clip, because a database view needs explaining and this clip has no room to explain anything.
+**Keep the shot that shows more than one approval email.** It is doing more work than it looks like. Without it the viewer sees a single email approved and assumes approval is a formality. With it they can see that releasing one leaves the others sitting there, which is the entire argument and cannot be made in words as cheaply as it is made by that frame.
 
-### Audio
+### Audio, and a problem to solve before you cut
 
-You are not recording a voiceover for this. Two ways to run it, and both work:
+You are not recording a voiceover. Whatever you said on the day is what the clip has.
 
-- **Keep the demo's audio.** Your narration is already on the footage and it fits, because the demo script wrote that segment to be spoken plainly rather than to lean on what came before it. This is the lower-effort option and the one I would take.
-- **Mute it entirely** and let the burned-in captions carry it. Also fine, and slightly stronger as a silent artifact.
+**I do not know what you said over these beats, and the spec cannot assume it.** The line the earlier version leaned on, about approving an email rather than approving the vendor, was written for a script that was not followed. If you did not say something like it, the clip has no spoken version of its own point.
 
-**Either way the captions are mandatory**, because LinkedIn autoplays muted and most viewers will never hear the audio. Do not rely on LinkedIn's auto-captions if you keep the audio. Burn them in, because auto-captions will not be on screen during the seconds that matter and will mangle "COI".
+That is recoverable without recording anything, because LinkedIn autoplays muted and most viewers will never hear the audio anyway. Two options:
+
+- **Captions carry the argument.** Burn in a short caption over the approval click that states the point directly, whether or not the audio says it. This is the option I would take.
+- **Mute the clip entirely** and run it as a silent sequence with captions only. Also fine, and it removes any risk of the audio contradicting the captions.
+
+**Do not burn in a caption that quotes you saying something you did not say.** Write captions as on-screen commentary rather than as a transcript, so there is no implied claim about the audio.
 
 ### Burned-in caption notes
 
 - Captions throughout, bottom third, high contrast, two lines maximum.
-- **The one line that must be legible and correctly transcribed** is "I approved that this one reminder gets sent. I didn't approve the vendor for anything." That sentence is the entire reason the clip exists.
+- **Over the inbox shot:** something naming what is waiting, for example `Every vendor got its own request. None of them have gone out.`
+- **Over the approval click, the load-bearing caption:** `This releases one email. It doesn't approve the vendor for anything.` This is the sentence the clip exists for. If it is not in the audio, it has to be on screen.
+- **Over the vendor-side email:** `Now it sends.`
 - Corner label for the first five seconds: **"Synthetic vendors, test data."**
-- **Redact the mailbox address** in the Gmail header. The demo recording shows a real address.
-- End card, held two seconds: **"What can it do before a person sees it?"** This is the question the post copy closes on, and it works better as the last frame than as narration.
+- **Redact the mailbox address** in the Gmail header. The recording shows a real address.
+- End card, held two seconds: **"What can it do before a person sees it?"**
 
 ### Alternative opening lines for the post copy
 
@@ -849,21 +872,20 @@ You are not recording a voiceover for this. Two ways to run it, and both work:
 
 ### Overlap with post 13, and why it is fine
 
-Post 13 is the carousel built around the same question. This clip plants it, post 13 systematizes it four posts later, and that order is deliberate. Keep post 9's copy leading with the moment rather than the question, so the two do not open identically. If you ever publish 13 first, swap post 9's opening for the third alternative above.
+Post 13 is the carousel built around the same question. This clip plants it, post 13 systematizes it four posts later, and that order is deliberate. Keep post 9's copy leading with the moment rather than the question, so the two do not open identically.
 
 ### Facts traced
 
-- **The approval gate and the 24-hour expiry.** `docs/how-the-system-works.md`. The request waits up to 24 hours and expires rather than sending. Default behaviour, not a setting anyone has to remember.
-- **One click releases one email.** The approval gate lives in `Vendor Approval Request`, called once per actionable vendor by `Daily Watch and Chase`. Each vendor gets its own execution and its own genuine pause, which is exactly why approving one has no effect on the others.
-- **The daily check and its buckets.** `Daily Watch and Chase`, driven by `stage_6_actionable_vendors` in `db/postgres/004-stage-6-watch-chase.sql`.
+- **The approval gate and the 24-hour expiry.** `docs/how-the-system-works.md`. The request waits up to 24 hours and expires rather than sending. Default behaviour, not a setting anyone has to remember. Shown in the build, not in the footage.
+- **One click releases one email.** The approval gate lives in `Vendor Approval Request`, called once per actionable vendor by `Daily Watch and Chase`, so each vendor gets its own execution and its own genuine pause. This is why the inbox shot with several waiting requests is honest rather than decorative.
+- **Exactly one node in the whole build can email a vendor.** `docs/build-technical-notes.md` records the audit: one node out of eighty-seven, with a single inbound edge that runs through the approval pause. Useful if anyone in the comments asks how the gate is enforced.
 
-### The lesson this replaced
+### Two more clips this footage can support
 
-Recorded so the research is not lost. The old post 9 taught that a certificate's coverages table carries facts you can act on, while the Description of Operations box is free text somebody typed, and wording in it claiming additional insured status does not create additional insured status. That takes a carrier-issued endorsement, a separate document.
+Not briefed as posts, recorded here because the footage exists and it would be a waste to rediscover it later.
 
-Sources: `foundation-1-vendor-insurance.md` ("The three documents people confuse constantly", "The four tools of risk transfer"), `01-vendor-coi-chase.md` ("Why the document is easy"), and the Texas Department of Insurance certificate FAQ cited at the foot of `docs/demo-script.md`.
-
-If it is ever built as a single annotated image, it needs the "I am not an insurance professional" framing, must not use the ACORD name in written marketing per `coi-demo-build-plan.md` section 1.5, and should keep the endorsement form numbers off the page.
+- **Beats 12 to 13, the loop closing.** The vendor clicks the form link, submits a certificate, and the dashboard shows the new record. Self-contained, needs no setup, and it is the most satisfying sequence in the recording.
+- **Beat 3, the certificate itself.** You opened a certificate to explain what it is and what is on it. That is the footage the original post 9 wanted and I retired for lack of it. Whether it carries the sharper lesson about the Description of Operations box depends entirely on what you said over it, which I have not seen.
 
 ---
 

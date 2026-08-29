@@ -1,7 +1,7 @@
 # LinkedIn Content Plan
 
 Created: 2026-08-01
-Revised: 2026-08-02, and again 2026-08-06
+Revised: 2026-08-02, 2026-08-06, and 2026-08-09
 
 Fifteen posts: one demo video, fourteen supporting. Each brief carries the elements a script needs, so turning one into a draft is a writing job, not a thinking job. Finished copy lives in `linkedin-post-scripts.md`.
 
@@ -274,7 +274,7 @@ Assume the reader knows what a certificate of insurance is. Publish once industr
 
 ## 9. It drafted the email, then stopped and waited
 
-**Format:** video clip cut from the demo recording, 35–45 seconds · **Pillar:** AI buying literacy · **CTA:** none
+**Format:** video clip cut from the demo recording, 35–50 seconds · **Pillar:** AI buying literacy · **CTA:** none
 
 **Re-topiced 2026-08-06.** Was "The boxes on a certificate that matter." That post required footage of a certificate being walked box by box, and no such footage exists. Only one video is being recorded, the demo, and the short posts are cuts from it.
 
@@ -286,9 +286,13 @@ Assume the reader knows what a certificate of insurance is. Publish once industr
 
 **Takeaway:** Ask any automation vendor what it can do before a person sees it. This is what a specific answer looks like.
 
-**Source:** demo Scene 7, from the switch to Gmail through the "I didn't approve the vendor for anything" line. Cut by finding the beat, not by seeking a predicted timestamp.
+**Re-cut 2026-08-09 against the recording that actually exists.** The demo script was not followed on the day, so the earlier version of this brief pointed at a line that was never said. Cut points are now anchored to what is visibly on screen.
 
-**No new voiceover.** Either keep the demo's own narration on the clip or mute it. Burned-in captions are mandatory either way, because LinkedIn autoplays muted.
+**Source:** the stretch of the recording running from the Gmail inbox showing several waiting approval requests, through approving one, to the vendor-side email appearing. In point is the first frame with more than one request visible in the inbox; out point is the vendor's email, stopping before the form link is clicked.
+
+**The shot that must survive any trim** is the one showing more than one approval request waiting. Without it a viewer sees a single email approved and reads approval as a formality. With it they can see that releasing one leaves the others sitting there, which is the whole argument.
+
+**No new voiceover, and the audio content is unknown.** The line this post's argument depends on may not be in the recording at all. Burned-in captions therefore carry the point, whether or not the audio does. Write them as on-screen commentary rather than as a transcript, so nothing implies you said something you did not.
 
 **Overlap with post 13, deliberately:** this clip plants the question, post 13 systematizes it four posts later. Post 9's copy leads with the moment rather than the question so the two do not open identically.
 
@@ -352,7 +356,7 @@ Assume the reader knows what a certificate of insurance is. Publish once industr
 
 **Format:** carousel, 8 slides · **Framework:** Problem-Proof, question hook in place of the numbered claim · **Pillar:** AI buying literacy · **CTA:** soft — invite the question about their own systems
 
-**The receipt slide is required.** Slide 8 is a real screenshot of the approval email. It was cut in the 2026-08-02 reframe and restored after a voice sweep: without it the post closed on the same construction as post 1's final slide, and two carousels ending on an identical shape is what makes a set read as templated.
+**Slide 8 carries the close. Superseded 2026-08-04, owner's call: no screenshot, and no image anywhere in the deck.** An earlier revision required a real screenshot of the approval email as the receipt. That was overruled and slide 8 is typed copy instead, set on the deck's one inverted slide. The constraint that produced the screenshot requirement still stands and is met in words: slide 8 must not close on the same construction as post 1's final slide, because two carousels ending on an identical shape is what makes a set read as templated. This brief said "a real screenshot is required" until 2026-08-09, five days after it had stopped being true.
 
 **Reframed 2026-08-02.** The material was right and the subject was wrong. It was written as my operating model, which makes the reader a spectator. It is now a purchasing tool written for them, and my build is the worked answer rather than the topic.
 
@@ -429,7 +433,7 @@ Assume the reader knows what a certificate of insurance is. Publish once industr
 | Forbidden words | Zero: compliant, verified, covered, approved |
 | Hype vocabulary | Zero |
 | First 210 characters | Must stand alone and earn the expand. Measure by truncating, not by eye |
-| Length | Text 150–300 words · carousel slides under 25 words · the demo about 10 minutes · the clip 35–45 seconds |
+| Length | Text 150–300 words · carousel slides under 25 words · the demo about 10 minutes · the clip 35–50 seconds |
 | Factual trace | Every number, flag, and citation resolves to a named file or source |
 | Product language | Nothing implying a tool being sold. It's work done inside a client's business |
 | Em dashes | At most one per post. The single most reliable AI tell, and the hardest to notice while writing. Use commas, colons, or parentheses instead |
