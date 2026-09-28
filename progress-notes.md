@@ -341,6 +341,8 @@ Smaller observations from the same review, recorded but not prioritised:
 
 2026-09-29 prospect copy revision: Removed inaccessible repository file paths, internal stage references in captions, and production caveat blocks from the nine-page Upwork sample. The architecture and verification pages now explain the connected behavior and passed synthetic tests in client-facing language. The local-demo/synthetic-data label remains on every page so the sample does not imply a client deployment. Re-rendered pages 2, 5, and 9 for layout review.
 
+2026-09-29 workflow explanation revision: Gave Daily Watch and Chase and Vendor Approval Request separate screenshot pages with explicit trigger, processing, decision, and output explanations. The work sample is now ten pages; synthetic labeling and contact-free copy remain in place. Re-rendered and reviewed the revised workflow pages at normal viewing size.
+
 ## Next Action
 
 Run the full end-to-end demo rehearsal sequence, then complete pre-live external checks before any prospect demo.

@@ -1,4 +1,4 @@
-"""Render a contact-free, legible nine-page COI automation work sample."""
+"""Render a contact-free, legible ten-page COI automation work sample."""
 
 from pathlib import Path
 from PIL import Image
@@ -74,7 +74,7 @@ def base(c, number, section, title, subtitle=None):
     text(c, 42, 24, "LOCAL DEMO  /  SYNTHETIC DATA  /  WORK SAMPLE", 8.4, MUTED)
     c.setFont("Manrope", 8.4)
     c.setFillColor(MUTED)
-    c.drawRightString(750, 24, f"{number} / 9")
+    c.drawRightString(750, 24, f"{number} / 10")
 
 
 def screenshot(c, name, x, y, width, height, crop=None):
@@ -187,20 +187,41 @@ def page_5(c):
 
 
 def page_6(c):
-    base(c, 6, "Workflows 03 + 04 / Follow-up", "Daily watch with a human send gate",
-         "The watch selects actionable vendors. Each approval request then runs separately so every vendor gets an independent pause and decision.")
-    text(c, 42, 477, "DAILY WATCH AND CHASE  /  9 functional nodes", 9.5, GREEN)
-    screenshot(c, "work-sample-daily-watch.png", 42, 300, 708, 166, (170, 480, 2250, 890))
-    text(c, 42, 278, "VENDOR APPROVAL REQUEST  /  12 functional nodes", 9.5, GREEN)
-    screenshot(c, "work-sample-approval.png", 42, 106, 708, 160, (185, 330, 2250, 1010))
-    wrap(c, 42, 88,
-         "Postgres suppression and escalation rules govern who is due. Gmail approval decides whether each prepared message is sent or declined; the decision is logged.",
-         708, 9.9, 14, MUTED)
+    base(c, 6, "Workflow 03 / Daily Watch and Chase", "Find due vendors and prepare the follow-up",
+         "A scheduled or manual run reads the vendor register, applies chase rules, and prepares one approval request for each actionable vendor.")
+    screenshot(c, "work-sample-daily-watch.png", 42, 290, 708, 185, (170, 480, 2250, 890))
+    text(c, 42, 263, "From register state to a pending request", 11.2, INK, "Geist")
+    y = 237
+    for item in (
+        "Postgres selects vendors due for a first request, renewal follow-up, or escalation.",
+        "The workflow drafts an email, records pending outreach, and prepares the approval payload.",
+        "It calls Vendor Approval Request once per vendor, giving each decision its own execution.",
+    ):
+        y = bullet(c, y, item)
+    callout(c, 42, 63, 708, "What the workflow produces",
+            "A recorded follow-up awaiting a human send decision for each actionable vendor.", 59)
     c.showPage()
 
 
 def page_7(c):
-    base(c, 7, "Workflows 02 + 05 / Exceptions", "Source access and reply capture",
+    base(c, 7, "Workflow 04 / Vendor Approval Request", "One decision for each vendor",
+         "Each prepared message enters its own workflow execution, so an approver can review and decide on that vendor's message independently.")
+    screenshot(c, "work-sample-approval.png", 42, 248, 708, 230, (185, 330, 2250, 1010))
+    text(c, 42, 224, "From approval to a recorded outcome", 11.2, INK, "Geist")
+    y = 200
+    for item in (
+        "Checks the approval configuration, then sends the draft to the human approver.",
+        "An approved decision sends the message; a declined decision stops that send.",
+        "Both paths write the outcome to the outreach log in Postgres.",
+    ):
+        y = bullet(c, y, item)
+    callout(c, 42, 65, 708, "Why each vendor runs separately",
+            "A separate execution gives every approval request its own pause and response, including when several vendors are due together.", 66)
+    c.showPage()
+
+
+def page_8(c):
+    base(c, 8, "Workflows 02 + 05 / Exceptions", "Source access and reply capture",
          "Small workflows handle two practical edge cases without making the intake canvas harder to follow.")
     text(c, 42, 474, "SOURCE DOCUMENT ROUTE  /  6 functional nodes", 9.5, GREEN)
     screenshot(c, "work-sample-source-route.png", 42, 301, 708, 161, (500, 490, 1920, 910))
@@ -215,8 +236,8 @@ def page_7(c):
     c.showPage()
 
 
-def page_8(c):
-    base(c, 8, "Workflow 06 / COI Dashboard", "A register backed by workflow state",
+def page_9(c):
+    base(c, 9, "Workflow 06 / COI Dashboard", "A register backed by workflow state",
          "The webhook reads the Postgres view and renders an HTML board with vendor status, review flags and source-document links.")
     text(c, 42, 474, "DASHBOARD WORKFLOW  /  5 functional nodes", 9.5, GREEN)
     screenshot(c, "work-sample-dashboard-workflow.png", 42, 321, 708, 142, (650, 510, 1850, 910))
@@ -226,8 +247,8 @@ def page_8(c):
     c.showPage()
 
 
-def page_9(c):
-    base(c, 9, "Verification", "Tested with synthetic scenarios",
+def page_10(c):
+    base(c, 10, "Verification", "Tested with synthetic scenarios",
          "The local verification suite passed its certificate, workflow and dashboard checks using synthetic test data.")
     scenarios = [
         ("Intake", "Valid, expired, scanned, password-protected and non-certificate PDFs"),
@@ -256,7 +277,7 @@ def main():
     c.setTitle("Vendor COI Chasing | Automation Work Sample")
     c.setAuthor("Automation Work Sample")
     c.setSubject("Local n8n automation case study using synthetic data")
-    for page in (page_1, page_2, page_3, page_4, page_5, page_6, page_7, page_8, page_9):
+    for page in (page_1, page_2, page_3, page_4, page_5, page_6, page_7, page_8, page_9, page_10):
         page(c)
     c.save()
     print(OUTPUT)
