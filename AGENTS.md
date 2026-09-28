@@ -159,6 +159,8 @@ Record completed checks and failures in `progress-notes.md`.
 
 Never commit `.env`, exported credentials, real vendor documents, real client data, Gmail OAuth secrets, OpenAI API keys, or production n8n exports containing secrets. Keep examples placeholder-only.
 
+For public work samples, label synthetic views and local demo results explicitly, and remove personal contact details from the artifact and screenshot crops.
+
 Before adding or pulling Docker images, check local images first with `docker images`. If a required image is missing, document the need and ask before pulling.
 
 Build reset paths for local demo data only. Never run destructive reset/delete scripts against a client Gmail account, client database, or production workflow.

@@ -333,6 +333,10 @@ Smaller observations from the same review, recorded but not prioritised:
 - The system cannot detect mid-term policy cancellation, forged certificates, missing vendors never entered into the register, or actual endorsement status.
 - Public HTTPS/mobile-data validation and fallback video recording remain manual pre-live-demo blockers.
 
+## Work Sample
+
+2026-09-28 work sample: Created a two-page Upwork attachment at `output/pdf/vendor-coi-automation-work-sample.pdf`. It contains a dashboard view rendered from the workflow export with illustrative synthetic rows, plus direct local n8n editor screenshots of all nine `Daily Watch and Chase` nodes and all twelve `Vendor Approval Request` nodes. PDF QA: two pages rendered and visually inspected; extracted text and metadata contain no email addresses, URLs, phone numbers, or personal contact details. The local stack was started for editor captures; no client deployment is implied.
+
 ## Next Action
 
 Run the full end-to-end demo rehearsal sequence, then complete pre-live external checks before any prospect demo.
