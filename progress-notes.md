@@ -335,7 +335,7 @@ Smaller observations from the same review, recorded but not prioritised:
 
 ## Work Sample
 
-2026-09-28 work sample: Created a two-page Upwork attachment at `output/pdf/vendor-coi-automation-work-sample.pdf`. It contains a dashboard view rendered from the workflow export with illustrative synthetic rows, plus direct local n8n editor screenshots of all nine `Daily Watch and Chase` nodes and all twelve `Vendor Approval Request` nodes. PDF QA: two pages rendered and visually inspected; extracted text and metadata contain no email addresses, URLs, phone numbers, or personal contact details. The local stack was started for editor captures; no client deployment is implied.
+2026-09-28 work sample revision: Expanded `output/pdf/vendor-coi-automation-work-sample.pdf` to a nine-page Upwork case study after the two-page version proved too thin. It now covers all six demo-facing workflows, the architecture, intake stages, fixture evidence, and production scope limits. Direct local n8n editor captures for all six workflows are stored in `docs/work-sample-assets/` so the PDF can be rebuilt with `scripts/render-upwork-work-sample.py`. The wide intake canvas appears in full and as enlarged sections; screenshots were checked for visible nodes, clean routing, and no overlaps. The register image is rendered by the actual dashboard workflow with illustrative synthetic rows. PDF QA: nine pages, rendered and visually inspected; extracted text and metadata have no email addresses, URLs or phone-like contact details. The local demo is not described as a client or production deployment.
 
 ## Next Action
 

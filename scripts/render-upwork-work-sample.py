@@ -1,217 +1,251 @@
-"""Build the contact-free, two-page COI automation work sample PDF.
-
-Run capture-upwork-work-sample.cjs first. The dashboard screenshot comes from
-the real dashboard renderer with illustrative synthetic rows. The two n8n
-screenshots are direct editor captures saved under tmp/pdfs/ for this sample.
-"""
+"""Render a contact-free, nine-page COI automation work sample."""
 
 from pathlib import Path
-
+from PIL import Image
 from reportlab.lib import colors
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 
-
 ROOT = Path(__file__).resolve().parent.parent
+ASSETS = ROOT / "docs" / "work-sample-assets"
 OUTPUT = ROOT / "output" / "pdf" / "vendor-coi-automation-work-sample.pdf"
-DASHBOARD = ROOT / "tmp" / "pdfs" / "upwork-dashboard.png"
-SPECIMEN = ROOT / "tmp" / "pdfs" / "upwork-specimen.png"
-DAILY_WATCH = ROOT / "tmp" / "pdfs" / "upwork-n8n-daily-watch.png"
-APPROVAL = ROOT / "tmp" / "pdfs" / "upwork-n8n-approval.png"
-FONT_DIR = ROOT / "concept-brief" / "assets" / "fonts"
-
-PAGE_W, PAGE_H = 792, 612  # US Letter landscape
+FONTS = ROOT / "concept-brief" / "assets" / "fonts"
+W, H = 792, 612
 INK = colors.HexColor("#14233A")
-MUTED = colors.HexColor("#5A6878")
+MUTED = colors.HexColor("#596878")
 PAPER = colors.HexColor("#F8F7F3")
 LINE = colors.HexColor("#D9DFE4")
-ACCENT = colors.HexColor("#0D7754")
+GREEN = colors.HexColor("#0D7754")
+PALE = colors.HexColor("#EAF3EE")
 
 
 def fonts():
-    pdfmetrics.registerFont(TTFont("Geist", str(FONT_DIR / "geist-variable.ttf")))
-    pdfmetrics.registerFont(TTFont("Manrope", str(FONT_DIR / "manrope-variable.ttf")))
+    pdfmetrics.registerFont(TTFont("Geist", str(FONTS / "geist-variable.ttf")))
+    pdfmetrics.registerFont(TTFont("Manrope", str(FONTS / "manrope-variable.ttf")))
 
 
-def label(c, x, y, value, color=MUTED):
+def text(c, x, y, value, size=9, color=INK, font="Manrope"):
+    c.setFont(font, size)
     c.setFillColor(color)
-    c.setFont("Manrope", 8.2)
-    c.drawString(x, y, value.upper())
+    c.drawString(x, y, value)
 
 
-def line(c, y):
-    c.setStrokeColor(LINE)
-    c.setLineWidth(0.8)
-    c.line(42, y, PAGE_W - 42, y)
+def wrap(c, x, y, value, max_width, size=9.2, leading=14, color=INK, font="Manrope"):
+    row = ""
+    for word in value.split():
+        trial = f"{row} {word}".strip()
+        if row and pdfmetrics.stringWidth(trial, font, size) > max_width:
+            text(c, x, y, row, size, color, font)
+            y -= leading
+            row = word
+        else:
+            row = trial
+    if row:
+        text(c, x, y, row, size, color, font)
+        y -= leading
+    return y
 
 
-def draw_fit(c, image_path, x, y, w, h):
-    image = ImageReader(str(image_path))
-    iw, ih = image.getSize()
-    scale = min(w / iw, h / ih)
-    dw, dh = iw * scale, ih * scale
-    c.drawImage(image, x + (w - dw) / 2, y + (h - dh) / 2, dw, dh)
-
-
-def page_base(c, page_number):
+def base(c, number, section, title, subtitle=None):
     c.setFillColor(PAPER)
-    c.rect(0, 0, PAGE_W, PAGE_H, fill=1, stroke=0)
-    c.setFillColor(ACCENT)
-    c.rect(42, PAGE_H - 30, 27, 3, fill=1, stroke=0)
-    line(c, 38)
-    c.setFillColor(MUTED)
-    c.setFont("Manrope", 7.3)
-    c.drawString(42, 23, "SYNTHETIC LOCAL DEMO  /  NO CLIENT DATA")
-    c.drawRightString(PAGE_W - 42, 23, f"{page_number} / 2")
-
-
-def page_one(c):
-    page_base(c, 1)
-    label(c, 42, 562, "Automation work sample  /  property management")
-    c.setFillColor(INK)
-    c.setFont("Geist", 23)
-    c.drawString(42, 528, "Vendor COI chasing")
-    c.setFont("Manrope", 10.2)
-    c.setFillColor(MUTED)
-    c.drawString(42, 507, "n8n workflows and Postgres state turn incoming certificates into a visible register and controlled follow-up.")
-
-    c.setFillColor(colors.white)
-    c.roundRect(42, 72, 708, 420, 8, fill=1, stroke=0)
+    c.rect(0, 0, W, H, fill=1, stroke=0)
+    c.setFillColor(GREEN)
+    c.rect(42, 582, 29, 3, fill=1, stroke=0)
+    text(c, 42, 558, section.upper(), 8, GREEN)
+    text(c, 42, 527, title, 22, INK, "Geist")
+    if subtitle:
+        wrap(c, 42, 506, subtitle, 708, 9.1, 14, MUTED)
     c.setStrokeColor(LINE)
-    c.roundRect(42, 72, 708, 420, 8, fill=0, stroke=1)
-    draw_fit(c, DASHBOARD, 47, 76, 698, 412)
-    label(c, 42, 55, "Screen 01  /  vendor register rendered by the project workflow")
+    c.line(42, 39, 750, 39)
+    text(c, 42, 24, "LOCAL DEMO  /  SYNTHETIC DATA  /  WORK SAMPLE", 7.2, MUTED)
+    c.setFont("Manrope", 7.2)
     c.setFillColor(MUTED)
-    c.setFont("Manrope", 7.5)
-    c.drawRightString(PAGE_W - 42, 55, "Illustrative synthetic rows")
+    c.drawRightString(750, 24, f"{number} / 9")
+
+
+def screenshot(c, name, x, y, width, height, crop=None):
+    image = Image.open(ASSETS / name).convert("RGB")
+    if crop:
+        image = image.crop(crop)
+    iw, ih = image.size
+    scale = min(width / iw, height / ih)
+    dw, dh = iw * scale, ih * scale
+    bx = x + (width - dw) / 2
+    by = y + (height - dh) / 2
+    c.setFillColor(colors.white)
+    c.roundRect(x, y, width, height, 6, fill=1, stroke=0)
+    c.drawImage(ImageReader(image), bx, by, dw, dh)
+    c.setStrokeColor(LINE)
+    c.roundRect(x, y, width, height, 6, fill=0, stroke=1)
+
+
+def callout(c, x, y, width, title, body, height=73):
+    c.setFillColor(PALE)
+    c.roundRect(x, y, width, height, 7, fill=1, stroke=0)
+    text(c, x + 13, y + height - 23, title, 10, GREEN, "Geist")
+    wrap(c, x + 13, y + height - 42, body, width - 26, 8.4, 12, INK)
+
+
+def bullet(c, y, value):
+    c.setFillColor(GREEN)
+    c.circle(49, y + 3, 3, fill=1, stroke=0)
+    return wrap(c, 62, y, value, 675, 9, 14) - 9
+
+
+def page_1(c):
+    base(c, 1, "Automation case study", "Vendor COI chasing",
+         "Six n8n workflows connect certificate intake, validation, a vendor register, renewal chasing and human approval.")
+    screenshot(c, "dashboard-illustrative.png", 42, 96, 708, 391)
+    text(c, 42, 77, "REGISTER OUTPUT  /  rendered by the project dashboard workflow", 8, GREEN)
+    c.setFont("Manrope", 7.8)
+    c.setFillColor(MUTED)
+    c.drawRightString(750, 77, "Illustrative synthetic rows")
     c.showPage()
 
 
-def crop_specimen(c, x, y, w, h):
-    """Show the coverage section without the test document's email field."""
-    img = ImageReader(str(SPECIMEN))
-    iw, ih = img.getSize()
-    # Original source is 1105 x 1430. This viewport covers its coverage table
-    # and notes, omitting the header fields containing a synthetic email address.
-    source_top, source_bottom = 367, 730
-    crop_h = source_bottom - source_top
-    scale = min(w / iw, h / crop_h)
-    dw, dh = iw * scale, crop_h * scale
-    dx = x + (w - dw) / 2
-    dy = y + (h - dh) / 2
-    c.saveState()
-    p = c.beginPath()
-    p.rect(dx, dy, dw, dh)
-    c.clipPath(p, stroke=0, fill=0)
-    c.drawImage(img, dx, dy - (ih - source_bottom) * scale, iw * scale, ih * scale)
-    c.restoreState()
-
-
-def step(c, x, number, title, body1, body2):
-    c.setFillColor(ACCENT)
-    c.circle(x + 10, 155, 10, fill=1, stroke=0)
-    c.setFillColor(colors.white)
-    c.setFont("Geist", 9)
-    c.drawCentredString(x + 10, 152, str(number))
-    c.setFillColor(INK)
-    c.setFont("Geist", 10.2)
-    c.drawString(x + 26, 151, title)
-    c.setFillColor(MUTED)
-    c.setFont("Manrope", 8.0)
-    c.drawString(x, 131, body1)
-    c.drawString(x, 118, body2)
-
-
-def crop_capture(c, image_path, crop, x, y, w, h):
-    """Frame a captured n8n canvas band without changing the screenshot."""
-    img = ImageReader(str(image_path))
-    iw, ih = img.getSize()
-    sx, sy, sw, sh = crop  # source coordinates from the top left
-    scale = min(w / sw, h / sh)
-    dw, dh = sw * scale, sh * scale
-    dx = x + (w - dw) / 2
-    dy = y + (h - dh) / 2
-    c.saveState()
-    p = c.beginPath()
-    p.rect(dx, dy, dw, dh)
-    c.clipPath(p, stroke=0, fill=0)
-    c.drawImage(img, dx - sx * scale, dy - (ih - sy - sh) * scale, iw * scale, ih * scale)
-    c.restoreState()
-
-
-def page_two(c):
-    page_base(c, 2)
-    label(c, 42, 562, "Screens 02-03  /  actual n8n editor captures")
-    c.setFillColor(INK)
-    c.setFont("Geist", 22)
-    c.drawString(42, 528, "Two workflows. One human release gate.")
-    c.setFillColor(MUTED)
-    c.setFont("Manrope", 10)
-    c.drawString(42, 508, "Direct screenshots from the local n8n editor. Every node in each captured workflow is visible.")
-
-    c.setFillColor(colors.white)
-    c.roundRect(42, 307, 708, 185, 8, fill=1, stroke=0)
-    c.setStrokeColor(LINE)
-    c.roundRect(42, 307, 708, 185, 8, fill=0, stroke=1)
-    crop_capture(c, DAILY_WATCH, (170, 500, 1930, 380), 49, 313, 694, 173)
-    label(c, 42, 290, "Daily Watch and Chase  /  9 nodes  /  schedules, drafts and records pending outreach")
-
-    c.setFillColor(colors.white)
-    c.roundRect(42, 65, 708, 210, 8, fill=1, stroke=0)
-    c.setStrokeColor(LINE)
-    c.roundRect(42, 65, 708, 210, 8, fill=0, stroke=1)
-    crop_capture(c, APPROVAL, (180, 420, 1930, 520), 49, 71, 694, 198)
-    label(c, 42, 48, "Vendor Approval Request  /  12 nodes  /  one separate wait and send decision per vendor")
+def page_2(c):
+    base(c, 2, "System design", "One connected automation",
+         "n8n handles orchestration. Postgres stores vendors, certificates, coverage, notices and outreach state. Original PDFs stay linked to the register.")
+    rows = [
+        ("01", "COI Intake", "Gmail, upload form or fixture -> PDF storage, extraction and validation"),
+        ("02", "Source Document Route", "Serves the stored original PDF behind a certificate link"),
+        ("03", "Daily Watch and Chase", "Selects due vendors, drafts requests and records pending outreach"),
+        ("04", "Vendor Approval Request", "One execution per vendor; sends only after a human approves"),
+        ("05", "Non-PDF Reply Notice", "Captures replies that require manual attention rather than PDF processing"),
+        ("06", "COI Dashboard", "Reads Postgres and renders a vendor status register"),
+    ]
+    y = 464
+    for num, name, desc in rows:
+        c.setFillColor(colors.white)
+        c.roundRect(42, y - 40, 708, 50, 5, fill=1, stroke=0)
+        text(c, 55, y - 11, num, 9.5, GREEN, "Geist")
+        text(c, 91, y - 11, name, 10.4, INK, "Geist")
+        text(c, 91, y - 28, desc, 8.1, MUTED)
+        y -= 57
+    callout(c, 42, 64, 708, "Design boundary",
+            "This is a local demonstration built with synthetic vendors and certificates. It has not been deployed for a client or certified for production use.", 70)
     c.showPage()
 
 
-def page_three(c):
-    page_base(c, 3)
-    label(c, 42, 562, "Screen 04  /  source document detail")
-    c.setFillColor(INK)
-    c.setFont("Geist", 22)
-    c.drawString(42, 528, "The document stays one click away")
-    c.setFillColor(MUTED)
-    c.setFont("Manrope", 10)
-    c.drawString(42, 508, "The original PDF is saved before extraction. The register shows date facts and notes, with a link back to the source.")
+def page_3(c):
+    base(c, 3, "Workflow 01 / COI Intake", "Three entry paths, one intake pipeline",
+         "Direct n8n editor capture. All 35 functional nodes are visible in this overview; the next two pages enlarge the stages for reading.")
+    screenshot(c, "work-sample-intake-overview.png", 42, 267, 708, 217, (160, 425, 2260, 835))
+    text(c, 42, 242, "What it does", 11.2, INK, "Geist")
+    y = 218
+    for item in (
+        "Accepts a Gmail PDF attachment, browser upload, or controlled manual fixture run.",
+        "Normalizes the source, stores the original PDF, and keeps a source reference.",
+        "Extracts certificate facts, runs deterministic checks, then persists the result in Postgres.",
+    ):
+        y = bullet(c, y, item)
+    callout(c, 42, 65, 708, "Why the flow is split",
+            "The same validation path follows each source. This keeps upload and email behavior aligned and makes fixture checks repeatable.", 62)
+    c.showPage()
 
-    c.setFillColor(colors.white)
-    c.roundRect(42, 208, 708, 286, 8, fill=1, stroke=0)
-    c.setStrokeColor(LINE)
-    c.roundRect(42, 208, 708, 286, 8, fill=0, stroke=1)
-    crop_specimen(c, 53, 223, 686, 256)
-    label(c, 42, 190, "Synthetic certificate fixture  /  coverage table and document notes")
 
-    step(c, 42, 1, "Receive", "Gmail attachment or", "upload form")
-    step(c, 218, 2, "Read", "Text first; PDF visual", "path for scans")
-    step(c, 394, 3, "Check", "Fixed date, holder and", "limit rules")
-    step(c, 570, 4, "Chase", "Draft waits for a", "manager's click")
+def page_4(c):
+    base(c, 4, "Workflow 01 / COI Intake", "Sources and original-file handling",
+         "Enlarged views of the same canvas. These are direct n8n screenshots, cropped for legibility.")
+    text(c, 42, 474, "A  /  SOURCE BRANCHES", 8, GREEN)
+    screenshot(c, "work-sample-intake-overview.png", 42, 287, 708, 176, (175, 500, 1010, 900))
+    text(c, 42, 264, "B  /  PDF STORAGE AND EXTRACTION BRANCH", 8, GREEN)
+    screenshot(c, "work-sample-intake-overview.png", 42, 82, 708, 171, (795, 500, 1710, 875))
+    text(c, 42, 62, "The original is saved before parsing; a low-text PDF can take the visual extraction path.", 8.2, MUTED)
+    c.showPage()
 
-    line(c, 102)
-    c.setFillColor(INK)
-    c.setFont("Geist", 9.5)
-    c.drawString(42, 84, "Local verification")
-    c.setFillColor(MUTED)
-    c.setFont("Manrope", 8.2)
-    c.drawString(42, 68, "18 seeded vendors. The Stage 8 fixture suite passed for scans, renewals, missing lines, locked files and two-PDF intake.")
-    c.drawString(42, 55, "A two-vendor test produced separate approval waits and sends. This demo does not determine actual policy status.")
+
+def page_5(c):
+    base(c, 5, "Workflow 01 / COI Intake", "Structured facts, fixed rules",
+         "The model transcribes document facts into a schema. Project code then applies repeatable flags and storage decisions.")
+    screenshot(c, "work-sample-intake-overview.png", 42, 249, 708, 231, (1480, 445, 2260, 785))
+    text(c, 42, 226, "Examples of checks", 11.2, INK, "Geist")
+    y = 204
+    for item in (
+        "Wrong holder or coverage below the minimum is flagged for review.",
+        "A non-certificate attachment creates a notice without filing a certificate.",
+        "Renewal history can supersede an older record and surface a coverage gap.",
+    ):
+        y = bullet(c, y, item)
+    callout(c, 42, 62, 708, "Human interpretation remains required",
+            "A filed certificate and an automation flag are operational records; they are not a legal determination that coverage is adequate.", 60)
+    c.showPage()
+
+
+def page_6(c):
+    base(c, 6, "Workflows 03 + 04 / Follow-up", "Daily watch with a human send gate",
+         "The watch selects actionable vendors. Each approval request then runs separately so every vendor gets an independent pause and decision.")
+    text(c, 42, 477, "DAILY WATCH AND CHASE  /  9 functional nodes", 8, GREEN)
+    screenshot(c, "work-sample-daily-watch.png", 42, 300, 708, 166, (170, 480, 2250, 890))
+    text(c, 42, 278, "VENDOR APPROVAL REQUEST  /  12 functional nodes", 8, GREEN)
+    screenshot(c, "work-sample-approval.png", 42, 106, 708, 160, (185, 330, 2250, 1010))
+    wrap(c, 42, 88,
+         "Postgres suppression and escalation rules govern who is due. Gmail approval decides whether each prepared message is sent or declined; the decision is logged.",
+         708, 8.4, 12, MUTED)
+    c.showPage()
+
+
+def page_7(c):
+    base(c, 7, "Workflows 02 + 05 / Exceptions", "Source access and reply capture",
+         "Small workflows handle two practical edge cases without making the intake canvas harder to follow.")
+    text(c, 42, 474, "SOURCE DOCUMENT ROUTE  /  6 functional nodes", 8, GREEN)
+    screenshot(c, "work-sample-source-route.png", 42, 301, 708, 161, (500, 490, 1920, 910))
+    wrap(c, 42, 287,
+         "A dashboard link looks up the certificate's stored file and returns the original PDF or a not-found response.",
+         708, 8.5, 13, MUTED)
+    text(c, 42, 247, "NON-PDF REPLY NOTICE  /  3 functional nodes", 8, GREEN)
+    screenshot(c, "work-sample-non-pdf-reply.png", 42, 82, 708, 153, (790, 585, 1660, 840))
+    wrap(c, 42, 68,
+         "Replies without a PDF become notices for a manager; portal links are not fetched automatically.",
+         708, 8.5, 13, MUTED)
+    c.showPage()
+
+
+def page_8(c):
+    base(c, 8, "Workflow 06 / COI Dashboard", "A register backed by workflow state",
+         "The webhook reads the Postgres view and renders an HTML board with vendor status, review flags and source-document links.")
+    text(c, 42, 474, "DASHBOARD WORKFLOW  /  5 functional nodes", 8, GREEN)
+    screenshot(c, "work-sample-dashboard-workflow.png", 42, 321, 708, 142, (650, 510, 1850, 910))
+    text(c, 42, 301, "RENDERED REGISTER  /  illustrative synthetic rows", 8, GREEN)
+    screenshot(c, "dashboard-illustrative.png", 42, 76, 708, 213)
+    text(c, 42, 58, "The source-document links were exercised in the Stage 8 fixture verification.", 8.1, MUTED)
+    c.showPage()
+
+
+def page_9(c):
+    base(c, 9, "Evidence and scope", "Tested with synthetic scenarios",
+         "The repository's repeatable Stage 8 verifier passed its fixture suite and dashboard checks on the local stack.")
+    scenarios = [
+        ("Intake", "Valid, expired, scanned, password-protected and non-certificate PDFs"),
+        ("Validation", "Wrong holder, low limits, missing GL, inverted dates and duplicate vendor"),
+        ("History", "Two attachments, renewal supersession and a 14-day coverage gap"),
+        ("Dashboard", "18 seeded vendors, source links, gap count and status views"),
+        ("Approval", "Separate per-vendor waits, sends and decline logging verified in a later live test"),
+    ]
+    y = 469
+    for name, detail in scenarios:
+        c.setFillColor(colors.white)
+        c.roundRect(42, y - 42, 708, 49, 5, fill=1, stroke=0)
+        text(c, 55, y - 11, name, 9.7, GREEN, "Geist")
+        wrap(c, 172, y - 11, detail, 560, 8.4, 12, INK)
+        y -= 57
+    callout(c, 42, 89, 708, "Scope of this sample",
+            "Local demo with synthetic documents and a test mailbox. Client hosting, access controls, alerts, retries, backups, data retention and operating terms still need implementation and testing for production use.", 83)
+    text(c, 42, 66, "Evidence: docs/stage-8-fixture-results.md and workflow exports in the project repository.", 7.7, MUTED)
     c.showPage()
 
 
 def main():
-    for path in (DASHBOARD, DAILY_WATCH, APPROVAL):
-        if not path.exists():
-            raise FileNotFoundError(f"Required screenshot missing: {path}")
-    OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     fonts()
-    c = canvas.Canvas(str(OUTPUT), pagesize=(PAGE_W, PAGE_H), pageCompression=1)
-    c.setTitle("Vendor COI Chasing - Automation Work Sample")
-    c.setAuthor("Automation work sample")
-    c.setSubject("Synthetic local demo of an n8n vendor COI automation")
-    page_one(c)
-    page_two(c)
+    OUTPUT.parent.mkdir(parents=True, exist_ok=True)
+    c = canvas.Canvas(str(OUTPUT), pagesize=(W, H))
+    c.setTitle("Vendor COI Chasing | Automation Work Sample")
+    c.setAuthor("Automation Work Sample")
+    c.setSubject("Local n8n automation case study using synthetic data")
+    for page in (page_1, page_2, page_3, page_4, page_5, page_6, page_7, page_8, page_9):
+        page(c)
     c.save()
     print(OUTPUT)
 
