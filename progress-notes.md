@@ -337,6 +337,8 @@ Smaller observations from the same review, recorded but not prioritised:
 
 2026-09-28 work sample revision: Expanded `output/pdf/vendor-coi-automation-work-sample.pdf` to a nine-page Upwork case study after the two-page version proved too thin. It now covers all six demo-facing workflows, the architecture, intake stages, fixture evidence, and production scope limits. Direct local n8n editor captures for all six workflows are stored in `docs/work-sample-assets/` so the PDF can be rebuilt with `scripts/render-upwork-work-sample.py`. The wide intake canvas appears in full and as enlarged sections; screenshots were checked for visible nodes, clean routing, and no overlaps. The register image is rendered by the actual dashboard workflow with illustrative synthetic rows. PDF QA: nine pages, rendered and visually inspected; extracted text and metadata have no email addresses, URLs or phone-like contact details. The local demo is not described as a client or production deployment.
 
+2026-09-29 readability revision: User found the nine-page PDF's copy too light. Root cause was the embedded Manrope variable font's default weight 200. The renderer now instantiates static Manrope 550/700 and Geist 650 weights before embedding, uses darker ink/green colors, white page background, and larger body, label, caption, and footer type. Re-rendered all nine pages and visually reviewed them at normal size; content, synthetic labeling, and direct n8n screenshots remain intact.
+
 ## Next Action
 
 Run the full end-to-end demo rehearsal sequence, then complete pre-live external checks before any prospect demo.
