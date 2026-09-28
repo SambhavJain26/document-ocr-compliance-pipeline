@@ -339,6 +339,8 @@ Smaller observations from the same review, recorded but not prioritised:
 
 2026-09-29 readability revision: User found the nine-page PDF's copy too light. Root cause was the embedded Manrope variable font's default weight 200. The renderer now instantiates static Manrope 550/700 and Geist 650 weights before embedding, uses darker ink/green colors, white page background, and larger body, label, caption, and footer type. Re-rendered all nine pages and visually reviewed them at normal size; content, synthetic labeling, and direct n8n screenshots remain intact.
 
+2026-09-29 prospect copy revision: Removed inaccessible repository file paths, internal stage references in captions, and production caveat blocks from the nine-page Upwork sample. The architecture and verification pages now explain the connected behavior and passed synthetic tests in client-facing language. The local-demo/synthetic-data label remains on every page so the sample does not imply a client deployment. Re-rendered pages 2, 5, and 9 for layout review.
+
 ## Next Action
 
 Run the full end-to-end demo rehearsal sequence, then complete pre-live external checks before any prospect demo.

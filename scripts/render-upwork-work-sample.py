@@ -136,8 +136,8 @@ def page_2(c):
         text(c, 91, y - 11, name, 11.3, INK, "Geist")
         text(c, 91, y - 28, desc, 9.4, MUTED)
         y -= 57
-    callout(c, 42, 64, 708, "Design boundary",
-            "This is a local demonstration built with synthetic vendors and certificates. It has not been deployed for a client or certified for production use.", 70)
+    callout(c, 42, 64, 708, "How the pieces connect",
+            "The intake workflow writes certificate records to Postgres. The daily watch reads that state, routes each prepared message through human approval, and the dashboard presents the resulting register.", 70)
     c.showPage()
 
 
@@ -181,8 +181,8 @@ def page_5(c):
         "Renewal history can supersede an older record and surface a coverage gap.",
     ):
         y = bullet(c, y, item)
-    callout(c, 42, 62, 708, "Human interpretation remains required",
-            "A filed certificate and an automation flag are operational records; they are not a legal determination that coverage is adequate.", 60)
+    callout(c, 42, 62, 708, "Repeatable decisions",
+            "Structured extraction supplies the facts; fixed validation rules apply the same holder, date and coverage checks to each incoming document.", 60)
     c.showPage()
 
 
@@ -222,13 +222,13 @@ def page_8(c):
     screenshot(c, "work-sample-dashboard-workflow.png", 42, 321, 708, 142, (650, 510, 1850, 910))
     text(c, 42, 301, "RENDERED REGISTER  /  illustrative synthetic rows", 9.5, GREEN)
     screenshot(c, "dashboard-illustrative.png", 42, 76, 708, 213)
-    text(c, 42, 58, "The source-document links were exercised in the Stage 8 fixture verification.", 9.5, MUTED)
+    text(c, 42, 58, "The source-document links were exercised through the running dashboard.", 9.5, MUTED)
     c.showPage()
 
 
 def page_9(c):
-    base(c, 9, "Evidence and scope", "Tested with synthetic scenarios",
-         "The repository's repeatable Stage 8 verifier passed its fixture suite and dashboard checks on the local stack.")
+    base(c, 9, "Verification", "Tested with synthetic scenarios",
+         "The local verification suite passed its certificate, workflow and dashboard checks using synthetic test data.")
     scenarios = [
         ("Intake", "Valid, expired, scanned, password-protected and non-certificate PDFs"),
         ("Validation", "Wrong holder, low limits, missing GL, inverted dates and duplicate vendor"),
@@ -243,9 +243,9 @@ def page_9(c):
         text(c, 55, y - 11, name, 10.5, GREEN, "Geist")
         wrap(c, 172, y - 11, detail, 560, 9.8, 14, INK)
         y -= 57
-    callout(c, 42, 89, 708, "Scope of this sample",
-            "Local demo with synthetic documents and a test mailbox. Client hosting, access controls, alerts, retries, backups, data retention and operating terms still need implementation and testing for production use.", 83)
-    text(c, 42, 66, "Evidence: docs/stage-8-fixture-results.md and workflow exports in the project repository.", 9.3, MUTED)
+    callout(c, 42, 89, 708, "End-to-end proof",
+            "The fixture run exercised document intake, stored source PDFs, validation outcomes and the rendered vendor register. A separate two-vendor live test confirmed independent approval waits and sends.", 83)
+    text(c, 42, 66, "All examples shown in this sample use synthetic vendors and certificates.", 9.3, MUTED)
     c.showPage()
 
 
