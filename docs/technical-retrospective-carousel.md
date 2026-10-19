@@ -1,10 +1,10 @@
-# Technical retrospective: vendor COI chasing
+# Build retrospective: vendor paperwork
 
 Created: 2026-10-19. Status: rendered draft for review. Not published or queued.
 
-Audience: people hiring AI engineers and applied AI engineers. This task intentionally expands COI as certificate of insurance and explains vendor paperwork for readers outside property management. It overrides the older buyer-only audience and glossary guidance for this artifact.
+Audience: property management decision-makers and buyers, plus hiring managers. Lead with the recurring paperwork problem, explain decisions in plain language, and demonstrate problem-solving through specific failures and checks. No technology-stack list, schema excerpts or internal configuration in public copy. The owner explicitly changed the earlier engineering-heavy direction on 2026-10-20.
 
-Document title: **I built a COI chaser. One approval wasn't enough.**
+Document title: **I built a follow-up process for vendor paperwork.**
 
 Editable source: `docs/carousels/technical-retrospective-vendor-coi.html`.
 Copy + build source: `scripts/build-technical-retrospective.cjs`.
@@ -18,23 +18,29 @@ Verify + preview: bundled Python, `scripts/verify-technical-retrospective.py`.
 
 ## LinkedIn caption
 
-I built an AI workflow for a recurring administrative job: collecting contractor insurance certificates, recording their dates, surfacing missing or expiring paperwork, and drafting renewal reminders.
+An insurance certificate arrives in the inbox. Someone still has to record the dates, notice when an update is due and remember who needs another request.
 
-I used n8n for orchestration and Postgres for durable state. OpenAI transcribes printed facts and drafts wording. JavaScript and SQL control identity matching, validation, filing and chase eligibility. Each vendor-facing chase email requires its own human approval.
+I built a process to connect those steps for vendor paperwork.
 
-Three failures made the engineering interesting.
+It reads incoming certificates, keeps the original document linked to the record, surfaces missing or expiring paperwork, and drafts requests for updates. Each vendor-facing chase email waits for a person's approval.
 
-The batch approval step created pending rows for many vendors but sent only one real approval request. Looping through the same Wait node did not fix it. I moved approval and sending into a separate execution per vendor, then checked two independent waits, approvals and sends.
+I started with three questions: What is missing? What expires next? Who needs a follow-up?
 
-My reminder issue key included the urgency bucket. Moving from 15 days before expiry to 14 changed the key, bypassing the follow-up window and resetting the ignored-request count. I removed the bucket so the issue keeps its history as urgency changes.
+Those questions shaped the build more than the choice of software. AI helps read the document and draft the wording. Separate checks handle dates and matching names. A person controls whether each chase email sends.
 
-My intake routing depended on a field only the manual entry path supplied. Form and Gmail uploads failed because that field was missing. I replaced the comparison with an encryption check and routed extraction errors to review. Then I checked the actual upload form, including filing, unreadable-document and non-certificate paths.
+The failures taught me where the process needed more attention.
 
-The carousel covers the architecture, output contract, reproducible exports, these defects and the evidence behind the fixes. A filed certificate is paperwork on record, not confirmation of insurance coverage. The additional-insured checkbox stays an assertion in the schema.
+One batch created a list of pending reminders, but only one approval request reached the approver. I separated each reminder's approval process and checked that they worked independently.
 
-I checked the connected behavior through SQL checks, separate Gmail approval executions, form uploads and byte-matched PDF retrieval. I looked at stored and delivered outputs alongside execution status.
+Another rule treated a change in urgency as a new problem. That could restart the chase even though we had already asked for the same update. I kept the reminder history attached to the outstanding document as the deadline approached.
 
-Next I would expand document evaluation and add durable message and attachment identity, bounded retries, visible failure handling, monitoring, protected public routes, and tested recovery. The engineering lesson I took from this build: define what the model may decide, preserve the state that future actions depend on, and verify the output a person actually receives.
+I also added a review route for unreadable PDFs, then checked it through the upload form. The original file stays available so the problem can be investigated.
+
+I checked the stored records, the individual approval requests and the retrieved documents. I wanted to see what happened after each step, rather than stop at a successful run.
+
+Next I would focus on making failed steps easier to see, recognizing repeated emails and attachments, and recovering cleanly after interruptions.
+
+The problem I set out to solve was keeping paperwork moving: knowing what is on file, what needs attention and what should happen next.
 
 ## Slide copy and diagrams
 
@@ -42,238 +48,235 @@ The diagram text below is public content. Evidence references are internal notes
 
 ### Slide 1
 
-**Title:** I built a COI chaser. / One approval / wasn't / enough.
+**Title:** I built a follow-up / process for vendor / paperwork.
 
-**Body:** I automated certificate tracking and renewal reminders. Then a batch approval defect forced me to change the execution boundary.
+**Body:** Collecting insurance certificates is one job. Keeping track of missing documents, expiration dates and follow-ups is another. I built a process to connect them.
 
 **Diagram / labels:**
 
-n8n / OpenAI / Postgres / Gmail
 
-**Footer:** Applied AI · Vendor certificate chasing
 
-**Evidence:** progress-notes.md: 2026-08-08 per-vendor approval architecture fix; Stage 5/6 exports.
+**Footer:** Vendor paperwork · From arrival to follow-up
+
+**Evidence:** build-plan.md scope; docs/how-the-system-works.md; Stage 5 intake, Stage 6 watch/chase and Stage 7 dashboard exports.
 
 ### Slide 2
 
-**Title:** Track the paperwork. / Keep the source.
+**Title:** I started with the / questions someone / has to keep answering
 
-**Body:** I built this to track contractors' certificates of insurance. n8n coordinates the steps; Postgres holds durable state for intake, reminders and the dashboard.
+**Body:** I wanted one view of the paperwork and a repeatable way to request updates, without relying on someone to remember every date.
 
 **Diagram / labels:**
 
-Intake
-Gmail / / upload form
-→
-Save PDF + / extract facts
-→
-Validate + / file result
+01 What is missing?
+Which vendors have no certificate on file.
 
+02 What expires next?
+Which recorded dates need attention.
 
-↕ &nbsp; Postgres · Certificate facts + outreach history &nbsp; ↕
-Daily chase
-Select due / paperwork
-→
-Draft + / log pending
-→
-Human approval / then Gmail
+03 Who needs a follow-up?
+Which outstanding requests are due again.
 
+**Footer:** The problem · Keeping track after the document arrives
 
-Dashboard + original PDF links read the stored record
-
-**Footer:** Implemented · Six runtime workflows · Paperwork tracking only
-
-**Evidence:** All six Stage 5-7 runtime exports; db/postgres/001-schema.sql, 003-stage-5-intake.sql, 004-stage-6-watch-chase.sql, 005-stage-7-dashboard.sql; docs/how-the-system-works.md.
+**Evidence:** docs/how-the-system-works.md problem statement; stage_6_actionable_vendors in 004-stage-6-watch-chase.sql; Stage 7 dashboard read model.
 
 ### Slide 3
 
-**Title:** I give the model / a narrow job
+**Title:** I connected the document / to the next action
 
-**Body:** I kept filing and chase decisions outside the model. A confidence label is self-report; it does not establish calibrated accuracy or insurance status.
+**Body:** I connected intake, date tracking and follow-up. The register keeps the document history; each vendor-facing chase email waits for a person to approve it.
 
 **Diagram / labels:**
 
-Model
-Transcribe printed facts
-Report self-confidence
-Draft reminder wording
-
-Code + people
-Match vendor identity
-Check dates and limits
-Approve each chase email
+When a certificate arrives
+Receive the / document
+→
+Read + check / the details
+→
+Update the / record
 
 
-Deterministic identity
-Normalized exact name → Link vendor
-Near or unmatched → Review
+One register · Documents, dates and request history
+When an update is due
+Find missing or / expiring paperwork
+→
+Draft a / request
+→
+Person reviews / before sending
 
-**Footer:** Implemented · Incoming documents never create vendors
+**Footer:** The process · Receive, record, follow up
 
-**Evidence:** coi-stage-4-validator.js findVendorMatch; 003-stage-5-intake.sql exact-match link and VENDOR_NOT_FOUND; Stage 6 approval workflow; extraction and drafting prompts.
+**Evidence:** Stage 5-7 current runtime workflows; certificate/outreach storage functions; per-vendor approval workflow and daily watch caller.
 
 ### Slide 4
 
-**Title:** Schema sets shape. / Code sets disposition.
+**Title:** AI helps with reading. / A person decides to send.
 
-**Body:** I preserve what the page asserts. A checked box cannot establish an endorsement. Soft flags remain visible on filed records; ON_FILE is a storage status.
+**Body:** I used AI where reading and writing help. I kept the checks separate, and gave the person reviewing each chase email control over whether it sends.
 
 **Diagram / labels:**
 
-Extraction contract · Selected fields
-Field / rule Configured constraint
-additionalProperties false
-extraction_confidence HIGH | MEDIUM | LOW
-addl_insd_asserted boolean; checkbox assertion
-Invalid dates / LOW confidence → NEEDS_REVIEW
-Matched + soft flags only → ON_FILE + flags
-Not a COI / older document → Notice; no filing
+AI helps with
+Reading printed details
+Drafting request wording
 
-**Footer:** Configuration + implemented rules · No coverage judgment
+Checks + review
+Checking dates and names
+Getting a person's approval
 
-**Evidence:** docs/schemas/coi-extraction.schema.json; coi-stage-4-validator.js validateExtraction/buildResult; 003-stage-5-intake.sql notice dispositions.
+
+When the vendor name does not match
+Keep it for review instead of guessing.
+
+**Footer:** A design choice · Assistance with a clear approval step
+
+**Evidence:** Extraction/drafting prompts; coi-stage-4-validator.js; 003-stage-5-intake.sql exact-match linkage and VENDOR_NOT_FOUND review; Stage 6 individual approval/send.
 
 ### Slide 5
 
-**Title:** One validator. / Reproducible exports.
+**Title:** I kept the original / one click away
 
-**Body:** I keep rules in source because editing embedded workflow code would fork the logic until the next rebuild. Generated exports make the deployed graph inspectable.
+**Body:** I kept the original certificate linked to its record. Someone checking a date or a flagged detail can return to the document it came from.
 
 **Diagram / labels:**
 
-01 Shared JavaScript + JSON Schema
-One validator feeds the core harness and live intake.
+See a date / or flagged detail
+→
+Open the / original PDF
+→
+Check what the / document says
 
-02 Generators → workflow JSON
-I change source, then regenerate reviewable exports.
+Saved together: document + recorded details
 
-03 Import + verify
-Credentials bind in n8n. Real routes and stored outputs matter.
+**Footer:** A design choice · Make the recorded details checkable
 
-**Footer:** Implemented build pipeline · Credential secrets stay outside Git
-
-**Evidence:** scripts/generate-stage-4-workflow.js and generate-stage-5-workflows.js read validatorSource/schema; Stage 5-7 generators and verify scripts; workflow credential references.
+**Evidence:** Stage 5 storage-before-extraction and source route; Stage 7 certificate source links; 2026-10-10 source retrieval byte match in progress-notes.md.
 
 ### Slide 6
 
-**Title:** The approval gate / only paused once
+**Title:** Only one request / reached the approver
 
-**Body:** I found pending rows for everyone but only one real approval request. In this n8n setup, a Wait node could pause each execution only once.
+**Body:** I found several pending reminders but only one approval request. I gave each reminder its own approval step, then checked that each could be reviewed separately.
 
 **Diagram / labels:**
 
-Before · One execution for the whole batch
-Many vendors
+What went wrong
+Several / reminders
 →
-One Gmail wait
+One approval / request
 →
-Missing results / read as declined
+Others marked / as declined
 
 
-Looping back into the same wait also failed.
-Fix · One child execution per vendor
-Execute Workflow / mode: each
+What I changed
+Each / reminder
 →
-Own wait
+Its own approval
 →
-Own approval / then send
+Send / or hold
 
 
-Recorded check: 2 waits → 2 approvals → 2 sends
+Checked: two separate approvals and two sends
 
-**Footer:** Recorded fix · Independent approval executions
+**Footer:** A failure I fixed · Check the interaction, not just the list
 
-**Evidence:** progress-notes.md 2026-08-08: decoded flatted execution data, failed Split In Batches attempt, two independent waits and approvals eight seconds apart; generate-stage-6-workflows.js mode each; stage-6-vendor-approval-request.json.
+**Evidence:** progress-notes.md 2026-08-08 approval defect, failed loop attempt, independent two-vendor waits/approvals/sends; current Stage 6 each-mode child workflow.
 
 ### Slide 7
 
-**Title:** A new bucket / bypassed the cooldown
+**Title:** More urgent shouldn't / mean start over
 
-**Body:** I removed the bucket from the issue key and checked equality across buckets. The seven-day follow-up window and ignored-request count now survive urgency changes.
+**Body:** The system treated a new urgency label as a new problem. I kept the reminder history attached to the same outstanding document instead.
 
 **Diagram / labels:**
 
-Before · Issue identity included urgency
-vendor + certificate + bucket + expiry
-15 days left / 30d bucket
+Before · A new urgency label reset the history
+15 days / until expiry
 →
-14 days left / 14d bucket
+14 days / until expiry
 →
-New key / Cooldown lost
+Could ask / again
 
-After · Stable issue identity
-vendor + certificate + expiry
-Checked: same key across buckets
 
-**Footer:** Recorded fix · Key equality checked · Existing 16 SQL checks passed
+After · Keep the same outstanding request
+15 days / until expiry
+→
+14 days / until expiry
+→
+Wait until due
 
-**Evidence:** 004-stage-6-watch-chase.sql stage_6_vendor_issue_key; progress-notes.md 2026-07-31 fix and equality verification. Existing tests derive keys through the function, not independent literal expectations.
+
+The seven-day follow-up window stays in place.
+
+**Footer:** A failure I fixed · Remember that we already asked
+
+**Evidence:** 004-stage-6-watch-chase.sql issue key excludes bucket; progress-notes.md 2026-07-31 equal-key verification and 16 SQL checks. This describes possible repeated requests, not a claimed delivered duplicate.
 
 ### Slide 8
 
-**Title:** My intake checks used / the wrong context
+**Title:** An unreadable document / still needs a next step
 
-**Body:** I replaced an internal-field comparison with an encryption check and an extraction-error route. Then I verified the fix through the actual upload form.
+**Body:** A locked PDF could stop intake. I added a route that records the problem for review, with the original document retained for investigation.
 
 **Diagram / labels:**
 
-Before · Unreadable PDF FAIL
-After · Error output REVIEW
+Original PDF saved
+↓
+Try to read the document
+↓
+Unreadable → Review record kept
 
-Form / Gmail → Missing internal field → Routing error
-Fix: inspect PDF bytes + catch extraction failures
-Byte checks alone miss filesystem-backed binary
+Checked through the actual upload form.
 
-Form checks: filing, review and notice routes
+**Footer:** A failure I fixed · Give unreadable documents a review route
 
-**Footer:** Recorded fix · Unreadable documents reach review
-
-**Evidence:** progress-notes.md 2026-08-07 form intake fix: undefined fixture_id on form/Gmail, byte-level /Encrypt fast path, filesystem-binary limitation, continueErrorOutput guard; multipart form checks f01/f03 ON_FILE, f18 NEEDS_REVIEW, f11 notice. Current Stage 5 generator and export.
+**Evidence:** progress-notes.md 2026-08-07 form fix; Stage 5 storage-before-reading, encryption check, extract continueErrorOutput to password review; f18 multipart form produced NEEDS_REVIEW with no matched vendor. Review is stored; no claim of a new dashboard review queue or notification.
 
 ### Slide 9
 
-**Title:** What the recorded / checks establish
+**Title:** I checked what happened / after each step
 
-**Body:** I checked stored rows, independent approvals and retrieved PDF bytes. The checks cover filing, review, notices and renewals across the connected workflows.
+**Body:** I checked the record, the approval request and the original file, alongside whether a run finished. Each check followed a specific step in the process.
 
 **Diagram / labels:**
 
-Evidence Recorded result
-Intake checks Filing, review, notice / and renewals passed
-Watch + storage 18 + 8 checks passed
-Approval repair 2 waits; 2 approvals; / 2 sends
-October intake ON_FILE + byte-matched PDF
-Unreadable PDF NEEDS_REVIEW
+Situation I checked What the record showed
+A replacement arrives Earlier record replaced
+Wrong document Notice instead of filing
+Locked PDF Recorded for review
+Two reminders Separate approval requests
+Open the original Returned file matched / the stored PDF
 
-**Footer:** Recorded workflow, SQL and source-document checks
+**Footer:** Recorded checks · Documents, requests and stored results
 
-**Evidence:** docs/stage-8-fixture-results.md 2026-07-30 original suite; progress-notes.md 2026-08-05 18/8 checks, 2026-08-08 approval repair, 2026-10-10 fresh manual intake and byte-identical source route. No new service execution for this carousel.
+**Evidence:** docs/stage-8-fixture-results.md replacement/non-certificate cases; progress-notes.md 2026-08-07 protected form upload, 2026-08-08 two independent approvals, 2026-10-10 byte-matched retrieval. Results are from separate recorded checks, not a fresh combined run or general benchmark.
 
 ### Slide 10
 
 **Title:** What I would / improve next
 
-**Body:** I would protect public routes and test storage and restore. Source-reference checks exist; full mailbox replay protection, retries and monitoring remain unbuilt.
+**Body:** I would focus next on visible failures, repeat-message handling and recovery. A useful process needs a clear next step when something interrupts it.
 
 **Diagram / labels:**
 
-01 Expand document evaluation
-Held-out documents; repeat runs; field and routing errors.
+01 Show work that gets stuck
+Make failed steps visible to the person responsible.
 
-02 Make failures visible
-Bounded backoff, dead letters, alerts, heartbeat and canary.
+02 Avoid repeating the same work
+Recognize the same email or attachment arriving again.
 
-03 Protect state and recovery
-Message + attachment identity; concurrent runs; uncertain sends.
+03 Make recovery easier
+Check what happens after an interruption or a lost file.
 
-**Footer:** Next changes · Evaluation, recovery and operational visibility
+**Footer:** Next improvements · Visibility, repeat handling and recovery
 
-**Evidence:** 003-stage-5-intake.sql source_ref checks; docs/stage-9-production-readiness-plan.md and implementation-backlog.md; 004-stage-6-watch-chase.sql test-mode defaults; progress-notes.md current boundaries. Held-out evaluation and concurrency tests are proposed here, not recorded implemented work.
+**Evidence:** docs/stage-9-production-readiness-plan.md and implementation-backlog.md: visible dead letters, alerts, message/attachment idempotency, retry/backoff, backup/restore. Proposed improvements; source_ref checks alone do not establish full replay or crash safety.
 
 ## Evidence boundaries and design review
 
 - Stage 8's original report predates later approval, model and intake repairs. Its all-pass status is historical; this draft does not claim the full suite was rerun after those repairs.
-- The third defect now covers the recorded intake-context failure and its verified form-path repair. Public copy focuses on implementation and specific checked behavior, without demo or synthetic-data framing, per the owner's 2026-10-20 revision request. This wording does not introduce a client deployment, accuracy score or customer-result claim.
+- The unreadable-document slide covers the implemented intake error route and recorded form-path check. Public copy focuses on implementation and specific checked behavior, without demo or synthetic-data framing, per the owner's 2026-10-20 revision request. This wording does not introduce a client deployment, accuracy score or customer-result claim.
 - Structured output constrains shape; it does not guarantee factual correctness or deterministic model behavior. LOW confidence and date failures route to review, but NOT_A_COI and older documents take notice dispositions first. Unknown names reach review in storage even if the core validator returned store_on_file.
 - Duplicate source_ref checks exist. Message-plus-attachment identity, safe concurrent processing and send crash recovery are not established by those checks.
 - Two distinct approval waits and sends establish the repaired per-vendor interaction in that test. They do not establish concurrency, repeated-button safety or exactly-once delivery.
@@ -283,6 +286,6 @@ Message + attachment identity; concurrent runs; uncertain sends.
 
 ## Review verification
 
-Final review completed 2026-10-20. Ten pages at 810 x 1012.5 points; seven embedded Switzer/Zodiak faces, no fallback families; one shared grain bitmap. All public text runs and character counts survive extraction. Text bounds and privacy checks pass, including PDF metadata, absent links and attachments. Every page was rendered at approximately 1080 x 1350 and visually reviewed along with the contact sheet; final changed pages were rechecked. No clipping, overlaps, missing marks or diagram errors remain. QA details are regenerated to ignored `docs/carousels/out/technical-retrospective-qa.json`.
+Final review completed 2026-10-20. Ten pages at 810 x 1012.5 points; embedded Switzer/Zodiak faces, no fallback families; one shared grain bitmap. All public text runs and character counts survive extraction. Text bounds and privacy checks pass, including PDF metadata, absent links and attachments. Every page was rendered at approximately 1080 x 1350 and visually reviewed along with the contact sheet; final changed pages were rechecked. No clipping, overlaps, missing marks or diagram errors remain. QA details are regenerated to ignored `docs/carousels/out/technical-retrospective-qa.json`.
 
 This task did not rerun the live n8n fixture suite or send email. Claims use the implementation and recorded results cited above. No publishing or queue action was taken.

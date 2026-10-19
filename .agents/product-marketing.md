@@ -151,6 +151,8 @@ Two rules learned the hard way on 2026-08-02, after an audit found seven of fift
 
 **Teaching belongs in the high-effort formats.** Carousels and video get saved, referred and shared, so they carry the teaching. Positioning, proof of work and operating-model material go in text, where low reach costs nothing. The first content plan had this backwards.
 
+**Build retrospectives have a mixed audience.** Owner direction, 2026-10-20: property management buyers and hiring managers should both understand them. Lead with the recurring problem, the process built to address it, and concrete examples of problem-solving. Do not lead with a technology-stack list or make readers interpret schemas, code, configuration or internal workflow labels. Include technical detail only when it helps explain a consequential decision.
+
 **A corollary on audience.** Comments drive distribution and *who* comments decides who sees a post next. With a network of engineers, optimizing for engagement volume makes the audience problem worse. Six comments from property managers beat sixty from developers.
 
 **The strongest available angle** is not "I know property management," which is unprovable and unearned. It is "I build AI systems, and these buyers are being pitched AI by everyone with no way to evaluate any of it." That asymmetry is real, current, and mine to teach into honestly.

@@ -712,3 +712,8 @@ html, body {
 .technical.slide--invert .rt-routes, .technical.slide--invert .rt-proof { color: var(--paper); }
 .technical.slide--invert .rt-proof, .technical.slide--invert .rt-signal > div { border-color: rgba(253,240,214,.4); }
 .technical.slide--invert .hl--blue { color: var(--ink); }
+.technical .rt-lane + .rt-lane { margin-top: 48px; }
+.technical .rt-story-route { text-align: center; }
+.technical .rt-story-route p { font-size: 44px; line-height: 72px; font-weight: 700; }
+.technical .rt-story-route .rt-story-arrow { font-size: 32px; line-height: 48px; }
+.technical.slide--invert .rt-story-route { color: var(--paper); }

@@ -321,10 +321,17 @@ visual quality are independent here.
 
 ## Technical retrospective draft
 
-`technical-retrospective-vendor-coi.html` is the hiring-focused retrospective,
+`technical-retrospective-vendor-coi.html` is the problem-solving retrospective for
+property management buyers and hiring managers,
 with copy, caption and an internal evidence map in
 `../technical-retrospective-carousel.md`. It is a draft, outside the original
 15-post schedule. Do not publish or queue it without the owner's instruction.
+
+Owner direction revised 2026-10-20: lead with the paperwork problem and the
+decisions made to solve it. Public copy uses plain process diagrams, practical
+failures and observable checks. It omits the technology stack, schema excerpts
+and internal configuration. The stable filenames still use "technical" for
+existing render commands; that is not the public title or editorial direction.
 
 Prepare the technical deck's fonts with `python scripts/prepare-carousel-fonts.py`
 from the repository root, using the bundled Python with `fonttools`. This caches
@@ -356,7 +363,7 @@ use blue or gold, selection boxes may appear inside the deck, and marks follow
 meaning rather than a quota. `.hl--blue`, `.pen--gold`/`.pen--blue` and
 `.sel--gold` are available within `.technical`, including contrast rules on
 the dark page. The established posts are unchanged. Zodiak appears once on
-the cover, and the single dark slide carries the intake-context failure.
+the cover, and the single dark slide explains the unreadable-document route.
 
 Keep original fixture reports distinct from later targeted checks. The draft
 labels implemented behavior, historical recorded results and proposed work

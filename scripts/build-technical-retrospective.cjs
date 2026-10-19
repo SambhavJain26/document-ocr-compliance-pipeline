@@ -12,125 +12,133 @@ const chain = (labels) => `<div class="rt-chain rt-chain--${labels.length}">${la
 const lane = (label,labels) => `<div class="rt-lane"><div class="rt-label">${label}</div>${chain(labels)}</div>`;
 const table = (headers, rows, cls='') => `<table class="rt-table ${cls}"><thead><tr>${headers.map(s=>`<th>${s}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(s=>`<td>${s}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
 const steps = rows => `<ol class="rt-steps">${rows.map(([h,p],i)=>`<li><b>${String(i+1).padStart(2,'0')}</b><h3>${h}</h3><p>${p}</p></li>`).join('')}</ol>`;
+const documentTitle = 'I built a follow-up process for vendor paperwork.';
 const slides = [
  {
-  title: `I built a COI chaser.<br>One approval<br>wasn't<br><span class="pay">${under('enough.', 'gold')}</span>`,
+  title: `I built a follow-up<br>process for vendor<br><span class="pay">${under('paperwork.', 'gold')}</span>`,
   cover: true,
-  copy: 'I automated certificate tracking and renewal reminders. Then a batch approval defect forced me to change the execution boundary.',
-  visual: '<p class="rt-stack">n8n / OpenAI / Postgres / Gmail</p>',
-  footer: 'Applied AI · Vendor certificate chasing',
-  sources: 'progress-notes.md: 2026-08-08 per-vendor approval architecture fix; Stage 5/6 exports.'
+  copy: 'Collecting insurance certificates is one job. Keeping track of missing documents, expiration dates and follow-ups is another. I built a process to connect them.',
+  visual: '',
+  footer: 'Vendor paperwork · From arrival to follow-up',
+  sources: 'build-plan.md scope; docs/how-the-system-works.md; Stage 5 intake, Stage 6 watch/chase and Stage 7 dashboard exports.'
  },
  {
-  title: 'Track the paperwork.<br>Keep the source.',
-  visual: `<div class="rt-visual">${lane('Intake', ['Gmail /<br>upload form','Save PDF +<br>extract facts','Validate +<br>file result'])}<div class="rt-state-rail">↕ &nbsp; ${hl('Postgres')} · Certificate facts + outreach history &nbsp; ↕</div>${lane('Daily chase', ['Select due<br>paperwork','Draft +<br>log pending',`${hl('Human approval')}<br>then Gmail`])}<div class="rt-label rt-bottom-label">Dashboard + original PDF links read the stored record</div></div>`,
-  copy: "I built this to track contractors' certificates of insurance. n8n coordinates the steps; Postgres holds durable state for intake, reminders and the dashboard.",
-  footer: 'Implemented · Six runtime workflows · Paperwork tracking only',
-  sources: 'All six Stage 5-7 runtime exports; db/postgres/001-schema.sql, 003-stage-5-intake.sql, 004-stage-6-watch-chase.sql, 005-stage-7-dashboard.sql; docs/how-the-system-works.md.'
- },
- {
-  title: `I give the model<br>a ${hl('narrow job')}`,
-  visual: `<div class="rt-visual"><div class="rt-columns"><div><h3>Model</h3><p>Transcribe printed facts</p><p>Report self-confidence</p><p>Draft reminder wording</p></div><div><h3>Code + people</h3><p>Match vendor identity</p><p>Check dates and limits</p><p>Approve each chase email</p></div></div><div class="rt-match"><div class="rt-label">Deterministic identity</div><p>Normalized exact name → Link vendor</p><p>Near or unmatched → ${box('Review', 'gold')}</p></div></div>`,
-  copy: 'I kept filing and chase decisions outside the model. A confidence label is self-report; it does not establish calibrated accuracy or insurance status.',
-  footer: 'Implemented · Incoming documents never create vendors',
-  sources: 'coi-stage-4-validator.js findVendorMatch; 003-stage-5-intake.sql exact-match link and VENDOR_NOT_FOUND; Stage 6 approval workflow; extraction and drafting prompts.'
- },
- {
-  title: `Schema sets ${under('shape.')}<br>Code sets disposition.`,
-  visual: `<div class="rt-visual"><div class="rt-label">Extraction contract · Selected fields</div>${table(['Field / rule','Configured constraint'],[['additionalProperties','false'],['extraction_confidence','HIGH | MEDIUM | LOW'],['addl_insd_asserted','boolean; checkbox assertion']],'rt-schema')}<div class="rt-routes"><p>Invalid dates / LOW confidence → ${hl('NEEDS_REVIEW')}</p><p>Matched + soft flags only → ON_FILE + flags</p><p>Not a COI / older document → Notice; no filing</p></div></div>`,
-  copy: 'I preserve what the page asserts. A checked box cannot establish an endorsement. Soft flags remain visible on filed records; ON_FILE is a storage status.',
-  footer: 'Configuration + implemented rules · No coverage judgment',
-  sources: 'docs/schemas/coi-extraction.schema.json; coi-stage-4-validator.js validateExtraction/buildResult; 003-stage-5-intake.sql notice dispositions.'
- },
- {
-  title: `One validator.<br>${box('Reproducible', 'gold')} exports.`,
+  title: 'I started with the<br>questions someone<br>has to keep answering',
   visual: `<div class="rt-visual">${steps([
-   ['Shared JavaScript + JSON Schema','One validator feeds the core harness and live intake.'],
-   ['Generators → workflow JSON','I change source, then regenerate reviewable exports.'],
-   [under('Import + verify'),'Credentials bind in n8n. Real routes and stored outputs matter.']
+   ['What is missing?','Which vendors have no certificate on file.'],
+   [hl('What expires next?'),'Which recorded dates need attention.'],
+   ['Who needs a follow-up?','Which outstanding requests are due again.']
   ])}</div>`,
-  copy: 'I keep rules in source because editing embedded workflow code would fork the logic until the next rebuild. Generated exports make the deployed graph inspectable.',
-  footer: 'Implemented build pipeline · Credential secrets stay outside Git',
-  sources: 'scripts/generate-stage-4-workflow.js and generate-stage-5-workflows.js read validatorSource/schema; Stage 5-7 generators and verify scripts; workflow credential references.'
+  copy: 'I wanted one view of the paperwork and a repeatable way to request updates, without relying on someone to remember every date.',
+  footer: 'The problem · Keeping track after the document arrives',
+  sources: 'docs/how-the-system-works.md problem statement; stage_6_actionable_vendors in 004-stage-6-watch-chase.sql; Stage 7 dashboard read model.'
  },
  {
-  title: 'The approval gate<br>only paused once',
-  visual: `<div class="rt-visual">${lane('Before · One execution for the whole batch',['Many vendors','One Gmail wait','Missing results<br>read as declined'])}<div class="rt-cause">Looping back into the same wait also failed.</div>${lane('Fix · One child execution per vendor',['Execute Workflow<br>mode: each',box('Own wait'),'Own approval<br>then send'])}<div class="rt-proof">Recorded check: ${hl('2 waits → 2 approvals → 2 sends')}</div></div>`,
-  copy: 'I found pending rows for everyone but only one real approval request. In this n8n setup, a Wait node could pause each execution only once.',
-  footer: 'Recorded fix · Independent approval executions',
-  sources: 'progress-notes.md 2026-08-08: decoded flatted execution data, failed Split In Batches attempt, two independent waits and approvals eight seconds apart; generate-stage-6-workflows.js mode each; stage-6-vendor-approval-request.json.'
+  title: `I connected the document<br>to the ${hl('next action')}`,
+  visual: `<div class="rt-visual">${lane('When a certificate arrives',['Receive the<br>document','Read + check<br>the details','Update the<br>record'])}<div class="rt-state-rail">${hl('One register')} · Documents, dates and request history</div>${lane('When an update is due',['Find missing or<br>expiring paperwork','Draft a<br>request',`${box('Person reviews')}<br>before sending`])}</div>`,
+  copy: 'I connected intake, date tracking and follow-up. The register keeps the document history; each vendor-facing chase email waits for a person to approve it.',
+  footer: 'The process · Receive, record, follow up',
+  sources: 'Stage 5-7 current runtime workflows; certificate/outreach storage functions; per-vendor approval workflow and daily watch caller.'
  },
  {
-  title: 'A new bucket<br>bypassed the cooldown',
-  visual: `<div class="rt-visual"><div class="rt-label">Before · Issue identity included urgency</div><div class="rt-key">vendor + certificate + ${strike('bucket')} + expiry</div>${chain(['15 days left<br>30d bucket','14 days left<br>14d bucket','New key<br>Cooldown lost'])}<div class="rt-key rt-key--after"><div class="rt-label">After · Stable issue identity</div>vendor + certificate + expiry</div><div class="rt-proof">Checked: ${hl('same key across buckets', 'blue')}</div></div>`,
-  copy: 'I removed the bucket from the issue key and checked equality across buckets. The seven-day follow-up window and ignored-request count now survive urgency changes.',
-  footer: 'Recorded fix · Key equality checked · Existing 16 SQL checks passed',
-  sources: '004-stage-6-watch-chase.sql stage_6_vendor_issue_key; progress-notes.md 2026-07-31 fix and equality verification. Existing tests derive keys through the function, not independent literal expectations.'
+  title: `AI helps with reading.<br>A person ${under('decides to send.')}`,
+  visual: `<div class="rt-visual"><div class="rt-columns"><div><h3>AI helps with</h3><p>Reading printed details</p><p>Drafting request wording</p></div><div><h3>Checks + review</h3><p>Checking dates and names</p><p>Getting a person's approval</p></div></div><div class="rt-match"><div class="rt-label">When the vendor name does not match</div><p>Keep it for ${box('review', 'gold')} instead of guessing.</p></div></div>`,
+  copy: 'I used AI where reading and writing help. I kept the checks separate, and gave the person reviewing each chase email control over whether it sends.',
+  footer: 'A design choice · Assistance with a clear approval step',
+  sources: 'Extraction/drafting prompts; coi-stage-4-validator.js; 003-stage-5-intake.sql exact-match linkage and VENDOR_NOT_FOUND review; Stage 6 individual approval/send.'
  },
  {
-  title: 'My intake checks used<br>the wrong context',
+  title: `I kept the ${hl('original')}<br>one click away`,
+  visual: `<div class="rt-visual">${chain(['See a date<br>or flagged detail','Open the<br>original PDF','Check what the<br>document says'])}<div class="rt-state-rail">Saved together: document + recorded details</div></div>`,
+  copy: 'I kept the original certificate linked to its record. Someone checking a date or a flagged detail can return to the document it came from.',
+  footer: 'A design choice · Make the recorded details checkable',
+  sources: 'Stage 5 storage-before-extraction and source route; Stage 7 certificate source links; 2026-10-10 source retrieval byte match in progress-notes.md.'
+ },
+ {
+  title: 'Only one request<br>reached the approver',
+  visual: `<div class="rt-visual">${lane('What went wrong',['Several<br>reminders','One approval<br>request','Others marked<br>as declined'])}${lane('What I changed',['Each<br>reminder',box('Its own approval'),'Send<br>or hold'])}<div class="rt-proof">Checked: ${hl('two separate approvals and two sends')}</div></div>`,
+  copy: 'I found several pending reminders but only one approval request. I gave each reminder its own approval step, then checked that each could be reviewed separately.',
+  footer: 'A failure I fixed · Check the interaction, not just the list',
+  sources: 'progress-notes.md 2026-08-08 approval defect, failed loop attempt, independent two-vendor waits/approvals/sends; current Stage 6 each-mode child workflow.'
+ },
+ {
+  title: `More urgent shouldn't<br>mean ${hl('start over')}`,
+  visual: `<div class="rt-visual">${lane('Before · A new urgency label reset the history',['15 days<br>until expiry','14 days<br>until expiry','Could ask<br>again'])}${lane('After · Keep the same outstanding request',['15 days<br>until expiry','14 days<br>until expiry',box('Wait until due', 'gold')])}<div class="rt-proof">The ${under('seven-day follow-up window')} stays in place.</div></div>`,
+  copy: 'The system treated a new urgency label as a new problem. I kept the reminder history attached to the same outstanding document instead.',
+  footer: 'A failure I fixed · Remember that we already asked',
+  sources: '004-stage-6-watch-chase.sql issue key excludes bucket; progress-notes.md 2026-07-31 equal-key verification and 16 SQL checks. This describes possible repeated requests, not a claimed delivered duplicate.'
+ },
+ {
+  title: 'An unreadable document<br>still needs a next step',
   dark: true,
-  visual: `<div class="rt-visual"><div class="rt-signal"><div><span class="rt-label">Before · Unreadable PDF</span><strong>FAIL</strong></div><div><span class="rt-label">After · Error output</span><strong>${under('REVIEW', 'gold')}</strong></div></div><div class="rt-routes rt-routes--dark"><p>Form / Gmail → Missing internal field → Routing error</p><p>Fix: inspect PDF bytes + catch extraction failures</p><p>Byte checks alone miss filesystem-backed binary</p></div><div class="rt-proof">Form checks: ${hl('filing, review and notice routes')}</div></div>`,
-  copy: 'I replaced an internal-field comparison with an encryption check and an extraction-error route. Then I verified the fix through the actual upload form.',
-  footer: 'Recorded fix · Unreadable documents reach review',
-  sources: 'progress-notes.md 2026-08-07 form intake fix: undefined fixture_id on form/Gmail, byte-level /Encrypt fast path, filesystem-binary limitation, continueErrorOutput guard; multipart form checks f01/f03 ON_FILE, f18 NEEDS_REVIEW, f11 notice. Current Stage 5 generator and export.'
+  visual: `<div class="rt-visual"><div class="rt-story-route"><p>Original PDF saved</p><p class="rt-story-arrow">↓</p><p>Try to read the document</p><p class="rt-story-arrow">↓</p><p>Unreadable → ${hl('Review record kept')}</p></div><div class="rt-proof">Checked through the actual upload form.</div></div>`,
+  copy: 'A locked PDF could stop intake. I added a route that records the problem for review, with the original document retained for investigation.',
+  footer: 'A failure I fixed · Give unreadable documents a review route',
+  sources: 'progress-notes.md 2026-08-07 form fix; Stage 5 storage-before-reading, encryption check, extract continueErrorOutput to password review; f18 multipart form produced NEEDS_REVIEW with no matched vendor. Review is stored; no claim of a new dashboard review queue or notification.'
  },
  {
-  title: 'What the recorded<br>checks establish',
-  visual: `<div class="rt-visual">${table(['Evidence','Recorded result'],[
-   ['Intake checks','Filing, review, notice<br>and renewals passed'],
-   ['Watch + storage','18 + 8 checks passed'],
-   ['Approval repair','2 waits; 2 approvals;<br>2 sends'],
-   ['October intake','ON_FILE + byte-matched PDF'],
-   ['Unreadable PDF',hl('NEEDS_REVIEW')]
+  title: 'I checked what happened<br>after each step',
+  visual: `<div class="rt-visual">${table(['Situation I checked','What the record showed'],[
+   ['A replacement arrives','Earlier record replaced'],
+   ['Wrong document','Notice instead of filing'],
+   ['Locked PDF','Recorded for review'],
+   ['Two reminders','Separate approval requests'],
+   ['Open the original','Returned file matched<br>the stored PDF']
   ],'rt-results')}</div>`,
-  copy: 'I checked stored rows, independent approvals and retrieved PDF bytes. The checks cover filing, review, notices and renewals across the connected workflows.',
-  footer: 'Recorded workflow, SQL and source-document checks',
-  sources: 'docs/stage-8-fixture-results.md 2026-07-30 original suite; progress-notes.md 2026-08-05 18/8 checks, 2026-08-08 approval repair, 2026-10-10 fresh manual intake and byte-identical source route. No new service execution for this carousel.'
+  copy: 'I checked the record, the approval request and the original file, alongside whether a run finished. Each check followed a specific step in the process.',
+  footer: 'Recorded checks · Documents, requests and stored results',
+  sources: 'docs/stage-8-fixture-results.md replacement/non-certificate cases; progress-notes.md 2026-08-07 protected form upload, 2026-08-08 two independent approvals, 2026-10-10 byte-matched retrieval. Results are from separate recorded checks, not a fresh combined run or general benchmark.'
  },
  {
   title: 'What I would<br>improve next',
   visual: `<div class="rt-visual">${steps([
-   ['Expand document evaluation','Held-out documents; repeat runs; field and routing errors.'],
-   [hl('Make failures visible'),'Bounded backoff, dead letters, alerts, heartbeat and canary.'],
-   ['Protect state and recovery','Message + attachment identity; concurrent runs; uncertain sends.']
+   [hl('Show work that gets stuck'),'Make failed steps visible to the person responsible.'],
+   ['Avoid repeating the same work','Recognize the same email or attachment arriving again.'],
+   ['Make recovery easier','Check what happens after an interruption or a lost file.']
   ])}</div>`,
-  copy: 'I would protect public routes and test storage and restore. Source-reference checks exist; full mailbox replay protection, retries and monitoring remain unbuilt.',
-  footer: 'Next changes · Evaluation, recovery and operational visibility',
-  sources: '003-stage-5-intake.sql source_ref checks; docs/stage-9-production-readiness-plan.md and implementation-backlog.md; 004-stage-6-watch-chase.sql test-mode defaults; progress-notes.md current boundaries. Held-out evaluation and concurrency tests are proposed here, not recorded implemented work.'
+  copy: 'I would focus next on visible failures, repeat-message handling and recovery. A useful process needs a clear next step when something interrupts it.',
+  footer: 'Next improvements · Visibility, repeat handling and recovery',
+  sources: 'docs/stage-9-production-readiness-plan.md and implementation-backlog.md: visible dead letters, alerts, message/attachment idempotency, retry/backoff, backup/restore. Proposed improvements; source_ref checks alone do not establish full replay or crash safety.'
  }
 ];
-const caption = `I built an AI workflow for a recurring administrative job: collecting contractor insurance certificates, recording their dates, surfacing missing or expiring paperwork, and drafting renewal reminders.
+const caption = `An insurance certificate arrives in the inbox. Someone still has to record the dates, notice when an update is due and remember who needs another request.
 
-I used n8n for orchestration and Postgres for durable state. OpenAI transcribes printed facts and drafts wording. JavaScript and SQL control identity matching, validation, filing and chase eligibility. Each vendor-facing chase email requires its own human approval.
+I built a process to connect those steps for vendor paperwork.
 
-Three failures made the engineering interesting.
+It reads incoming certificates, keeps the original document linked to the record, surfaces missing or expiring paperwork, and drafts requests for updates. Each vendor-facing chase email waits for a person's approval.
 
-The batch approval step created pending rows for many vendors but sent only one real approval request. Looping through the same Wait node did not fix it. I moved approval and sending into a separate execution per vendor, then checked two independent waits, approvals and sends.
+I started with three questions: What is missing? What expires next? Who needs a follow-up?
 
-My reminder issue key included the urgency bucket. Moving from 15 days before expiry to 14 changed the key, bypassing the follow-up window and resetting the ignored-request count. I removed the bucket so the issue keeps its history as urgency changes.
+Those questions shaped the build more than the choice of software. AI helps read the document and draft the wording. Separate checks handle dates and matching names. A person controls whether each chase email sends.
 
-My intake routing depended on a field only the manual entry path supplied. Form and Gmail uploads failed because that field was missing. I replaced the comparison with an encryption check and routed extraction errors to review. Then I checked the actual upload form, including filing, unreadable-document and non-certificate paths.
+The failures taught me where the process needed more attention.
 
-The carousel covers the architecture, output contract, reproducible exports, these defects and the evidence behind the fixes. A filed certificate is paperwork on record, not confirmation of insurance coverage. The additional-insured checkbox stays an assertion in the schema.
+One batch created a list of pending reminders, but only one approval request reached the approver. I separated each reminder's approval process and checked that they worked independently.
 
-I checked the connected behavior through SQL checks, separate Gmail approval executions, form uploads and byte-matched PDF retrieval. I looked at stored and delivered outputs alongside execution status.
+Another rule treated a change in urgency as a new problem. That could restart the chase even though we had already asked for the same update. I kept the reminder history attached to the outstanding document as the deadline approached.
 
-Next I would expand document evaluation and add durable message and attachment identity, bounded retries, visible failure handling, monitoring, protected public routes, and tested recovery. The engineering lesson I took from this build: define what the model may decide, preserve the state that future actions depend on, and verify the output a person actually receives.`;
+I also added a review route for unreadable PDFs, then checked it through the upload form. The original file stays available so the problem can be investigated.
+
+I checked the stored records, the individual approval requests and the retrieved documents. I wanted to see what happened after each step, rather than stop at a successful run.
+
+Next I would focus on making failed steps easier to see, recognizing repeated emails and attachments, and recovering cleanly after interruptions.
+
+The problem I set out to solve was keeping paperwork moving: knowing what is on file, what needs attention and what should happen next.`;
 const base = fs.readFileSync(path.join(root,'docs/carousels/post-01-what-ai-should-touch.html'),'utf8');
 const snap = base.match(/<script>[\s\S]*?<\/script>/)[0];
-const head = `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>I built a COI chaser. One approval wasn't enough.</title><link href="../../tmp/carousel-fonts/fonts.css" rel="stylesheet"><link href="carousel-template.css" rel="stylesheet"></head><body>`;
+const head = `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>${documentTitle}</title><link href="../../tmp/carousel-fonts/fonts.css" rel="stylesheet"><link href="carousel-template.css" rel="stylesheet"></head><body>`;
 const flowArrow = '<svg class="rt-flow-arrow" viewBox="0 0 40 24" aria-label="then"><path d="M2 12 H36 M27 3 L36 12 L27 21"/></svg>';
 const stateArrow = '<svg class="rt-flow-arrow rt-flow-arrow--state" viewBox="0 0 24 40" aria-label="shared state"><path d="M12 3 V37 M4 11 L12 3 L20 11 M4 29 L12 37 L20 29"/></svg>';
-fs.writeFileSync(out, (head + slides.map((s,i)=>`<section class="slide technical${s.dark?' slide--invert':''}" data-slide="${i+1}"><div class="eyebrow"><span>APPLIED AI · VENDOR CERTIFICATE CHASING</span></div><div class="body"><${s.cover?'h1':'h2'} class="${s.cover?'display rt-cover':'rt-title'}">${s.title}</${s.cover?'h1':'h2'}>${s.cover?'':s.visual}<p class="rt-copy">${s.copy}</p>${s.cover?s.visual:''}</div><div class="footer"><span>${s.footer}</span><b>${String(i+1).padStart(2,'0')}</b></div></section>`).join('\n') + snap + '</body></html>').replaceAll('→',flowArrow).replaceAll('↕',stateArrow));
+const downArrow = '<svg class="rt-flow-arrow rt-flow-arrow--state" viewBox="0 0 24 40" aria-label="then"><path d="M12 3 V37 M4 29 L12 37 L20 29"/></svg>';
+fs.writeFileSync(out, (head + slides.map((s,i)=>`<section class="slide technical${s.dark?' slide--invert':''}" data-slide="${i+1}"><div class="eyebrow"><span>VENDOR PAPERWORK · A BUILD RETROSPECTIVE</span></div><div class="body"><${s.cover?'h1':'h2'} class="${s.cover?'display rt-cover':'rt-title'}">${s.title}</${s.cover?'h1':'h2'}>${s.cover?'':s.visual}<p class="rt-copy">${s.copy}</p>${s.cover?s.visual:''}</div><div class="footer"><span>${s.footer}</span><b>${String(i+1).padStart(2,'0')}</b></div></section>`).join('\n') + snap + '</body></html>').replaceAll('→',flowArrow).replaceAll('↕',stateArrow).replaceAll('↓',downArrow));
 const plain = s => s.replace(/<svg[\s\S]*?<\/svg>/g,'').replace(/<br\s*\/?>(?!$)/g,' / ').replace(/<\/(p|div|h3|li|tr)>/g,'\n').replace(/<[^>]*>/g,' ').replace(/[ \t]+/g,' ').replace(/ *\n */g,'\n').trim();
-const md = `# Technical retrospective: vendor COI chasing
+const md = `# Build retrospective: vendor paperwork
 
 Created: 2026-10-19. Status: rendered draft for review. Not published or queued.
 
-Audience: people hiring AI engineers and applied AI engineers. This task intentionally expands COI as certificate of insurance and explains vendor paperwork for readers outside property management. It overrides the older buyer-only audience and glossary guidance for this artifact.
+Audience: property management decision-makers and buyers, plus hiring managers. Lead with the recurring paperwork problem, explain decisions in plain language, and demonstrate problem-solving through specific failures and checks. No technology-stack list, schema excerpts or internal configuration in public copy. The owner explicitly changed the earlier engineering-heavy direction on 2026-10-20.
 
-Document title: **I built a COI chaser. One approval wasn't enough.**
+Document title: **${documentTitle}**
 
 Editable source: \`docs/carousels/technical-retrospective-vendor-coi.html\`.
 Copy + build source: \`scripts/build-technical-retrospective.cjs\`.
@@ -155,7 +163,7 @@ ${slides.map((s,i)=>`### Slide ${i+1}\n\n**Title:** ${plain(s.title)}\n\n**Body:
 ## Evidence boundaries and design review
 
 - Stage 8's original report predates later approval, model and intake repairs. Its all-pass status is historical; this draft does not claim the full suite was rerun after those repairs.
-- The third defect now covers the recorded intake-context failure and its verified form-path repair. Public copy focuses on implementation and specific checked behavior, without demo or synthetic-data framing, per the owner's 2026-10-20 revision request. This wording does not introduce a client deployment, accuracy score or customer-result claim.
+- The unreadable-document slide covers the implemented intake error route and recorded form-path check. Public copy focuses on implementation and specific checked behavior, without demo or synthetic-data framing, per the owner's 2026-10-20 revision request. This wording does not introduce a client deployment, accuracy score or customer-result claim.
 - Structured output constrains shape; it does not guarantee factual correctness or deterministic model behavior. LOW confidence and date failures route to review, but NOT_A_COI and older documents take notice dispositions first. Unknown names reach review in storage even if the core validator returned store_on_file.
 - Duplicate source_ref checks exist. Message-plus-attachment identity, safe concurrent processing and send crash recovery are not established by those checks.
 - Two distinct approval waits and sends establish the repaired per-vendor interaction in that test. They do not establish concurrency, repeated-button safety or exactly-once delivery.
@@ -165,7 +173,7 @@ ${slides.map((s,i)=>`### Slide ${i+1}\n\n**Title:** ${plain(s.title)}\n\n**Body:
 
 ## Review verification
 
-Final review completed 2026-10-20. Ten pages at 810 x 1012.5 points; seven embedded Switzer/Zodiak faces, no fallback families; one shared grain bitmap. All public text runs and character counts survive extraction. Text bounds and privacy checks pass, including PDF metadata, absent links and attachments. Every page was rendered at approximately 1080 x 1350 and visually reviewed along with the contact sheet; final changed pages were rechecked. No clipping, overlaps, missing marks or diagram errors remain. QA details are regenerated to ignored \`docs/carousels/out/technical-retrospective-qa.json\`.
+Final review completed 2026-10-20. Ten pages at 810 x 1012.5 points; embedded Switzer/Zodiak faces, no fallback families; one shared grain bitmap. All public text runs and character counts survive extraction. Text bounds and privacy checks pass, including PDF metadata, absent links and attachments. Every page was rendered at approximately 1080 x 1350 and visually reviewed along with the contact sheet; final changed pages were rechecked. No clipping, overlaps, missing marks or diagram errors remain. QA details are regenerated to ignored \`docs/carousels/out/technical-retrospective-qa.json\`.
 
 This task did not rerun the live n8n fixture suite or send email. Claims use the implementation and recorded results cited above. No publishing or queue action was taken.
 `;
