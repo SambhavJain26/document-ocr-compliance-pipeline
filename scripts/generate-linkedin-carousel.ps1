@@ -77,6 +77,10 @@ $profileDir = Join-Path $env:TEMP ("carousel-render-" + [guid]::NewGuid().ToStri
 
 $failed = 0
 foreach ($src in $sources) {
+    if ([System.IO.File]::ReadAllText($src.FullName).Contains('../../tmp/carousel-fonts/fonts.css') -and
+        -not (Test-Path (Join-Path $repoRoot 'tmp\carousel-fonts\fonts.css'))) {
+        throw 'Prepare fonts first: python scripts/prepare-carousel-fonts.py (fonttools required).'
+    }
     $pdf = Join-Path $outDir ($src.BaseName + '.pdf')
     $url = 'file:///' + ($src.FullName -replace '\\', '/')
 

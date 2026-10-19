@@ -642,3 +642,73 @@ html, body {
 }
 
 
+
+/* User-directed annotation colors: shape and color are independent.
+   Scoped to technical decks so established carousel exports keep their look. */
+.technical .hl--blue {
+  --swipe: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='40' preserveAspectRatio='none'%3E%3Cpath d='M1,7 C46,1 128,11 206,5 C284,-1 348,10 399,3 L399,34 C352,39 268,29 186,35 C104,41 44,32 1,37 Z' fill='%2396B0E3'/%3E%3C/svg%3E");
+  color: var(--ink);
+}
+.technical .pen--gold > svg { stroke: var(--gold-400); }
+.technical .sel--gold { background: var(--marker); color: var(--ink); }
+.technical .sel--gold i { border-color: var(--gold-400); }
+.technical .pen--blue > svg { stroke: var(--pen); }
+.technical.slide--invert .pen--gold > svg { stroke: var(--marker); }
+.technical.slide--invert .pen--blue > svg { stroke: var(--blue-200); }
+.technical.slide--invert .sel { color: var(--paper); }
+.technical.slide--invert .sel--gold { color: var(--ink); }
+
+/* Technical retrospectives: large diagrams share the established paper/grid.
+   All sizes and presentation stay here, including inverted-slide contrast. */
+.technical { --sans: "Carousel Switzer", "Switzer", sans-serif; --serif: "Carousel Zodiak", "Zodiak", serif; font-family: var(--sans); }
+.technical .body { top: 192px; bottom: 192px; }
+.technical .body > * { flex-shrink: 0; }
+.technical .rt-title { font-size: 72px; line-height: 96px; font-weight: 800; letter-spacing: -.035em; color: var(--ink); margin-bottom: 48px; }
+.technical .rt-copy { font-size: 40px; line-height: 48px; font-weight: 500; letter-spacing: -.018em; color: var(--ink-soft); }
+.technical .rt-cover { font-size: 88px; line-height: 96px; margin-bottom: 48px; }
+.technical .rt-cover .pay { font-size: 144px; line-height: 168px; }
+.technical .rt-stack { font-size: 24px; line-height: 48px; font-weight: 600; margin-top: 24px; }
+.technical .footer { font-size: 17px; letter-spacing: 0; }
+.technical .eyebrow { letter-spacing: .12em; }
+.technical .rt-visual { margin-bottom: 48px; }
+.technical .rt-label { display: block; font-size: 22px; line-height: 24px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 24px; color: var(--ink-soft); }
+.technical .rt-bottom-label { margin: 24px 0 0; font-size: 20px; letter-spacing: .025em; }
+.technical .rt-chain { display: grid; align-items: stretch; }
+.technical .rt-chain--3 { grid-template-columns: 1fr 40px 1fr 40px 1fr; }
+.technical .rt-node { border-top: var(--w-line) solid var(--ink); padding: 24px 0; font-size: 30px; line-height: 48px; font-weight: 700; text-align: center; }
+.technical .rt-arrow { font-size: 28px; line-height: 48px; text-align: center; color: var(--ink); align-self: center; }
+.technical .rt-flow-arrow { display: inline-block; vertical-align: middle; width: .85em; height: .6em; fill: none; stroke: currentColor; stroke-width: 2.5; margin: 0 .08em; }
+.technical .rt-flow-arrow--state { width: .6em; height: 1em; }
+.technical .rt-state-rail { border-top: var(--w-line) solid var(--ink); border-bottom: var(--w-line) solid var(--ink); padding: 0; margin: 0 0 24px; font-size: 30px; line-height: 48px; font-weight: 600; text-align: center; }
+.technical .rt-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+.technical .rt-columns > div { border-top: var(--w-line) solid var(--ink); padding-top: 24px; }
+.technical .rt-columns h3 { font-size: 44px; line-height: 72px; font-weight: 800; margin-bottom: 24px; }
+.technical .rt-columns p { font-size: 34px; line-height: 48px; padding-bottom: 24px; }
+.technical .rt-match { border-top: var(--w-hair) solid var(--rule); margin-top: 24px; padding-top: 24px; }
+.technical .rt-match p { font-size: 32px; line-height: 48px; font-weight: 600; }
+.technical .rt-table { width: 100%; border-collapse: collapse; table-layout: fixed; color: var(--ink); }
+.technical .rt-table th { text-align: left; font-size: 22px; line-height: 48px; text-transform: uppercase; letter-spacing: .04em; border-bottom: var(--w-line) solid var(--ink); }
+.technical .rt-table td { vertical-align: top; font-size: 32px; line-height: 48px; padding: 0 0 24px; border-bottom: var(--w-hair) solid var(--rule); }
+.technical .rt-table th:first-child, .technical .rt-table td:first-child { width: 47%; padding-right: 24px; }
+.technical .rt-schema td:first-child { font-weight: 700; font-size: 30px; }
+.technical .rt-results td { padding: 0 0 24px; font-size: 32px; }
+.technical .rt-results td:first-child { font-weight: 600; }
+.technical .rt-routes { margin-top: 24px; }
+.technical .rt-routes p { font-size: 29px; line-height: 48px; font-weight: 600; }
+.technical .rt-steps { list-style: none; }
+.technical .rt-steps li { position: relative; padding: 0 0 24px 96px; border-top: var(--w-hair) solid var(--rule); }
+.technical .rt-steps b { position: absolute; left: 0; top: 0; font-size: 48px; line-height: 72px; font-weight: 800; }
+.technical .rt-steps h3 { font-size: 40px; line-height: 48px; font-weight: 800; }
+.technical .rt-steps p { font-size: 30px; line-height: 48px; color: var(--ink-soft); }
+.technical .rt-cause { font-size: 28px; line-height: 48px; margin: 0 0 48px; color: var(--ink-soft); }
+.technical .rt-proof { border-top: var(--w-hair) solid var(--rule); padding-top: 24px; margin-top: 24px; font-size: 32px; line-height: 48px; font-weight: 700; }
+.technical .rt-key { font-size: 34px; line-height: 48px; font-weight: 700; padding: 0 0 24px; }
+.technical .rt-key--after { border-top: var(--w-line) solid var(--ink); padding: 24px 0 0; margin-top: 24px; }
+.technical .rt-signal { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; margin-bottom: 48px; }
+.technical .rt-signal > div { border-top: var(--w-line) solid var(--rule); padding-top: 24px; }
+.technical .rt-signal strong { font-size: 72px; line-height: 96px; font-weight: 800; }
+.technical.slide--invert .rt-title, .technical.slide--invert .rt-copy,
+.technical.slide--invert .rt-label, .technical.slide--invert .rt-signal,
+.technical.slide--invert .rt-routes, .technical.slide--invert .rt-proof { color: var(--paper); }
+.technical.slide--invert .rt-proof, .technical.slide--invert .rt-signal > div { border-color: rgba(253,240,214,.4); }
+.technical.slide--invert .hl--blue { color: var(--ink); }

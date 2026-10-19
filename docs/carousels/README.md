@@ -318,3 +318,47 @@ visual quality are independent here.
   imagery.
 - The document title typed on upload is displayed in the feed. Use the cover
   line, not a filename.
+
+## Technical retrospective draft
+
+`technical-retrospective-vendor-coi.html` is the hiring-focused retrospective,
+with copy, caption and an internal evidence map in
+`../technical-retrospective-carousel.md`. It is a draft, outside the original
+15-post schedule. Do not publish or queue it without the owner's instruction.
+
+Prepare the technical deck's fonts with `python scripts/prepare-carousel-fonts.py`
+from the repository root, using the bundled Python with `fonttools`. This caches
+official Fontshare Switzer 400-900 and Zodiak 800 italic under ignored
+`tmp/carousel-fonts/`. The current CDN files carry the internal name `false`;
+the helper repairs local name records to prevent PDF subset collisions. Font
+binaries are not committed. The technical scope selects the cached families;
+the existing posts retain their existing font declarations. Render and preview
+helpers stop if this cache is missing.
+
+Build with `node scripts/build-technical-retrospective.cjs`, then run
+`scripts/generate-linkedin-carousel.ps1 -Name technical-retrospective-vendor-coi`.
+Run `python scripts/verify-technical-retrospective.py` with bundled Python
+(`pypdf`, `pdfplumber`, `pypdfium2`, Pillow). This checks ten pages, 810 x 1012.5
+points, embedded Switzer/Zodiak without fallback, preserved text, text bounds,
+privacy, absent links/attachments and one shared grain image. It renders every
+page and a contact sheet under ignored `out/`. Review both views after changes.
+
+The `.technical` scope adds connected architecture lanes, model/code columns,
+schema and verification tables, numbered build/priorities, before/after issue
+keys and an execution/output comparison. `rt-*` classes carry these layouts;
+HTML contains content and classes only. SVG arrows avoid fallback glyph fonts.
+Children do not flex-shrink because shrinking a text container can push its
+painted text across the footer while its nominal box appears to fit.
+
+For this retrospective, the owner's current direction supersedes the older
+fixed-color and cover-only annotation restrictions: every annotation shape can
+use blue or gold, selection boxes may appear inside the deck, and marks follow
+meaning rather than a quota. `.hl--blue`, `.pen--gold`/`.pen--blue` and
+`.sel--gold` are available within `.technical`, including contrast rules on
+the dark page. The established posts are unchanged. Zodiak appears once on
+the cover, and the single dark slide carries the model's silent failure.
+
+Keep original fixture reports distinct from later targeted checks. The draft
+labels implemented behavior, historical recorded results and proposed work
+separately. Do not infer a general accuracy score or concurrency/crash safety
+from these local tests.

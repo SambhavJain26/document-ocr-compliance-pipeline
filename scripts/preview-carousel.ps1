@@ -75,6 +75,12 @@ $html = [System.IO.File]::ReadAllText($src.FullName, $enc)
 # a temp directory. Point it back at the real file.
 $cssUrl = 'file:///' + $cssPath.Replace([char]92, [char]47)
 $html = $html.Replace('href="carousel-template.css"', 'href="' + $cssUrl + '"')
+$cachedFonts = Join-Path $repoRoot 'tmp\carousel-fonts\fonts.css'
+if ($html.Contains('href="../../tmp/carousel-fonts/fonts.css"')) {
+    if (-not (Test-Path $cachedFonts)) { throw 'Prepare fonts first: python scripts/prepare-carousel-fonts.py (fonttools required).' }
+    $fontUrl = 'file:///' + $cachedFonts.Replace([char]92, [char]47)
+    $html = $html.Replace('href="../../tmp/carousel-fonts/fonts.css"', 'href="' + $fontUrl + '"')
+}
 
 $slideCount = ([regex]::Matches($html, '<section class="slide')).Count
 
