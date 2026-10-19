@@ -362,3 +362,9 @@ Rebuild: `python scripts/render-upwork-work-sample.py` (ReportLab, Pillow, fontt
 - Rebuild: prepare fonts once with bundled Python plus fonttools; `node scripts/build-technical-retrospective.cjs`; `.\scripts\generate-linkedin-carousel.ps1 -Name technical-retrospective-vendor-coi`; bundled Python `scripts/verify-technical-retrospective.py`. This task did not change automation behavior, rerun live services, send email, publish the carousel or add it to a queue. It remains a draft for the owner's review.
 
 Run the full end-to-end demo rehearsal sequence, then complete pre-live external checks before any prospect demo.
+
+2026-10-20 retrospective copy revision:
+
+- At the owner's request, removed demo/synthetic-data framing and deployment/result disclaimers from the public carousel and LinkedIn caption. Public wording now focuses on implemented mechanisms, recorded behavior checks and proposed next improvements without adding deployment or customer-result claims. Evidence provenance remains in internal notes.
+- Replaced the watermark/model-configuration defect slide with the recorded intake-context defect: form/Gmail routing depended on a manual-path-only field; the fix inspects PDF encryption and routes extraction errors to review, verified through the actual form endpoint. Updated the caption's third failure and evidence map accordingly.
+- Regenerated the ten-page PDF and contact sheet. Font embedding, text preservation, bounds and privacy checks passed. Checked that the public HTML and caption contain none of demo/synthetic/fixture; visually reviewed the contact sheet and all changed pages. Agent-guidance checkpoint found no new technical gotcha requiring another guidance change. No publishing or queue action taken.

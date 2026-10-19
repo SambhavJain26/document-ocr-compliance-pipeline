@@ -18,7 +18,7 @@ const slides = [
   cover: true,
   copy: 'I automated certificate tracking and renewal reminders. Then a batch approval defect forced me to change the execution boundary.',
   visual: '<p class="rt-stack">n8n / OpenAI / Postgres / Gmail</p>',
-  footer: 'Applied AI · Local demo · Synthetic vendor documents',
+  footer: 'Applied AI · Vendor certificate chasing',
   sources: 'progress-notes.md: 2026-08-08 per-vendor approval architecture fix; Stage 5/6 exports.'
  },
  {
@@ -57,7 +57,7 @@ const slides = [
   title: 'The approval gate<br>only paused once',
   visual: `<div class="rt-visual">${lane('Before · One execution for the whole batch',['Many vendors','One Gmail wait','Missing results<br>read as declined'])}<div class="rt-cause">Looping back into the same wait also failed.</div>${lane('Fix · One child execution per vendor',['Execute Workflow<br>mode: each',box('Own wait'),'Own approval<br>then send'])}<div class="rt-proof">Recorded check: ${hl('2 waits → 2 approvals → 2 sends')}</div></div>`,
   copy: 'I found pending rows for everyone but only one real approval request. In this n8n setup, a Wait node could pause each execution only once.',
-  footer: 'Recorded defect + fix · Two-vendor live test · Redirected test sends',
+  footer: 'Recorded fix · Independent approval executions',
   sources: 'progress-notes.md 2026-08-08: decoded flatted execution data, failed Split In Batches attempt, two independent waits and approvals eight seconds apart; generate-stage-6-workflows.js mode each; stage-6-vendor-approval-request.json.'
  },
  {
@@ -68,35 +68,35 @@ const slides = [
   sources: '004-stage-6-watch-chase.sql stage_6_vendor_issue_key; progress-notes.md 2026-07-31 fix and equality verification. Existing tests derive keys through the function, not independent literal expectations.'
  },
  {
-  title: 'The run succeeded.<br>The register stayed empty.',
+  title: 'My intake checks used<br>the wrong context',
   dark: true,
-  visual: `<div class="rt-visual"><div class="rt-signal"><div><span class="rt-label">Execution</span><strong>SUCCESS</strong></div><div><span class="rt-label">Filed certificates</span><strong>${under('0', 'gold')}</strong></div></div><div class="rt-routes rt-routes--dark"><p>Watermarked fixture → “not a COI” + HIGH confidence</p><p>Root cause: model interpretation of synthetic documents</p><p>Fix: structure-first prompt + tested model configuration</p></div><div class="rt-proof">Later check: ${hl('7 demo fixtures filed')} on the current model</div></div>`,
-  copy: 'I changed the prompt and model configuration, then checked stored results one fixture per execution. The non-certificate still became a notice; the locked PDF still reached review.',
-  footer: 'Recorded targeted checks · Successful execution ≠ successful business output',
-  sources: 'progress-notes.md 2026-08-05 nano rejection, mini checks, later luna temperature removal and seven-fixture verification; 002-seed.sql current model; Stage 4/5 prompts. Seven demo fixtures filed, including review filings, not seven ON_FILE claims.'
+  visual: `<div class="rt-visual"><div class="rt-signal"><div><span class="rt-label">Before · Unreadable PDF</span><strong>FAIL</strong></div><div><span class="rt-label">After · Error output</span><strong>${under('REVIEW', 'gold')}</strong></div></div><div class="rt-routes rt-routes--dark"><p>Form / Gmail → Missing internal field → Routing error</p><p>Fix: inspect PDF bytes + catch extraction failures</p><p>Byte checks alone miss filesystem-backed binary</p></div><div class="rt-proof">Form checks: ${hl('filing, review and notice routes')}</div></div>`,
+  copy: 'I replaced an internal-field comparison with an encryption check and an extraction-error route. Then I verified the fix through the actual upload form.',
+  footer: 'Recorded fix · Unreadable documents reach review',
+  sources: 'progress-notes.md 2026-08-07 form intake fix: undefined fixture_id on form/Gmail, byte-level /Encrypt fast path, filesystem-binary limitation, continueErrorOutput guard; multipart form checks f01/f03 ON_FILE, f18 NEEDS_REVIEW, f11 notice. Current Stage 5 generator and export.'
  },
  {
   title: 'What the recorded<br>checks establish',
   visual: `<div class="rt-visual">${table(['Evidence','Recorded result'],[
-   ['Original rehearsal','Filing, review, notice<br>and renewals passed'],
+   ['Intake checks','Filing, review, notice<br>and renewals passed'],
    ['Watch + storage','18 + 8 checks passed'],
    ['Approval repair','2 waits; 2 approvals;<br>2 sends'],
    ['October intake','ON_FILE + byte-matched PDF'],
-   ['General accuracy',hl('Not established')]
+   ['Unreadable PDF',hl('NEEDS_REVIEW')]
   ],'rt-results')}</div>`,
-  copy: 'I tested synthetic vendors and documents with real integrations. These checks establish specific behaviors, not general accuracy, concurrency safety or customer outcomes.',
-  footer: 'Recorded at different revisions · Not a fresh full-suite run',
+  copy: 'I checked stored rows, independent approvals and retrieved PDF bytes. The checks cover filing, review, notices and renewals across the connected workflows.',
+  footer: 'Recorded workflow, SQL and source-document checks',
   sources: 'docs/stage-8-fixture-results.md 2026-07-30 original suite; progress-notes.md 2026-08-05 18/8 checks, 2026-08-08 approval repair, 2026-10-10 fresh manual intake and byte-identical source route. No new service execution for this carousel.'
  },
  {
-  title: 'What I would change<br>before real use',
+  title: 'What I would<br>improve next',
   visual: `<div class="rt-visual">${steps([
-   ['Evaluate beyond my fixtures','Held-out documents; repeat runs; field and routing errors.'],
+   ['Expand document evaluation','Held-out documents; repeat runs; field and routing errors.'],
    [hl('Make failures visible'),'Bounded backoff, dead letters, alerts, heartbeat and canary.'],
    ['Protect state and recovery','Message + attachment identity; concurrent runs; uncertain sends.']
   ])}</div>`,
   copy: 'I would protect public routes and test storage and restore. Source-reference checks exist; full mailbox replay protection, retries and monitoring remain unbuilt.',
-  footer: 'Proposed priorities · Local demo · No client deployment or measured savings',
+  footer: 'Next changes · Evaluation, recovery and operational visibility',
   sources: '003-stage-5-intake.sql source_ref checks; docs/stage-9-production-readiness-plan.md and implementation-backlog.md; 004-stage-6-watch-chase.sql test-mode defaults; progress-notes.md current boundaries. Held-out evaluation and concurrency tests are proposed here, not recorded implemented work.'
  }
 ];
@@ -110,13 +110,13 @@ The batch approval step created pending rows for many vendors but sent only one 
 
 My reminder issue key included the urgency bucket. Moving from 15 days before expiry to 14 changed the key, bypassing the follow-up window and resetting the ignored-request count. I removed the bucket so the issue keeps its history as urgency changes.
 
-A model configuration rejected the watermarked synthetic certificates with HIGH confidence. Executions completed successfully while the register stayed empty. I revised the prompt and model configuration, then inspected stored outcomes one fixture per execution. That reinforced a practical evaluation rule for me: check the business output, not just the execution status.
+My intake routing depended on a field only the manual entry path supplied. Form and Gmail uploads failed because that field was missing. I replaced the comparison with an encryption check and routed extraction errors to review. Then I checked the actual upload form, including filing, unreadable-document and non-certificate paths.
 
 The carousel covers the architecture, output contract, reproducible exports, these defects and the evidence behind the fixes. A filed certificate is paperwork on record, not confirmation of insurance coverage. The additional-insured checkbox stays an assertion in the schema.
 
-The evidence spans the original synthetic fixture rehearsal, later SQL checks, a two-vendor Gmail approval test, and a fresh October intake with byte-matched PDF retrieval. Those are recorded checks at different revisions, not a fresh full-suite evaluation. Outbound demo messages are redirected to a test recipient. I am not claiming a general extraction accuracy score, concurrency or crash safety, client deployment, or measured time savings.
+I checked the connected behavior through SQL checks, separate Gmail approval executions, form uploads and byte-matched PDF retrieval. I looked at stored and delivered outputs alongside execution status.
 
-Before real use, I would prioritize held-out document evaluation, durable message and attachment identity, bounded retries, visible failure handling, monitoring, protected public routes, and tested recovery. The engineering lesson I took from this build: define what the model may decide, preserve the state that future actions depend on, and verify the output a person actually receives.`;
+Next I would expand document evaluation and add durable message and attachment identity, bounded retries, visible failure handling, monitoring, protected public routes, and tested recovery. The engineering lesson I took from this build: define what the model may decide, preserve the state that future actions depend on, and verify the output a person actually receives.`;
 const base = fs.readFileSync(path.join(root,'docs/carousels/post-01-what-ai-should-touch.html'),'utf8');
 const snap = base.match(/<script>[\s\S]*?<\/script>/)[0];
 const head = `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>I built a COI chaser. One approval wasn't enough.</title><link href="../../tmp/carousel-fonts/fonts.css" rel="stylesheet"><link href="carousel-template.css" rel="stylesheet"></head><body>`;
@@ -155,7 +155,7 @@ ${slides.map((s,i)=>`### Slide ${i+1}\n\n**Title:** ${plain(s.title)}\n\n**Body:
 ## Evidence boundaries and design review
 
 - Stage 8's original report predates later approval, model and intake repairs. Its all-pass status is historical; this draft does not claim the full suite was rerun after those repairs.
-- The model defect slide combines the initial failure and subsequent tested configurations chronologically. The seven demo fixtures include review filings; it does not claim seven clean ON_FILE results. Tests were run one fixture per execution because batch fixture behavior was inconsistent.
+- The third defect now covers the recorded intake-context failure and its verified form-path repair. Public copy focuses on implementation and specific checked behavior, without demo or synthetic-data framing, per the owner's 2026-10-20 revision request. This wording does not introduce a client deployment, accuracy score or customer-result claim.
 - Structured output constrains shape; it does not guarantee factual correctness or deterministic model behavior. LOW confidence and date failures route to review, but NOT_A_COI and older documents take notice dispositions first. Unknown names reach review in storage even if the core validator returned store_on_file.
 - Duplicate source_ref checks exist. Message-plus-attachment identity, safe concurrent processing and send crash recovery are not established by those checks.
 - Two distinct approval waits and sends establish the repaired per-vendor interaction in that test. They do not establish concurrency, repeated-button safety or exactly-once delivery.

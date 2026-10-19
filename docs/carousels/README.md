@@ -356,7 +356,7 @@ use blue or gold, selection boxes may appear inside the deck, and marks follow
 meaning rather than a quota. `.hl--blue`, `.pen--gold`/`.pen--blue` and
 `.sel--gold` are available within `.technical`, including contrast rules on
 the dark page. The established posts are unchanged. Zodiak appears once on
-the cover, and the single dark slide carries the model's silent failure.
+the cover, and the single dark slide carries the intake-context failure.
 
 Keep original fixture reports distinct from later targeted checks. The draft
 labels implemented behavior, historical recorded results and proposed work
