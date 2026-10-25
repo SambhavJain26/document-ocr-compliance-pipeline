@@ -1,4 +1,4 @@
-# LinkedIn Content Plan
+﻿# LinkedIn Content Plan
 
 Created: 2026-08-01
 Revised: 2026-08-02, 2026-08-06, and 2026-08-09
@@ -33,23 +33,23 @@ The insurance research behind the old post 9 is preserved in `linkedin-post-scri
 
 **Custom AI automation, built and implemented inside a client's existing business.** Not software. Not a SaaS product. Nothing to log into, no seats, no subscription.
 
-This governs every post. The COI system is a **worked example of how I approach a problem** — evidence of judgment, not a product being launched. Language never implies "my tool" or "my platform." It says: this is the kind of thing I build, inside your mailbox, your database, your process, and you own it when it's done.
+This governs every post. The COI system is a **worked example of how I approach a problem**  -  evidence of judgment, not a product being launched. Language never implies "my tool" or "my platform." It says: this is the kind of thing I build, inside your mailbox, your database, your process, and you own it when it's done.
 
-**The buyer:** US residential property management companies, roughly 150–600 doors. Owners and operations leads.
+**The buyer:** US residential property management companies, roughly 150-600 doors. Owners and operations leads.
 
-**The competitive context.** COI tracking is an established software category — myCOI, NetVendor, VendorAccess, BCS, SmartCompliance, ExpiryEdge, Jones, Vertikal RMS, Lula. Property managers researching this problem are already being marketed to heavily, so no post should imply nobody has noticed the problem. Every one of those products is a portal, and the category's own documented failure is that vendors find portals cumbersome and stop cooperating. That is the opening: same problem, no system for anyone to adopt. See `customer-language.md` for the vocabulary, the worn-out category words to avoid, and the terminology rules.
+**The competitive context.** COI tracking is an established software category  -  myCOI, NetVendor, VendorAccess, BCS, SmartCompliance, ExpiryEdge, Jones, Vertikal RMS, Lula. Property managers researching this problem are already being marketed to heavily, so no post should imply nobody has noticed the problem. Every one of those products is a portal, and the category's own documented failure is that vendors find portals cumbersome and stop cooperating. That is the opening: same problem, no system for anyone to adopt. See `customer-language.md` for the vocabulary, the worn-out category words to avoid, and the terminology rules.
 
 **Where each post leads:** authority first, conversation second, call third. Only two posts carry a real CTA. The rest earn the right to one.
 
 ## The accessibility arc
 
-Posts 1–5 are written so that someone with no property management knowledge — a friend, a former colleague, a general connection — understands within one line what world this is about and who it's for. No jargon before it's earned. A property manager reading them should learn something; everyone else should feel let in.
+Posts 1-5 are written so that someone with no property management knowledge  -  a friend, a former colleague, a general connection  -  understands within one line what world this is about and who it's for. No jargon before it's earned. A property manager reading them should learn something; everyone else should feel let in.
 
 **"Feel described" was the old standard and it was wrong.** A post whose payoff is that a property manager recognizes their own week teaches them nothing they don't already live. Recognition is not value. The gateway posts now use vendor insurance paperwork as the worked example while teaching something transferable, so an outsider still follows and an insider still gains.
 
 This matters because early on, the people seeing these posts are the wrong audience by default. The gateway posts still work on them: they explain the domain rather than assuming it, and they make the target reader unmistakable. That means these five can keep running while commenting and connection work slowly brings actual property managers into the room.
 
-Posts 6–15 assume the reader knows what a certificate of insurance is. Publish those once profile visits and comments start coming from the industry.
+Posts 6-15 assume the reader knows what a certificate of insurance is. Publish those once profile visits and comments start coming from the industry.
 
 **No origin story.** The work explains itself. Positioning comes from what the posts demonstrate, not from a personal narrative that would need rewriting for every future build.
 
@@ -64,7 +64,7 @@ Posts 6–15 assume the reader knows what a certificate of insurance is. Publish
 
 **Only one video gets recorded.** Post 2 is the demo. Post 9 is a clip cut out of that same recording, not a second shoot, and no separate voiceover is recorded for it. That constraint is the reason post 12 is text: the footage its argument needed was never filmed, and the finding does not need a visual. Anything proposed as a future video post has to already exist inside the demo recording, or it is not a video post.
 
-Carousels carry the explaining — they are the best format for making an unfamiliar domain legible, which is exactly what the gateway posts need. Video carries trust, which is what a stranger overseas needs most. Text is the backbone and the cheapest to produce, which matters when the same person is also building.
+Carousels carry the explaining  -  they are the best format for making an unfamiliar domain legible, which is exactly what the gateway posts need. Video carries trust, which is what a stranger overseas needs most. Text is the backbone and the cheapest to produce, which matters when the same person is also building.
 
 ## Pillars
 
@@ -90,7 +90,7 @@ Run in this order. Steps 0 and 1 happen once; the rest repeat per batch.
 |---|---|---|
 | 0 | `product-marketing` | Creates `.agents/product-marketing.md`. Over 100 skill files read this before doing anything, so writing it once stops every later step from guessing at audience, positioning, and voice |
 | 1 | `customer-research` | Real property manager phrasing harvested from Property Management Mastermind and r/propertymanagement. Fills the Customer Language section. **Without this every draft uses my vocabulary for this industry, not theirs** |
-| 2 | `social` references | Structure per format — carousel frameworks, video scripting template, the 210-character fold |
+| 2 | `social` references | Structure per format  -  carousel frameworks, video scripting template, the 210-character fold |
 | 3 | `copywriting` | Line-level principles and style rules, plus `references/natural-transitions.md` for transitions that don't signpost |
 | 4 | `offers` | Post 15 only. Value framing for the free diagnostic, and its guidance on when *not* to apply offer tactics |
 | 5 | `seo-audit/references/ai-writing-detection.md` | **Mandatory pass on every draft.** Em dashes, overused verbs and adjectives, banned phrases, structural patterns |
@@ -101,28 +101,28 @@ Run in this order. Steps 0 and 1 happen once; the rest repeat per batch.
 
 **Deliberately not used:** `marketing-psychology` (persuasion levers fight an understated positioning), `video` (production tooling, not scripting), `ads` and `ad-creative` (paid), `content-strategy` (this plan is the output), `lead-magnets` (subsumed by `offers`), `marketing-council` (a simulated advisory board produces confident generic advice).
 
-**Rejected from skills otherwise in use:** `social`'s hook libraries, for both text and video. They generate "Unpopular opinion:", "I was wrong about X," "[Number] things that [outcome]" — the templated register that reads as machine-written. Structure yes, hooks no. Hooks come from the material. The same applies to `post-templates.md`, whose skeletons are sound but which end every template in engagement bait ("Which resonates most with you?"). Use the skeleton, cut the closer.
+**Rejected from skills otherwise in use:** `social`'s hook libraries, for both text and video. They generate "Unpopular opinion:", "I was wrong about X," "[Number] things that [outcome]"  -  the templated register that reads as machine-written. Structure yes, hooks no. Hooks come from the material. The same applies to `post-templates.md`, whose skeletons are sound but which end every template in engagement bait ("Which resonates most with you?"). Use the skeleton, cut the closer.
 
 ## Brief format
 
 Every post below has the same six fields, matching the structure the scripts will use:
 
-- **Hook angle** — what the opening does, not the words
-- **The turn** — the pivot the whole post is built on
-- **Evidence** — the specifics that must appear, with source
-- **Takeaway** — what the reader leaves holding
-- **Legibility** — for gateway posts, how an outsider follows it
+- **Hook angle**  -  what the opening does, not the words
+- **The turn**  -  the pivot the whole post is built on
+- **Evidence**  -  the specifics that must appear, with source
+- **Takeaway**  -  what the reader leaves holding
+- **Legibility**  -  for gateway posts, how an outsider follows it
 - **CTA**
 
 ---
 
-# Gateway posts (1–5)
+# Gateway posts (1-5)
 
 Accessible to anyone. Unmistakably aimed at property managers.
 
 ## 1. What AI should do with your paperwork, and what it must never touch
 
-**Format:** carousel, 8 slides · **Framework:** principle, then mechanism, then application · **Pillar:** AI buying literacy · **CTA:** soft — invite the question about their own systems
+**Format:** carousel, 8 slides · **Framework:** principle, then mechanism, then application · **Pillar:** AI buying literacy · **CTA:** soft  -  invite the question about their own systems
 
 **Why not Problem-Proof:** it was labelled that at first and it does not fit. Problem-Proof needs a numbered claim on slide 1 and a real artifact as the receipt on the last, and this post has neither. Adding a fake number and an invented screenshot to satisfy a label is exactly the templated move the plan rejects hook libraries for.
 
@@ -142,17 +142,17 @@ Accessible to anyone. Unmistakably aimed at property managers.
 
 ---
 
-## 2. The demo — a certificate arrives and the register updates itself
+## 2. The demo  -  a certificate arrives and the register updates itself
 
-**Format:** native video, 2–3 minutes · **Framework:** scene structure from `demo-script.md` · **Pillar:** proof and operating model · **CTA:** soft — offer to walk through it
+**Format:** native video, 2-3 minutes · **Framework:** scene structure from `demo-script.md` · **Pillar:** proof and operating model · **CTA:** soft  -  offer to walk through it
 
-**Why not the short-form template:** at 2–3 minutes this sits outside short-form video, where the 0–3 second hook rules apply. The demo script already has a scene structure built for this length.
+**Why not the short-form template:** at 2-3 minutes this sits outside short-form video, where the 0-3 second hook rules apply. The demo script already has a scene structure built for this length.
 
 **Hook angle:** Open on the finished board, then immediately do the thing. No preamble, no "hi, I'm…"
 
 **The turn:** Nothing here required anyone to type. A document arrived, the facts came out of it, the register changed, and when a reminder needed sending it stopped and waited for a person.
 
-**Evidence:** Structure per the demo cut — the problem in one line, one certificate uploaded, the four states (current, expiring, expired, needs review), the source PDF one click away, the approval email with two buttons, and twenty seconds at the end on what it does not do.
+**Evidence:** Structure per the demo cut  -  the problem in one line, one certificate uploaded, the four states (current, expiring, expired, needs review), the source PDF one click away, the approval email with two buttons, and twenty seconds at the end on what it does not do.
 
 **Takeaway:** This is real, it works, and the person who built it volunteers its limits.
 
@@ -164,13 +164,13 @@ Accessible to anyone. Unmistakably aimed at property managers.
 
 ## 3. Five things I would refuse to automate in a property management business
 
-**Format:** text, 250–300 words · **Skeleton:** List Post, closer cut · **Pillar:** AI buying literacy · **CTA:** none
+**Format:** text, 250-300 words · **Skeleton:** List Post, closer cut · **Pillar:** AI buying literacy · **CTA:** none
 
 **Hook angle:** State plainly that there are things in this business I would turn down work on, and that I'd turn them down even though the money spends the same.
 
-**The turn:** The limit isn't technical. Every one of these is buildable. The reason not to build them is that the cost of being wrong lands on someone who didn't choose the risk — a resident, an owner, a vendor.
+**The turn:** The limit isn't technical. Every one of these is buildable. The reason not to build them is that the cost of being wrong lands on someone who didn't choose the risk  -  a resident, an owner, a vendor.
 
-**Evidence:** Anything that decides which vendor gets dispatched. Anything that sends a legal notice on a timer. Anything that judges a tenant. Anything that tells an owner money is fine. Anything that decides a vendor is insured — including the system I actually built, which deliberately refuses to.
+**Evidence:** Anything that decides which vendor gets dispatched. Anything that sends a legal notice on a timer. Anything that judges a tenant. Anything that tells an owner money is fine. Anything that decides a vendor is insured  -  including the system I actually built, which deliberately refuses to.
 
 **Takeaway:** The person you want building this is the one who tells you what not to build.
 
@@ -202,11 +202,11 @@ Accessible to anyone. Unmistakably aimed at property managers.
 
 ## 5. I don't sell software
 
-**Format:** text, 200–250 words · **Skeleton:** Contrarian Take, closer cut · **Pillar:** proof and operating model · **CTA:** none
+**Format:** text, 200-250 words · **Skeleton:** Contrarian Take, closer cut · **Pillar:** proof and operating model · **CTA:** none
 
 **Hook angle:** State the negative first. There's nothing to log into, no seats, no monthly fee for a dashboard nobody opens.
 
-**The turn:** What I build runs inside the business that already exists — the mailbox you already use, a database you own, the process your team already follows. When it's finished it belongs to you, and if we stop working together it keeps running.
+**The turn:** What I build runs inside the business that already exists  -  the mailbox you already use, a database you own, the process your team already follows. When it's finished it belongs to you, and if we stop working together it keeps running.
 
 **Evidence:** Concretely, what "inside your business" means: it reads the mailbox you already have, writes to a database you control, sends from your address, and can be exported and handed to anyone. No vendor lock, no data hostage.
 
@@ -216,13 +216,13 @@ Accessible to anyone. Unmistakably aimed at property managers.
 
 ---
 
-# Industry posts (6–15)
+# Industry posts (6-15)
 
 Assume the reader knows what a certificate of insurance is. Publish once industry visitors start arriving.
 
 ## 6. Nobody has to tell you when a policy is cancelled
 
-**Format:** text, 200–250 words · **Structure:** false belief → the fact → what it changes · **Pillar:** insurance domain literacy · **CTA:** soft — offer the longer write-up
+**Format:** text, 200-250 words · **Structure:** false belief → the fact → what it changes · **Pillar:** insurance domain literacy · **CTA:** soft  -  offer the longer write-up
 
 **Hook angle:** Open on the false sense of security: a certificate in the file showing twelve months of coverage.
 
@@ -254,7 +254,7 @@ Assume the reader knows what a certificate of insurance is. Publish once industr
 
 ## 8. The reminder that fired twice in two days
 
-**Format:** text, 250–300 words · **Skeleton:** Story Post, closer cut · **Pillar:** failure lessons anyone can apply · **CTA:** none
+**Format:** text, 250-300 words · **Skeleton:** Story Post, closer cut · **Pillar:** failure lessons anyone can apply · **CTA:** none
 
 **Reframed 2026-08-02.** The old version opened on my software double-firing, which is a bug report. It now opens on the general rule and uses my defect as the worked example, so the reader leaves with something to check in their own reminders, notices and follow-ups.
 
@@ -274,7 +274,7 @@ Assume the reader knows what a certificate of insurance is. Publish once industr
 
 ## 9. It drafted the email, then stopped and waited
 
-**Format:** video clip cut from the demo recording, 35–50 seconds · **Pillar:** AI buying literacy · **CTA:** none
+**Format:** video clip cut from the demo recording, 35-50 seconds · **Pillar:** AI buying literacy · **CTA:** none
 
 **Re-topiced 2026-08-06.** Was "The boxes on a certificate that matter." That post required footage of a certificate being walked box by box, and no such footage exists. Only one video is being recorded, the demo, and the short posts are cuts from it.
 
@@ -316,7 +316,7 @@ Assume the reader knows what a certificate of insurance is. Publish once industr
 
 ## 11. The gap between two valid certificates
 
-**Format:** single image — one timeline · **Structure:** image carries the claim, 100–150 words explain what it means · **Pillar:** insurance domain literacy · **CTA:** none
+**Format:** single image  -  one timeline · **Structure:** image carries the claim, 100-150 words explain what it means · **Pillar:** insurance domain literacy · **CTA:** none
 
 **Hook angle:** The image does the work. Old policy ends. New policy starts two weeks later. Both certificates look perfectly fine.
 
@@ -326,13 +326,13 @@ Assume the reader knows what a certificate of insurance is. Publish once industr
 
 **Takeaway:** It's a comparison problem, not a document problem. Different problems need different checks.
 
-**Image discipline:** A plain timeline. Real artifact or plain diagram only — a decorative concept graphic here would read as marketing collateral and undo the positioning.
+**Image discipline:** A plain timeline. Real artifact or plain diagram only  -  a decorative concept graphic here would read as marketing collateral and undo the positioning.
 
 ---
 
 ## 12. The failure that doesn't throw an error
 
-**Format:** text, 200–250 words · **Pillar:** failure lessons anyone can apply · **CTA:** none
+**Format:** text, 200-250 words · **Pillar:** failure lessons anyone can apply · **CTA:** none
 
 **Format changed 2026-08-06.** Was a 60-second video. It needed a before-and-after of the dashboard with and without the chase column, and that footage does not exist in the demo recording. The finding needs no visual, so it moves to text intact. This was the recommendation on 2026-08-02 anyway, when the dashboard column was noted as a weak thing to film.
 
@@ -354,13 +354,13 @@ Assume the reader knows what a certificate of insurance is. Publish once industr
 
 ## 13. The questions to ask anyone selling you automation
 
-**Format:** carousel, 8 slides · **Framework:** Problem-Proof, question hook in place of the numbered claim · **Pillar:** AI buying literacy · **CTA:** soft — invite the question about their own systems
+**Format:** carousel, 8 slides · **Framework:** Problem-Proof, question hook in place of the numbered claim · **Pillar:** AI buying literacy · **CTA:** soft  -  invite the question about their own systems
 
 **Slide 8 carries the close. Superseded 2026-08-04, owner's call: no screenshot, and no image anywhere in the deck.** An earlier revision required a real screenshot of the approval email as the receipt. That was overruled and slide 8 is typed copy instead, set on the deck's one inverted slide. The constraint that produced the screenshot requirement still stands and is met in words: slide 8 must not close on the same construction as post 1's final slide, because two carousels ending on an identical shape is what makes a set read as templated. This brief said "a real screenshot is required" until 2026-08-09, five days after it had stopped being true.
 
 **Reframed 2026-08-02.** The material was right and the subject was wrong. It was written as my operating model, which makes the reader a spectator. It is now a purchasing tool written for them, and my build is the worked answer rather than the topic.
 
-**Why Problem-Proof over Rant Callout:** the rant framework superficially fits an opinion post, but it is polarizing by design, and conviction-as-content is the wrong register for someone with no clients yet. Problem-Proof opens on a claim with a number — zero messages have left without a person clicking approve — and closes on the approval email as the receipt.
+**Why Problem-Proof over Rant Callout:** the rant framework superficially fits an opinion post, but it is polarizing by design, and conviction-as-content is the wrong register for someone with no clients yet. Problem-Proof opens on a claim with a number  -  zero messages have left without a person clicking approve  -  and closes on the approval email as the receipt.
 
 **Hook angle:** Open on the question to ask any automation vendor, which is not "how accurate is it."
 
@@ -376,7 +376,7 @@ Assume the reader knows what a certificate of insurance is. Publish once industr
 
 ## 14. Four words that should make you suspicious of any vendor
 
-**Format:** single image — screenshot · **Structure:** image carries the claim, 100–150 words explain what it means · **Pillar:** failure lessons anyone can apply · **CTA:** none
+**Format:** single image  -  screenshot · **Structure:** image carries the claim, 100-150 words explain what it means · **Pillar:** failure lessons anyone can apply · **CTA:** none
 
 **Reframed 2026-08-02.** The old version was about my discipline, which is a virtue post. It is now a detector the reader can use on any demo they sit through this year, and my build check is the evidence that I hold myself to it.
 
@@ -388,23 +388,23 @@ Assume the reader knows what a certificate of insurance is. Publish once industr
 
 **Takeaway:** It was easier to make the claim impossible to ship than to keep remembering not to make it.
 
-**Commentary length:** 100–150 words. The image carries it.
+**Commentary length:** 100-150 words. The image carries it.
 
 ---
 
 ## 15. What I need from you before I build anything
 
-**Format:** text, 250 words · **Structure:** `offers` skill — what they get, what it costs them, what makes it safe to say yes · **Pillar:** the ask · **CTA:** real — the call
+**Format:** text, 250 words · **Structure:** `offers` skill  -  what they get, what it costs them, what makes it safe to say yes · **Pillar:** the ask · **CTA:** real  -  the call
 
 **Hook angle:** Open on what I don't need: access to your property management system, a project plan, or a budget conversation.
 
-**The turn:** What I do need is small and unglamorous — the list of vendors, the legal names that should appear on paperwork, the mailbox where documents already arrive, and one person who can say yes to an email. That's the whole input.
+**The turn:** What I do need is small and unglamorous  -  the list of vendors, the legal names that should appear on paperwork, the mailbox where documents already arrive, and one person who can say yes to an email. That's the whole input.
 
-**Evidence:** Drawn from `docs/stage-9-client-onboarding-checklist.md`: vendor list, holder entities, requirements by trade, the mailbox, an approver. Plus the honest boundary from `docs/stage-9-data-processing-retention.md` — what I receive, where it lives, how long it stays, when it's deleted.
+**Evidence:** Drawn from `docs/stage-9-client-onboarding-checklist.md`: vendor list, holder entities, requirements by trade, the mailbox, an approver. Plus the honest boundary from `docs/stage-9-data-processing-retention.md`  -  what I receive, where it lives, how long it stays, when it's deleted.
 
 **Takeaway:** The first useful output is a picture of where things actually stand, and getting there takes days, not a quarter.
 
-**The CTA:** This is the one post that asks directly. The offer is the diagnostic, not the build — send ten vendor certificates and get back a one-page picture of what's current, what's expired, what's missing, and what needs a look. No system access, no cost, and if the answer is "you're fine," that's what it says.
+**The CTA:** This is the one post that asks directly. The offer is the diagnostic, not the build  -  send ten vendor certificates and get back a one-page picture of what's current, what's expired, what's missing, and what needs a look. No system access, no cost, and if the answer is "you're fine," that's what it says.
 
 **Data handling:** Address it in the post, briefly. Asking someone to email real vendor documents to a stranger overseas is the moment the objection becomes real, and naming the retention terms unprompted turns the weakest moment into another proof point.
 
@@ -412,9 +412,9 @@ Assume the reader knows what a certificate of insurance is. Publish once industr
 
 # Sequencing and cadence
 
-**Publishing order is the numbering above.** Posts 1–5 while the audience is still mostly the wrong one. Posts 6–15 once comments and profile visits start coming from the industry.
+**Publishing order is the numbering above.** Posts 1-5 while the audience is still mostly the wrong one. Posts 6-15 once comments and profile visits start coming from the industry.
 
-**Before driving anyone to the profile, have three posts up:** 1, 2, and 3. Those answer the three questions a stranger asks in order — what world is this, is it real, is this person going to sell me garbage.
+**Before driving anyone to the profile, have three posts up:** 1, 2, and 3. Those answer the three questions a stranger asks in order  -  what world is this, is it real, is this person going to sell me garbage.
 
 **Cadence:** one a week to start, rising to two or three as the audience shifts. Fifteen posts covers roughly four months at that pace, which is the right runway for the fourth build to produce its own material.
 
@@ -424,7 +424,7 @@ Assume the reader knows what a certificate of insurance is. Publish once industr
 
 **Register:** incident report. Investigate, report precisely, state impact without drama, don't oversell. Short declaratives, real numbers, understated conclusions, first person singular, US spelling.
 
-**Banned:** hype vocabulary (game-changer, unlock, leverage, seamless, powerful, revolutionize, robust). LinkedIn broetry — one line per paragraph. "Let that sink in." Rhetorical questions as openers, though they're fine mid-post. Emoji. More than 3–5 hashtags. Any selling in the body of a post that isn't 15. The four product-forbidden words in any claiming sense.
+**Banned:** hype vocabulary (game-changer, unlock, leverage, seamless, powerful, revolutionize, robust). LinkedIn broetry  -  one line per paragraph. "Let that sink in." Rhetorical questions as openers, though they're fine mid-post. Emoji. More than 3-5 hashtags. Any selling in the body of a post that isn't 15. The four product-forbidden words in any claiming sense.
 
 **Checks before publishing any draft:**
 
@@ -433,7 +433,7 @@ Assume the reader knows what a certificate of insurance is. Publish once industr
 | Forbidden words | Zero: compliant, verified, covered, approved |
 | Hype vocabulary | Zero |
 | First 210 characters | Must stand alone and earn the expand. Measure by truncating, not by eye |
-| Length | Text 150–300 words · carousel slides under 25 words · the demo about 10 minutes · the clip 35–50 seconds |
+| Length | Text 150-300 words · carousel slides under 25 words · the demo about 10 minutes · the clip 35-50 seconds |
 | Factual trace | Every number, flag, and citation resolves to a named file or source |
 | Product language | Nothing implying a tool being sold. It's work done inside a client's business |
 | Em dashes | At most one per post. The single most reliable AI tell, and the hardest to notice while writing. Use commas, colons, or parentheses instead |
@@ -443,6 +443,6 @@ Assume the reader knows what a certificate of insurance is. Publish once industr
 
 # Out of scope
 
-- The full 6-minute demo. That lives in the profile Featured section as uploaded media, which does not create a feed post. Only the 2–3 minute cut is post 2.
+- The full 6-minute demo. That lives in the profile Featured section as uploaded media, which does not create a feed post. Only the 2-3 minute cut is post 2.
 - Teardowns of problems not yet built for. Those need the problem inventory, which doesn't exist yet.
 - Content for the other three builds. Same structure will apply; this plan covers the vendor paperwork work only.

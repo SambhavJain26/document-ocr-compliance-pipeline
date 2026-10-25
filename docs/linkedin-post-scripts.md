@@ -1,4 +1,4 @@
-# LinkedIn Post Scripts
+﻿# LinkedIn Post Scripts
 
 Finished copy for the 15 posts briefed in `docs/linkedin-content-plan.md`.
 
@@ -356,7 +356,7 @@ The honest, defensible position if someone pushes in the comments: the model cos
 
 The old slide 4 claimed "All seven go to a person." Two of the seven never reach one: `NOT_A_COI` and `OLDER_THAN_ON_FILE` short-circuit to their own ignore dispositions in `buildResult` before the hard-flag branch that sets `NEEDS_REVIEW`. The line is now accurate, and the correction is more interesting than the error, because "stop everything" turning out not to mean "fetch a human" is the sort working.
 
-A new slide 2 states the principle behind the split. It was only ever in the post copy, and the post copy does not travel with the document — the PDF is what gets shared, and inside it the reader met seven stop-cold items that look milder than the five filed ones with no explanation offered. Slide 9 asserts the sorting is the work; now something earns it.
+A new slide 2 states the principle behind the split. It was only ever in the post copy, and the post copy does not travel with the document  -  the PDF is what gets shared, and inside it the reader met seven stop-cold items that look milder than the five filed ones with no explanation offered. Slide 9 asserts the sorting is the work; now something earns it.
 
 **Cover widened 2026-08-03.** Was "Twelve things that can be wrong with a COI," which promised narrower than the list delivers. Three of the twelve are not defects in a certificate at all: a document that is not a certificate, one already superseded by a newer certificate on file, and a vendor name a keystroke off an existing vendor, where the ambiguity is on your side rather than the document's. Two more, an unreadable scan and a password-protected file, are properties of the copy you received rather than of the certificate. "When a COI arrives" frames the moment rather than the document, and every one of the twelve fits it. The alternative cover lines were rewritten for the same reason, and the third also carried the "seven need a person" error.
 
@@ -467,11 +467,11 @@ Per the brief, `MODEL_REFUSED` and `MODEL_OUTPUT_INVALID` are excluded. They are
 
 The workers' comp exemption on slide 7 is real: the flag is suppressed for vendors marked exempt (`docs/how-the-system-works.md`).
 
-**Hard does not mean dangerous, and slides 2 and 5 depend on this.** In `buildResult`, a hard flag routes to `store_needs_review` / `NEEDS_REVIEW` — except `NOT_A_COI` and `OLDER_THAN_ON_FILE`, which are tested first and get `ignore_not_certificate` and `ignore_older_than_on_file` with a null status. So five of the seven reach a person and two are closed without one. The unifying property of all seven is that no usable certificate comes out of them, not that they are the worst outcomes. The five soft flags are the opposite case: the document read cleanly and what it says falls short of your requirement. Anyone challenging the sort in the comments is challenging that distinction, and it is the defensible one.
+**Hard does not mean dangerous, and slides 2 and 5 depend on this.** In `buildResult`, a hard flag routes to `store_needs_review` / `NEEDS_REVIEW`  -  except `NOT_A_COI` and `OLDER_THAN_ON_FILE`, which are tested first and get `ignore_not_certificate` and `ignore_older_than_on_file` with a null status. So five of the seven reach a person and two are closed without one. The unifying property of all seven is that no usable certificate comes out of them, not that they are the worst outcomes. The five soft flags are the opposite case: the document read cleanly and what it says falls short of your requirement. Anyone challenging the sort in the comments is challenging that distinction, and it is the defensible one.
 
 ### Production note on the severity split
 
-Do not restore severity language to the group labels without restoring slide 2 with it. "Stop everything" and "filed with a note" describe consequences, and a reader maps consequence onto danger — at which point the deck appears to halt on a password-protected file while merely noting that a vendor has no general liability line. That objection is correct on its face and is only answered by the principle slide.
+Do not restore severity language to the group labels without restoring slide 2 with it. "Stop everything" and "filed with a note" describe consequences, and a reader maps consequence onto danger  -  at which point the deck appears to halt on a password-protected file while merely noting that a vendor has no general liability line. That objection is correct on its face and is only answered by the principle slide.
 
 ### Flagged as my invention
 

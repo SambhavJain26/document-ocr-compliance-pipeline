@@ -1,4 +1,4 @@
-# Carousel Design System
+﻿# Carousel Design System
 
 The fixed template behind every LinkedIn document carousel in
 `docs/linkedin-post-scripts.md`. `carousel-template.css` is the single source
@@ -57,9 +57,9 @@ One rule, and it removes every "is this intentional" question:
 > type, or as the page number.**
 
 Every word on every slide is `#02081F` or `#383B3D`. Nothing else. Color
-enters only as a marker swipe, a pen stroke, or the selection box — that is,
-only as something a person added on top of a finished page. Page furniture —
-the horizontal ruling and the vertical margin rule — is an ink tint, because
+enters only as a marker swipe, a pen stroke, or the selection box  -  that is,
+only as something a person added on top of a finished page. Page furniture  - 
+the horizontal ruling and the vertical margin rule  -  is an ink tint, because
 it is printed rather than added by hand.
 
 | Value | Role |
@@ -86,11 +86,11 @@ Both from Fontshare, loaded at render time, so the render machine needs
 network access. A failed fetch falls back to a system face silently rather
 than erroring, so check a rendered slide before publishing.
 
-**Deliberately dropped, with reasons.** Clash Display — its period is an
-oversized square that wrecks every sentence ending. Boska italic — too light
-to hold against a black grotesque. IBM Plex — safe rather than wrong, and
+**Deliberately dropped, with reasons.** Clash Display  -  its period is an
+oversized square that wrecks every sentence ending. Boska italic  -  too light
+to hold against a black grotesque. IBM Plex  -  safe rather than wrong, and
 safe is what made the first pass boring. Inter, Roboto, Helvetica, Arial,
-Open Sans, Poppins, Montserrat — the generic-template tells.
+Open Sans, Poppins, Montserrat  -  the generic-template tells.
 
 ## Layouts
 
@@ -118,7 +118,7 @@ wrote and 18px furniture buries them.
 the first group swiped numerals and the second plain ones, to carry the severity
 split visually. Owner's call, 2026-08-03: all twelve read the same, and the
 labels and their rules carry the split on their own. `.checks--marked` is
-therefore a numeral treatment, not a severity signal — do not reach for it to
+therefore a numeral treatment, not a severity signal  -  do not reach for it to
 mean "worse". Post 1 keeps plain `.checks`, so the modifier is what a deck opts
 into rather than something `.checks` does by default.
 
@@ -136,13 +136,13 @@ introduce the pair.
 screenshots in these decks. Type is vector with embedded font subsets and every
 mark is a vector shape, so the only bitmap in a rendered PDF is the grain tile.
 If a deck ever needs an artifact again, state it in prose rather than drawing a
-frame that imitates an interface — a post about not faking your evidence cannot
+frame that imitates an interface  -  a post about not faking your evidence cannot
 be the one that ships a mocked-up screenshot.
 
 **A long line drops a size step rather than overrunning.** The display sizes
 assume short lines. Past roughly forty characters `.close-lead` runs to five
 lines at 112px, overruns the `.body--close` band and pushes the turn into the
-byline — post 7's close did exactly that, and post 13's cover did the same at
+byline  -  post 7's close did exactly that, and post 13's cover did the same at
 `.display`. Drop one step, to `.lead` in both cases, and the slide gets the air
 it was supposed to have. Everything else about the layout is unchanged.
 
@@ -174,15 +174,15 @@ ellipse that overshoots the last word and cuts through the first, and it stops
 looking drawn. Two of post 7's circles were pulled back to a single word for
 this reason. If a phrase needs marking, that is what the marker is for.
 
-**The marker swipe lives once, in `--swipe`.** Both things that paint it — a
-highlighted phrase and a `.checks--marked` numeral — read the same custom
+**The marker swipe lives once, in `--swipe`.** Both things that paint it  -  a
+highlighted phrase and a `.checks--marked` numeral  -  read the same custom
 property, so they cannot drift apart. Note that its default placement is set
 for prose, which has descenders and wants the swipe to overhang the baseline.
 Lining figures have neither, so `.checks--marked` raises and grows the swipe;
 without that it sits under the numeral as a faint underline rather than behind
 it. The same correction is why the inverted slide restates it.
 
-**Zodiak sets exactly one word in the deck** — the payoff on slide 6. The note
+**Zodiak sets exactly one word in the deck**  -  the payoff on slide 6. The note
 underneath it takes the same treatment as the second line on every other
 slide, so the second voice speaks once and means something.
 
@@ -203,7 +203,7 @@ post needs a different treatment, add a named layout, not a theme.
 
 ## The baseline grid
 
-The ruled lines are drawn every 72px. The **baseline unit is 24px** — every
+The ruled lines are drawn every 72px. The **baseline unit is 24px**  -  every
 third unit is a drawn rule.
 
 - **Every leading is set in px and is a multiple of 24.** Display 144, lead
@@ -257,7 +257,7 @@ they stay legible on the gold swipe.
 **The swipe also has to grow there, and flipping the colour alone is not
 enough.** `.hl` is sized to overhang a word rather than to enclose it, so on
 paper the uncovered ascenders are still ink on cream and read fine. On the
-inverted ground they are dark ink on dark navy and disappear — post 4's slide 5
+inverted ground they are dark ink on dark navy and disappear  -  post 4's slide 5
 lost half of "cheap part" that way. The stylesheet raises and grows the swipe
 on `.slide--invert` so it clears the cap height. Check any highlight that lands
 on an inverted slide.
@@ -273,7 +273,7 @@ Each of these exists because something looked like a mistake.
 2. **Both furniture marks are gold.** The eyebrow rule and the byline rule
    are the same 38px stroke and must stay the same color.
 3. **One treatment for "the line after the statement."** Always `.turn`,
-   always behind a `.divider`. There is no second, quieter variant — an
+   always behind a `.divider`. There is no second, quieter variant  -  an
    earlier pass set one slide's closer in 400-weight grey and it buried a
    load-bearing line.
 4. **Parallel copy gets parallel marks.** Mirrored sentences take the same
@@ -294,7 +294,7 @@ way, and both worth keeping.
 
 **It must never be an `feTurbulence` filter.** A filter has to be evaluated
 at output resolution, so Chrome bakes a full-page bitmap into every slide.
-That took the PDF from 132 KB to **24 MB** for visually identical output —
+That took the PDF from 132 KB to **24 MB** for visually identical output  - 
 32 embedded images instead of 1. Shrinking the filter's tile does nothing;
 only baking it to a real image does.
 

@@ -1,4 +1,4 @@
-# Demo Script: Vendor COI Chasing Automation
+﻿# Demo Script: Vendor COI Chasing Automation
 
 A recorded screen walkthrough for YouTube, aimed at people who run US residential property management companies.
 
@@ -63,9 +63,9 @@ Every scene names one of these five. Burn a small, muted label into the top left
 
 **Two more exist in the workflow list and don't get their own scene.**
 
-`Extraction and Validation Core` doesn't run at all — it's the harness the checking rules were built in. Worth knowing if a technical viewer asks why the checks behave identically everywhere. Keep it off camera.
+`Extraction and Validation Core` doesn't run at all  -  it's the harness the checking rules were built in. Worth knowing if a technical viewer asks why the checks behave identically everywhere. Keep it off camera.
 
-`Vendor Approval Request` genuinely runs, every time. Daily Watch and Chase calls it once per actionable vendor, and it's where the Gmail approval gate actually lives. It's split out on purpose: an n8n Wait node can only pause an execution once, so giving every vendor their own paperwork request run as one shared execution meant only the first vendor ever got a real pause — everyone else was silently marked declined a few milliseconds after the first click, without ever getting an email. Calling a separate workflow once per vendor gives each one its own genuine execution and its own genuine pause. You don't need to explain this on camera; Scene 7 shows the result of it (multiple approval emails, each independently clickable) without naming the mechanism.
+`Vendor Approval Request` genuinely runs, every time. Daily Watch and Chase calls it once per actionable vendor, and it's where the Gmail approval gate actually lives. It's split out on purpose: an n8n Wait node can only pause an execution once, so giving every vendor their own paperwork request run as one shared execution meant only the first vendor ever got a real pause  -  everyone else was silently marked declined a few milliseconds after the first click, without ever getting an email. Calling a separate workflow once per vendor gives each one its own genuine execution and its own genuine pause. You don't need to explain this on camera; Scene 7 shows the result of it (multiple approval emails, each independently clickable) without naming the mechanism.
 
 ---
 
@@ -103,7 +103,7 @@ Open `http://localhost:5678/home/workflows`. Six rows now, and all six must show
 
 COI Intake · Source Document Route · Daily Watch and Chase · Vendor Approval Request · Non-PDF Reply Notice · COI Dashboard
 
-An inactive Daily Watch and Chase or Vendor Approval Request is the most likely reason no approval email turns up later — Daily Watch and Chase calls Vendor Approval Request once per vendor, and that call fails outright if the target isn't active. If anything is inactive, toggle it on and restart n8n from Docker Desktop.
+An inactive Daily Watch and Chase or Vendor Approval Request is the most likely reason no approval email turns up later  -  Daily Watch and Chase calls Vendor Approval Request once per vendor, and that call fails outright if the target isn't active. If anything is inactive, toggle it on and restart n8n from Docker Desktop.
 
 This screen is Scene 2, so tidy it now. Sort it so the five on-camera workflows sit together; `Vendor Approval Request` never gets its own scene, so keep it out of the way rather than centred.
 
@@ -184,7 +184,7 @@ For both, open the **Executions** tab on COI Intake and confirm the run finished
 
 **Do not expect one approval email.** With the board staged as above, the daily watch finds **13 things to chase**: 12 vendors with no certificate on file at all, plus Circuit Square, whose certificate has lapsed.
 
-Every one of those gets dispatched to its own **Vendor Approval Request** run, and those runs go out together, not one after another. So the correct expectation is: 13 approval emails, arriving within a few seconds of each other, all sitting unread at once. Approving or ignoring one has no effect on the rest — each is a fully separate execution with its own 24-hour expiry. For the video you only ever open and click the one you chose in Scene 7's prep. The rest can sit unapproved and expire on their own.
+Every one of those gets dispatched to its own **Vendor Approval Request** run, and those runs go out together, not one after another. So the correct expectation is: 13 approval emails, arriving within a few seconds of each other, all sitting unread at once. Approving or ignoring one has no effect on the rest  -  each is a fully separate execution with its own 24-hour expiry. For the video you only ever open and click the one you chose in Scene 7's prep. The rest can sit unapproved and expire on their own.
 
 Count the grey rows on your dashboard before recording. Grey rows plus red rows is the number the watch will find, and Scene 7 says that number out loud.
 
@@ -453,7 +453,7 @@ Point at the amber note.
 
 1. Count the rows on your dashboard that are either grey ("No certificate on file") or red. Write that number down. That is roughly how many approval emails are about to land.
 2. Open **Daily Watch and Chase** in n8n and click **Execute workflow** at the bottom of the canvas.
-3. Wait for the approval emails to arrive in `sambhavn8n@gmail.com`. They arrive together, within a few seconds of each other, not one at a time — every actionable vendor gets its own request at once. Leave them unopened.
+3. Wait for the approval emails to arrive in `sambhavn8n@gmail.com`. They arrive together, within a few seconds of each other, not one at a time  -  every actionable vendor gets its own request at once. Leave them unopened.
 4. Decide which single vendor's email you'll click on camera, and note its subject line ("Approve certificate request: [vendor]"). You don't need to touch the others; leaving them unclicked is fine; each expires safely on its own after 24 hours.
 5. Now start recording.
 
@@ -503,8 +503,8 @@ Show the outreach log row.
 **Watch out for:**
 
 - Do not say "thirteen" or any fixed number. Say the number you actually counted, because it depends on how the board is staged that day.
-- Your inbox will show several unread approval requests at once, not a slow trickle. That's correct. Don't apologize for it or explain the mechanics on camera — just open the one you picked in prep and ignore the rest.
-- Approving one has no effect on the others. If you want proof of that rather than just claiming it, you can show a second, untouched request still sitting in the inbox after you approve the first — but that's optional and not written into the main narration.
+- Your inbox will show several unread approval requests at once, not a slow trickle. That's correct. Don't apologize for it or explain the mechanics on camera  -  just open the one you picked in prep and ignore the rest.
+- Approving one has no effect on the others. If you want proof of that rather than just claiming it, you can show a second, untouched request still sitting in the inbox after you approve the first  -  but that's optional and not written into the main narration.
 
 **Why this scene is here:** the approval click is the emotional centre of the video. It is the moment a stranger's automation becomes safe to hire.
 

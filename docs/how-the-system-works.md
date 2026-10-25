@@ -1,4 +1,4 @@
-# How The System Works
+﻿# How The System Works
 
 Written for a property manager or an owner. **Nothing in this document requires you to know what tool it was built in, and no part of it asks you to read code.** Where a technical detail would change what you can expect from the system, it is stated in plain language. Where it would not, it is left out.
 
@@ -52,14 +52,14 @@ Yes, and the evidence is worth being precise about, because it is not the kind o
 
 | Source | What it establishes |
 |---|---|
-| [r/PropertyManagement — "COI tracking"](https://www.reddit.com/r/PropertyManagement/comments/1rm3sxo/coi_tracking/) | Practitioners publicly asking for help with this exact task, unprompted |
-| [r/PropertyManagement — "almost had an uninsured vendor on site last week"](https://www.reddit.com/r/PropertyManagement/comments/1t00808/new_to_all_of_this_and_almost_had_an_uninsured/) | The near-miss version of the failure, described by the person it happened to |
-| [Buildium — Tracking Vendor Insurance](https://help.buildium.com/hc/s/article/Tracking-Vendor-Insurance-1557495330433) | The software gap, confirmed from the platform's own documentation rather than inferred |
-| [RealPage — Vendor Credentialing](https://www.realpage.com/vendor-credentialing/) | Certificates travel with W-9s, licences and background checks as a document stack |
-| [NetVendor — Why Manual COI Tracking Is Broken](https://www.netvendor.com/blog/why-manual-coi-tracking-is-broken-how-to-fix-it) | The category's own description of the failure mode it sells against |
-| [BCS — What Happens When A Vendor's Insurance Expires](https://www.getbcs.com/blog/what-happens-when-a-vendors-insurance-expires-a-risk-managers-guide) | The downstream consequence, from a risk-management perspective |
-| [Texas Department of Insurance — certificate FAQ](https://www.tdi.texas.gov/certificates/faq.html) | That additional-insured and cancellation-notice wording depend on policy or endorsement terms, not on the certificate |
-| [NY DFS — ACORD 25 filing](https://www.dfs.ny.gov/apps-and-licensing/insurance-companies/certificates-approved/acord-25-2025-12-liability) | That the certificate is informational and does not amend the policy |
+| [r/PropertyManagement  -  "COI tracking"](https://www.reddit.com/r/PropertyManagement/comments/1rm3sxo/coi_tracking/) | Practitioners publicly asking for help with this exact task, unprompted |
+| [r/PropertyManagement  -  "almost had an uninsured vendor on site last week"](https://www.reddit.com/r/PropertyManagement/comments/1t00808/new_to_all_of_this_and_almost_had_an_uninsured/) | The near-miss version of the failure, described by the person it happened to |
+| [Buildium  -  Tracking Vendor Insurance](https://help.buildium.com/hc/s/article/Tracking-Vendor-Insurance-1557495330433) | The software gap, confirmed from the platform's own documentation rather than inferred |
+| [RealPage  -  Vendor Credentialing](https://www.realpage.com/vendor-credentialing/) | Certificates travel with W-9s, licences and background checks as a document stack |
+| [NetVendor  -  Why Manual COI Tracking Is Broken](https://www.netvendor.com/blog/why-manual-coi-tracking-is-broken-how-to-fix-it) | The category's own description of the failure mode it sells against |
+| [BCS  -  What Happens When A Vendor's Insurance Expires](https://www.getbcs.com/blog/what-happens-when-a-vendors-insurance-expires-a-risk-managers-guide) | The downstream consequence, from a risk-management perspective |
+| [Texas Department of Insurance  -  certificate FAQ](https://www.tdi.texas.gov/certificates/faq.html) | That additional-insured and cancellation-notice wording depend on policy or endorsement terms, not on the certificate |
+| [NY DFS  -  ACORD 25 filing](https://www.dfs.ny.gov/apps-and-licensing/insurance-companies/certificates-approved/acord-25-2025-12-liability) | That the certificate is informational and does not amend the policy |
 
 The two Reddit threads are the strongest signal available, and they are stronger than a survey statistic would be. Nobody prompted those people. They went looking for help, publicly, in their own words. That is demand rather than stated preference.
 

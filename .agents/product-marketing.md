@@ -1,4 +1,4 @@
-# Product Marketing Context
+﻿# Product Marketing Context
 
 **Document version:** v2
 **Last updated:** 2026-08-02
@@ -19,7 +19,7 @@ Drafted from `docs/customer-language.md`, `docs/linkedin-content-plan.md`, `docs
 
 ## Target Audience
 
-**Target companies:** US residential property management companies, roughly 150–600 doors. Large enough that vendor paperwork is a recurring job for someone; small enough that no one has bought an enterprise compliance platform.
+**Target companies:** US residential property management companies, roughly 150-600 doors. Large enough that vendor paperwork is a recurring job for someone; small enough that no one has bought an enterprise compliance platform.
 
 **Decision-makers:** Owners and operations leads. Note the split: the person who feels the pain is usually an office administrator, not the buyer.
 
@@ -169,5 +169,5 @@ Two rules learned the hard way on 2026-08-02, after an audit found seven of fift
 
 ## Changelog
 
-- v2 (2026-08-02) — Added a Content principles section and an AI buying literacy value theme after a content audit found that seller-centric material had been placed in the highest-reach formats. Removed the uncited 2010 ACORD revision from the domain-literacy proof row.
-- v1 (2026-08-01) — Initial context, drafted from repo docs for the LinkedIn content work.
+- v2 (2026-08-02)  -  Added a Content principles section and an AI buying literacy value theme after a content audit found that seller-centric material had been placed in the highest-reach formats. Removed the uncited 2010 ACORD revision from the domain-literacy proof row.
+- v1 (2026-08-01)  -  Initial context, drafted from repo docs for the LinkedIn content work.

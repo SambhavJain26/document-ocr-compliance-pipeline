@@ -1,4 +1,4 @@
-# Build Technical Notes
+﻿# Build Technical Notes
 
 Companion to `how-the-system-works.md`. That document explains the behaviour to a property manager and deliberately contains no stack, no node names and no API detail. This one contains all of it.
 
@@ -78,8 +78,8 @@ Five nodes across 87 touch email at all. Three cannot send: two Gmail triggers (
 
 | Node | Sends to | Reachable from |
 |---|---|---|
-| `Gmail Approval - Send and Wait` | `{{ $json.approver_email }}` — the manager, internal | The workflow trigger, via one IF node |
-| `Gmail Send Approved Stage 6 Chase` | `{{ $json.actual_recipient }}` — the vendor or their producer | `Route Approved Stage 6 Email`, true branch only |
+| `Gmail Approval - Send and Wait` | `{{ $json.approver_email }}`  -  the manager, internal | The workflow trigger, via one IF node |
+| `Gmail Send Approved Stage 6 Chase` | `{{ $json.actual_recipient }}`  -  the vendor or their producer | `Route Approved Stage 6 Email`, true branch only |
 
 **Exactly one node out of eighty-seven can send an email to a vendor**, and it has exactly one inbound edge. Tracing that edge backwards through the connection graph gives a single unbranched path:
 

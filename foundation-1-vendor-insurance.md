@@ -1,8 +1,8 @@
-# Foundation Guide 1
+﻿# Foundation Guide 1
 # Vendor Insurance & Risk Transfer in Property Management
 
 **A primer for someone with no real estate background**
-Theory only — no automation, no technical content.
+Theory only  -  no automation, no technical content.
 
 ---
 
@@ -19,7 +19,7 @@ Read Part 1 even if you're impatient. Almost everything confusing about this pro
 
 ---
 
-# PART 1 — Industry Foundations
+# PART 1  -  Industry Foundations
 
 ## The three-party structure
 
@@ -45,7 +45,7 @@ A residential property management company sits between **two clients with differ
 
 The property manager is an **agent** acting on behalf of the owner. They are not the owner. They don't own the building, they don't collect the rent for themselves, and they are spending someone else's money on someone else's asset.
 
-**Why this matters for everything you'll sell:** the property manager is constantly accountable to a third party who wasn't in the room when decisions were made. When something goes wrong, the first question isn't "what happened" — it's "what will I tell the owner?"
+**Why this matters for everything you'll sell:** the property manager is constantly accountable to a third party who wasn't in the room when decisions were made. When something goes wrong, the first question isn't "what happened"  -  it's "what will I tell the owner?"
 
 ## How property management companies make money
 
@@ -53,13 +53,13 @@ You need this to speak credibly about ROI. Their revenue comes from a stack of f
 
 | Revenue stream | Typical amount | Notes |
 |---|---|---|
-| **Management fee** | 8–12% of rent **collected** | The core recurring revenue. National average around 8.5–10% for single-family and small multifamily.[^1] Larger multifamily runs 4–7% or $75–125 per unit flat |
-| **Leasing / tenant placement fee** | 50–100% of one month's rent | Charged when a new tenant is placed[^2] |
-| **Lease renewal fee** | $100–350 flat | Charged when an existing tenant renews[^1] |
-| **Maintenance markup** | 10–20% on vendor invoices | Added to contractor costs; some charge hourly coordination instead[^1][^3] |
-| **Setup / onboarding fee** | $300–500 | One-time when taking on a new owner[^2] |
+| **Management fee** | 8-12% of rent **collected** | The core recurring revenue. National average around 8.5-10% for single-family and small multifamily.[^1] Larger multifamily runs 4-7% or $75-125 per unit flat |
+| **Leasing / tenant placement fee** | 50-100% of one month's rent | Charged when a new tenant is placed[^2] |
+| **Lease renewal fee** | $100-350 flat | Charged when an existing tenant renews[^1] |
+| **Maintenance markup** | 10-20% on vendor invoices | Added to contractor costs; some charge hourly coordination instead[^1][^3] |
+| **Setup / onboarding fee** | $300-500 | One-time when taking on a new owner[^2] |
 
-Net profit margins across the industry typically run 20–50% depending on portfolio size and efficiency.[^4]
+Net profit margins across the industry typically run 20-50% depending on portfolio size and efficiency.[^4]
 
 **The detail that matters most: the management fee is a percentage of rent *collected*, not rent *charged*.** A vacant unit pays them nothing. This single fact aligns their interests with the owner's and explains why vacancy is genuinely painful for them, not just for their client.
 
@@ -67,7 +67,7 @@ Net profit margins across the industry typically run 20–50% depending on portf
 
 A management company with 300 doors spread across a metro area cannot employ a full-time plumber, electrician, HVAC technician, painter, roofer, landscaper, and pest controller. The work is unpredictable and geographically scattered.
 
-So they build a **vendor network** — 15 to 40 independent contractors they call repeatedly. These are separate businesses, not employees. They invoice, they carry their own tools, they set their own schedules, and — crucially — **they are supposed to carry their own insurance.**
+So they build a **vendor network**  -  15 to 40 independent contractors they call repeatedly. These are separate businesses, not employees. They invoice, they carry their own tools, they set their own schedules, and  -  crucially  -  **they are supposed to carry their own insurance.**
 
 That last point is where this entire problem lives.
 
@@ -76,8 +76,8 @@ That last point is where this entire problem lives.
 | Term | Meaning |
 |---|---|
 | **Door / unit** | One rentable unit. Portfolio size is always measured in doors, never in buildings |
-| **Rental owner** | The property manager's paying client. Often owns 1–20 units |
-| **Vendor** | An outside contractor the manager hires — plumber, painter, HVAC tech |
+| **Rental owner** | The property manager's paying client. Often owns 1-20 units |
+| **Vendor** | An outside contractor the manager hires  -  plumber, painter, HVAC tech |
 | **Management agreement** | The contract between owner and manager. Defines duties, fees, and authority limits |
 | **Fiduciary duty** | The legal obligation to act in the owner's best interest, not your own |
 | **Work order** | A logged maintenance job |
@@ -86,7 +86,7 @@ That last point is where this entire problem lives.
 
 ---
 
-# PART 2 — Insurance Fundamentals
+# PART 2  -  Insurance Fundamentals
 
 You need roughly this much and no more.
 
@@ -94,7 +94,7 @@ You need roughly this much and no more.
 
 When a contractor damages property or injures someone while working, somebody pays. Insurance decides **who**.
 
-If the contractor carries proper coverage, their insurer pays. If they don't, the injured party looks for the next entity with money — which is the property owner and the management company that hired the contractor.
+If the contractor carries proper coverage, their insurer pays. If they don't, the injured party looks for the next entity with money  -  which is the property owner and the management company that hired the contractor.
 
 ## The three documents people confuse constantly
 
@@ -121,16 +121,16 @@ The main one. Covers third-party bodily injury and property damage caused by the
 Covers the vendor's *own employees* if they're injured on the job. This matters more than newcomers expect: without it, an injured worker may claim against the property owner instead. Some states have specific requirements about who must carry it.
 
 **3. Commercial Automobile Liability**
-Covers vehicle accidents during business operations — the plumber's van hitting someone in the parking lot.
+Covers vehicle accidents during business operations  -  the plumber's van hitting someone in the parking lot.
 
 **4. Umbrella / Excess Liability**
 Sits on top of the others and pays when the underlying limits are exhausted. A $2M umbrella over a $1M CGL gives $3M of total room.
 
-## Risk transfer — the concept that explains everything
+## Risk transfer  -  the concept that explains everything
 
 The formal name is **contractual risk transfer**. The idea: shift a risk to whichever party is best positioned to control it.[^8]
 
-The property manager doesn't control how carefully a plumber solders a joint. The plumber does. So the contract pushes that risk down to the plumber — and requires insurance to back it up.
+The property manager doesn't control how carefully a plumber solders a joint. The plumber does. So the contract pushes that risk down to the plumber  -  and requires insurance to back it up.
 
 The concept that makes this necessary is **vicarious liability**: one entity being held legally responsible for the actions of another, arising out of a relationship, position, or contract.[^9] A property manager can be held liable for damage caused by a contractor they hired, even though they didn't touch anything.
 
@@ -172,11 +172,11 @@ Sit with that. Reading a certificate tells you a policy existed and when it expi
 
 ---
 
-# PART 3 — The Problem
+# PART 3  -  The Problem
 
 ## The workflow as it actually runs
 
-Here's what happens today at a typical 250–400 door company:
+Here's what happens today at a typical 250-400 door company:
 
 **When onboarding a new vendor:**
 1. Ops manager finds a plumber, usually by referral
@@ -194,7 +194,7 @@ Here's what happens today at a typical 250–400 door company:
 9. The vendor keeps getting dispatched.
 10. This continues until someone happens to look, an owner asks, an insurance audit occurs, or a claim happens.
 
-## Why it breaks — five structural reasons
+## Why it breaks  -  five structural reasons
 
 **1. It's never urgent until it's catastrophic.**
 No tenant calls about vendor insurance. No owner emails about it. It generates zero daily pressure, so it loses every time it competes for attention.
@@ -215,19 +215,19 @@ It sits between the ops manager, the maintenance coordinator, and the bookkeeper
 
 Almost never as a dramatic fire. Usually one of these:
 
-- An **owner asks** during an annual review: "are all your vendors insured?" — and nobody can answer confidently
+- An **owner asks** during an annual review: "are all your vendors insured?"  -  and nobody can answer confidently
 - The **company's own insurance renews** and the carrier asks about vendor vetting procedures
 - A **new institutional owner** comes on board with a management agreement containing vendor compliance clauses
 - A **small claim happens** and, in the process of filing, someone discovers the vendor's coverage lapsed
 - A **staff member leaves** and the person taking over discovers the spreadsheet is 14 months stale
 
-The catastrophic version — an uninsured vendor causing major damage — is rare. It's also the one everyone fears, which is why it's tempting to sell on. Resist that.
+The catastrophic version  -  an uninsured vendor causing major damage  -  is rare. It's also the one everyone fears, which is why it's tempting to sell on. Resist that.
 
 ## What it costs the property management company
 
 **Direct financial exposure.** If an uninsured contractor causes damage, the financial responsibility can land on the management company rather than the vendor's insurer. Courts have held property owners and management companies liable for injuries caused by contractors where the company failed to verify adequate coverage.[^13]
 
-**Breach of the management agreement.** Most management agreements contain a clause requiring the manager to use licensed and insured contractors. Failing to verify can be a breach of the manager's own contract with the owner — which is a business risk as much as a legal one.
+**Breach of the management agreement.** Most management agreements contain a clause requiring the manager to use licensed and insured contractors. Failing to verify can be a breach of the manager's own contract with the owner  -  which is a business risk as much as a legal one.
 
 **Their own insurance.** Property management companies carry Errors & Omissions and General Liability policies. Carriers ask about vendor vetting at renewal. A company with no process may face higher premiums, or coverage questions when they claim.
 
@@ -235,19 +235,19 @@ The catastrophic version — an uninsured vendor causing major damage — is rar
 
 **Owner confidence.** The hardest to quantify and the most important. A manager who can't answer "are your vendors currently insured?" has damaged something with a client whose business is entirely a trust relationship.
 
-## Where the scale threshold sits — be honest about this
+## Where the scale threshold sits  -  be honest about this
 
 This problem is genuinely proportional to vendor count.
 
-A company managing 500 units might maintain 150–300 vendor relationships, each with multiple policies, producing 600–1,500 individual policy expirations a year.[^14] That's unmanageable by hand.
+A company managing 500 units might maintain 150-300 vendor relationships, each with multiple policies, producing 600-1,500 individual policy expirations a year.[^14] That's unmanageable by hand.
 
-A 250-door company with 15 regular vendors has roughly 45 policy dates a year. That is a spreadsheet with a reminder — and one COI vendor's own guide concedes that at small scale, manual tracking can work.[^15]
+A 250-door company with 15 regular vendors has roughly 45 policy dates a year. That is a spreadsheet with a reminder  -  and one COI vendor's own guide concedes that at small scale, manual tracking can work.[^15]
 
 **Knowing this makes you more credible, not less.** If a prospect has 10 vendors, tell them they probably don't need you yet. That single act of honesty will do more for your reputation than a sale.
 
 ---
 
-# PART 4 — What You Are Actually Solving
+# PART 4  -  What You Are Actually Solving
 
 ## Name the job precisely
 
@@ -277,20 +277,20 @@ That's a smaller claim than "we protect you from liability," and it's the one yo
 
 ---
 
-# PART 5 — Talking to Prospects
+# PART 5  -  Talking to Prospects
 
 ## Questions that reveal whether the pain is real
 
-**Opening question — use this one:**
+**Opening question  -  use this one:**
 > *"When your plumber shows up to a job, how do you know his insurance is current that day?"*
 
 Then stop talking. The pause, the hedge, or the description of a spreadsheet *is* your diagnosis.
 
 **Follow-ups:**
-- *"How many outside vendors do you use regularly?"* — under 12, the problem isn't real yet
-- *"When did you last chase a vendor for an updated certificate?"* — "we don't" means it isn't felt
-- *"Has an owner ever asked you about vendor insurance?"* — a yes means an existing wound
-- *"What happens when a certificate arrives — where does it go?"* — reveals the whole process
+- *"How many outside vendors do you use regularly?"*  -  under 12, the problem isn't real yet
+- *"When did you last chase a vendor for an updated certificate?"*  -  "we don't" means it isn't felt
+- *"Has an owner ever asked you about vendor insurance?"*  -  a yes means an existing wound
+- *"What happens when a certificate arrives  -  where does it go?"*  -  reveals the whole process
 
 ## What to listen for
 
@@ -311,7 +311,7 @@ Then stop talking. The pause, the hedge, or the description of a spreadsheet *is
 | "We verify coverage" | "We read the certificate and track the dates" |
 | Lead with the $80,000 fire story | Lead with "seven expired certificates and nobody knew" |
 
-**Why not lead with fear:** catastrophe stories make buyers defensive and sceptical, and they invite the response "that's never happened to us." The mundane version — *you probably have expired certificates right now and no way to know* — is both more believable and more likely to be true.
+**Why not lead with fear:** catastrophe stories make buyers defensive and sceptical, and they invite the response "that's never happened to us." The mundane version  -  *you probably have expired certificates right now and no way to know*  -  is both more believable and more likely to be true.
 
 ## Misconceptions a newcomer will have
 
@@ -332,7 +332,7 @@ They don't. Roughly half will tell you it's fine. Qualify hard and move on quick
 
 ---
 
-# PART 6 — Glossary
+# PART 6  -  Glossary
 
 | Term | Definition |
 |---|---|
@@ -340,19 +340,19 @@ They don't. Roughly half will tell you it's fine. Qualify hard and move on quick
 | **Additional insured (AI)** | A party added to someone else's policy, giving them direct claim standing. Requires an endorsement |
 | **Aggregate limit** | The maximum an insurer pays across all claims in a policy period |
 | **Carrier** | The insurance company that underwrites the policy |
-| **CGL** | Commercial General Liability — the primary third-party liability coverage |
-| **Certificate holder** | The party receiving the certificate — should be the management company's exact legal name |
+| **CGL** | Commercial General Liability  -  the primary third-party liability coverage |
+| **Certificate holder** | The party receiving the certificate  -  should be the management company's exact legal name |
 | **COI** | Certificate of Insurance |
 | **Each occurrence limit** | The maximum paid for a single incident |
 | **Endorsement** | A document that formally amends an insurance policy. This is what actually grants rights |
-| **E&O** | Errors & Omissions — professional liability insurance the management company carries itself |
+| **E&O** | Errors & Omissions  -  professional liability insurance the management company carries itself |
 | **Hold harmless** | Another name for an indemnification agreement |
 | **Indemnification** | A contractual promise by one party to cover another's liability |
 | **Lapse** | A period where a policy has expired and not been renewed |
 | **NAIC number** | A code identifying the insurance carrier |
 | **Policy period** | Effective date to expiration date |
 | **Primary and non-contributory** | Language making the vendor's policy respond first, without involving yours |
-| **Producer** | The insurance agent or broker who issues the certificate — not the carrier |
+| **Producer** | The insurance agent or broker who issues the certificate  -  not the carrier |
 | **Risk transfer** | Contractually shifting risk to the party best able to control it |
 | **Subrogation** | An insurer's right to recover from whoever caused a loss after paying a claim |
 | **Vicarious liability** | Being held legally responsible for another party's actions |
@@ -373,32 +373,32 @@ They don't. Roughly half will tell you it's fine. Qualify hard and move on quick
 
 ## Citations
 
-[^1]: AllPropertyManagement, "How Much Do Rental Property Managers Charge in 2026?" https://www.allpropertymanagement.com/resources/ask-a-pro/posts/how-much-property-managers-charge/ — 8–12% management fee; 10–15% maintenance markup; $100–350 renewal fee; $20–45/hr coordination fees.
+[^1]: AllPropertyManagement, "How Much Do Rental Property Managers Charge in 2026?" https://www.allpropertymanagement.com/resources/ask-a-pro/posts/how-much-property-managers-charge/  -  8-12% management fee; 10-15% maintenance markup; $100-350 renewal fee; $20-45/hr coordination fees.
 
-[^2]: Baselane, "How Much Do Property Managers Charge? Full Fee Breakdown 2026." https://www.baselane.com/resources/how-much-do-property-managers-charge — leasing fee 50–100% of one month's rent; setup fee $300–500.
+[^2]: Baselane, "How Much Do Property Managers Charge? Full Fee Breakdown 2026." https://www.baselane.com/resources/how-much-do-property-managers-charge  -  leasing fee 50-100% of one month's rent; setup fee $300-500.
 
-[^3]: Coxe Property Management, "Property Management Companies Fees Guide 2026." https://coxepropertymanagementandleasing.com/property-management-companies-fees/ — maintenance markup 10–20% above vendor cost and what it compensates for.
+[^3]: Coxe Property Management, "Property Management Companies Fees Guide 2026." https://coxepropertymanagementandleasing.com/property-management-companies-fees/  -  maintenance markup 10-20% above vendor cost and what it compensates for.
 
-[^4]: Blue Diamond, "How Do Property Management Companies Make Money?" https://bluediamondinc.com/how-much-do-property-management-companies-make/ — industry profit margins 20–50%.
+[^4]: Blue Diamond, "How Do Property Management Companies Make Money?" https://bluediamondinc.com/how-much-do-property-management-companies-make/  -  industry profit margins 20-50%.
 
-[^5]: Instafill, "ACORD 25 (2016/03) Certificate of Liability Insurance." https://instafill.ai/forms/acord-25-201603-certificate-of-liability-insurance — the certificate is informational only and does not change the underlying policies or grant rights.
+[^5]: Instafill, "ACORD 25 (2016/03) Certificate of Liability Insurance." https://instafill.ai/forms/acord-25-201603-certificate-of-liability-insurance  -  the certificate is informational only and does not change the underlying policies or grant rights.
 
-[^6]: Get Business Coverage, "ACORD 25 Certificate of Insurance: Template and Guide." https://www.getbusinesscoverage.com/resources/acord-25-certificate-template-guide — AI status requires carrier endorsement CG 20 10 / CG 20 37; listing in the description box does not extend coverage.
+[^6]: Get Business Coverage, "ACORD 25 Certificate of Insurance: Template and Guide." https://www.getbusinesscoverage.com/resources/acord-25-certificate-template-guide  -  AI status requires carrier endorsement CG 20 10 / CG 20 37; listing in the description box does not extend coverage.
 
-[^7]: Infrrd, "ACORD 25 Guide: Certificate of Liability Insurance Explained." https://www.infrrd.ai/blog/acord-25-certificate-of-liability-insurance-guide — coverage types and form structure.
+[^7]: Infrrd, "ACORD 25 Guide: Certificate of Liability Insurance Explained." https://www.infrrd.ai/blog/acord-25-certificate-of-liability-insurance-guide  -  coverage types and form structure.
 
-[^8]: NASBP, "What is Contractual Risk Transfer?" https://www.nasbp.org/post/what-is-contractual-risk-transfer/ — transferring risk to the party best able to prevent the injury or damage.
+[^8]: NASBP, "What is Contractual Risk Transfer?" https://www.nasbp.org/post/what-is-contractual-risk-transfer/  -  transferring risk to the party best able to prevent the injury or damage.
 
-[^9]: Insurance Journal, "Contractual Risk Transfer: The Basics." https://www.insurancejournal.com/blogs/academy-journal/2015/03/16/360274.htm — vicarious liability defined; state variation in anti-indemnification statutes.
+[^9]: Insurance Journal, "Contractual Risk Transfer: The Basics." https://www.insurancejournal.com/blogs/academy-journal/2015/03/16/360274.htm  -  vicarious liability defined; state variation in anti-indemnification statutes.
 
-[^10]: Horst Insurance, "Contractual Risk Transfer Explained." https://www.horstinsurance.com/news-and-blog/contractual-risk-transfer-explained/ — indemnification, waiver of subrogation, and additional insured defined with examples.
+[^10]: Horst Insurance, "Contractual Risk Transfer Explained." https://www.horstinsurance.com/news-and-blog/contractual-risk-transfer-explained/  -  indemnification, waiver of subrogation, and additional insured defined with examples.
 
 [^11]: GRBM Insurance, "Contractual Risk Transfer: Protecting Commercial Property Owners and Contractors." https://grbminc.com/blog/contractual-risk-transfer-protecting-commercial-property-owners-and-contractors/
 
-[^12]: PINS Advantage, "Waiver of Subrogation: What It Is and Why Contracts Require It." https://www.pinsadvantage.com/resources/blog/waiver-of-subrogation-explained — the three requirements working as a set; subrogation as a carrier action; "most COI programs verify the certificate, few verify the endorsements."
+[^12]: PINS Advantage, "Waiver of Subrogation: What It Is and Why Contracts Require It." https://www.pinsadvantage.com/resources/blog/waiver-of-subrogation-explained  -  the three requirements working as a set; subrogation as a carrier action; "most COI programs verify the certificate, few verify the endorsements."
 
-[^13]: ExpiryEdge, "Vendor COI Tracking for Property Managers." https://expiryedge.com/articles/vendor-coi-tracking-property-managers/ — liability transfer and management agreement breach. Vendor source.
+[^13]: ExpiryEdge, "Vendor COI Tracking for Property Managers." https://expiryedge.com/articles/vendor-coi-tracking-property-managers/  -  liability transfer and management agreement breach. Vendor source.
 
-[^14]: COIPulse — vendor relationship counts and policy expiration volume for 500-unit portfolios. Vendor source; treat as directional.
+[^14]: COIPulse  -  vendor relationship counts and policy expiration volume for 500-unit portfolios. Vendor source; treat as directional.
 
 [^15]: NetVendor / ExpiryEdge guidance conceding that manual tracking works at small scale and breaks down at portfolio scale.

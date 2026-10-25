@@ -1,10 +1,10 @@
-# CLAUDE.md
+﻿# Repository Guidelines & Operational Architecture
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+These guidelines define the architecture, invariants, coding standards, and verification gates established by the lead engineer for developing and operating this repository. All contributors and agentic workflows must strictly adhere to these specifications.
 
-This repository is the planning and implementation workspace for a local n8n vendor certificate-of-insurance (COI) chasing demo. Treat it as an automation project, not a compiled app. The core behavior will live in n8n workflow exports, Postgres schema/state, fixtures, and small helper scripts.
+This repository is the implementation workspace for an automated n8n vendor certificate of insurance (COI) chasing and verification system. Treat it as an enterprise automation project, not a compiled app. The core behavior lives in n8n workflow exports, Postgres schema/state, fixtures, and helper scripts.
 
-`CLAUDE.md` and `AGENTS.md` hold the same guidance for different agents. Keep them in sync.
+`AGENTS.md` and `CLAUDE.md` hold the same technical guidance for different agentic workflows. Keep them in sync.
 
 ## Read Order And Authority
 
@@ -99,7 +99,7 @@ Stage 5 stores source PDFs under `/home/node/.n8n-files/certificates/YYYY/MM/DD/
 
 Stage 6 keeps watch/chase state in Postgres functions and generated workflow exports. Empty Postgres result nodes that must allow downstream work, such as the escalation pre-pass before loading actionable vendors, need `alwaysOutputData`; otherwise n8n stops the execution when no rows are returned. Stage 6 live approval/send smoke requires both `stage_6_approver_email` and `stage_6_test_recipient_email`; they can be the same Gmail address for local testing. Stage 6 SQL defaults must preserve existing local config values on reapply so `apply-stage-6.ps1` does not wipe test email settings.
 
-**An n8n Wait node (including Gmail Send-and-Wait) can only pause a given execution once, ever.** Feeding an array of N vendors into one Send-and-Wait call sends a real message and pauses for only the first item; resuming it resolves the *entire array* in the same instant, and every other item comes back with no approval data, reads as declined, and gets logged that way without ever generating a message a person could see. This was a real, silent defect here: `outreach_log` correctly recorded a pending row for every vendor, but only one ever got approved or declined for real. Looping the same node back on itself (Split In Batches) does not fix it either — a second pass through the same node in the same execution resolves near-instantly with stale state, not a fresh pause. The only real fix is to give each item its own execution: a separate `Vendor Approval Request` workflow, called once per vendor through `Execute Workflow` in "each" mode. That is n8n's own documented pattern for human-in-the-loop-per-item. `Daily Watch and Chase` still drafts and records pending outreach for every vendor in one batch; only the approval-through-send-or-decline segment runs per vendor, in its own workflow file. If you ever need per-item approval again, start from that split rather than a loop.
+**An n8n Wait node (including Gmail Send-and-Wait) can only pause a given execution once, ever.** Feeding an array of N vendors into one Send-and-Wait call sends a real message and pauses for only the first item; resuming it resolves the *entire array* in the same instant, and every other item comes back with no approval data, reads as declined, and gets logged that way without ever generating a message a person could see. This was a real, silent defect here: `outreach_log` correctly recorded a pending row for every vendor, but only one ever got approved or declined for real. Looping the same node back on itself (Split In Batches) does not fix it either  -  a second pass through the same node in the same execution resolves near-instantly with stale state, not a fresh pause. The only real fix is to give each item its own execution: a separate `Vendor Approval Request` workflow, called once per vendor through `Execute Workflow` in "each" mode. That is n8n's own documented pattern for human-in-the-loop-per-item. `Daily Watch and Chase` still drafts and records pending outreach for every vendor in one batch; only the approval-through-send-or-decline segment runs per vendor, in its own workflow file. If you ever need per-item approval again, start from that split rather than a loop.
 
 Stage 7 serves the dashboard through n8n webhooks at `/webhook/coi` and `/webhook/stage-7-dashboard-webhook/coi`. After CLI import/publish and n8n restart, wait for active workflow registration before probing the dashboard URL; editor HTTP readiness can come up before webhook routes are registered.
 
@@ -173,7 +173,7 @@ Build reset paths for local demo data only. Never run destructive reset/delete s
 
 Use short imperative or conventional commits, matching existing history, for example `docs: update COI workflow guidance` or `feat: add intake preflight`.
 
-Before every final response, run the agent-guidance maintenance checkpoint: decide whether the task exposed a durable mistake, blocker, workaround, command, gotcha, or best practice. If yes, update `CLAUDE.md` and `AGENTS.md` first, keeping both files consistent. Keep updates short, remove stale or duplicate wording, and prefer tightening existing rules over appending new sections.
+Before every final response, run the agent-guidance maintenance checkpoint: decide whether the task exposed a durable mistake, blocker, workaround, command, gotcha, or best practice. If yes, update `AGENTS.md` and `CLAUDE.md` first, keeping both files consistent. Keep updates short, remove stale or duplicate wording, and prefer tightening existing rules over appending new sections.
 
 If a task changes commands, scripts, workflow behavior, data model, implementation decisions, or durable repo rules, update the relevant documentation before finishing. Use `progress-notes.md` for stage status, deviations, verification results, and outstanding work. Update `build-plan.md` or `coi-demo-build-plan.md` only when the plan or controlling spec actually changes.
 
