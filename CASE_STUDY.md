@@ -1,4 +1,4 @@
-# Case Study: Autonomous Vendor Insurance Verification & Renewal Chasing Engine
+# Case Study: Document OCR & Compliance Tracking Pipeline
 
 > *A comprehensive portfolio case study detailing the architecture, engineering decisions, and operational impact of an automated vendor certificate of insurance (COI) verification and renewal chasing engine.*
 
@@ -6,7 +6,7 @@
 
 ## Project Hero
 
-* **Project Title**: Autonomous Vendor Insurance Verification & Renewal Chasing Engine
+* **Project Title**: Document OCR & Compliance Tracking Pipeline
 * **Subtitle**: An enterprise compliance automation system built with n8n, PostgreSQL 16, and OpenAI JSON Schema that eliminates uninsured contractor liability, prevents n8n batch execution collapse, and automates vendor renewal chasing with isolated human approval cards.
 * **Role**: Lead Workflow Automation Architect & Backend Engineer
 * **Timeline**: 3 Weeks (Architecture, Schema Design, Deterministic Engine, Workflow Construction, and Verification)
