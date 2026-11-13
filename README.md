@@ -222,6 +222,6 @@ Stage 4 validation tests complete.
 
 ---
 
-## License
+## Security & Architecture Scope
 
 Internal proprietary automation asset. All rights reserved. Developed for production property management operations.
