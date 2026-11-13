@@ -5,7 +5,7 @@
 [![OpenAI](https://img.shields.io/badge/Structured_Extraction-JSON_Schema-412991?style=flat-square&logo=openai)](https://openai.com)
 [![Docker](https://img.shields.io/badge/Runtime-Docker_Compose-2496ED?style=flat-square&logo=docker)](https://www.docker.com)
 [![Architecture](https://img.shields.io/badge/Human_Gate-Single_Path_to_Action-075B42?style=flat-square)](#the-single-path-to-the-irreversible-action)
-[![Test Coverage](https://img.shields.io/badge/Unit_Tests-20_Passing-brightgreen?style=flat-square)](scripts/test-stage-4-validation.js)
+[![Quality & Workflow Validation](https://github.com/SambhavJain26/document-ocr-compliance-pipeline/actions/workflows/validate.yml/badge.svg)](https://github.com/SambhavJain26/document-ocr-compliance-pipeline/actions/workflows/validate.yml)
 
 > **An event-driven compliance automation engine that ingests vendor certificates of insurance (COIs) via Gmail and web forms, extracts structured policy limits via schema-bound LLM parsing, executes deterministic compliance validation, and orchestrates renewal chasing through an isolated human approval gate.**
 
